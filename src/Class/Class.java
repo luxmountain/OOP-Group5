@@ -36,6 +36,5 @@ public class Class {
     public void setScheduele(Date scheduele) {
         this.scheduele = scheduele;
     }
-
-
+    
 }
