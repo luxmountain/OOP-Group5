@@ -48,7 +48,6 @@ public abstract class Person {
       return this.id;
    }
 
-
    public abstract void displayRole();
 }
 
