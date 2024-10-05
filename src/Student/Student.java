@@ -50,6 +50,7 @@ public class Student extends Person {
     // public Teacher getTeacher() {
     //     return teacher;
     // }
+    //
 
     // public void viewTeacherInfo() {
     //     System.out.println("Teacher Name: " + teacher.getName());
@@ -70,7 +71,7 @@ public class Student extends Person {
     }
 
     public void doHomeWork(){
-        
+
     }
 
     @Override
