@@ -66,4 +66,5 @@ public class Class {
         System.out.println("Schedule Time: " + scheduleTime);
         System.out.println("Students Count: " + Arrays.toString(studentsCount));
     }
+    
 }
