@@ -1,16 +1,22 @@
 package Class;
 
 import java.sql.Date;
+import java.sql.Time;
+import java.util.Arrays;
 
 public class Class {
     private String className;
-    private String TeacherID;
-    private Date scheduele;
-   
-    public Class(String className, String teacherID, Date scheduele) {
+    private String teacherID;
+    private Date scheduleDate;
+    private Time scheduleTime;
+    private int[] studentsCount;
+
+    public Class(String className, String teacherID, Date scheduleDate, Time scheduleTime, int[] studentsCount) {
         this.className = className;
-        TeacherID = teacherID;
-        this.scheduele = scheduele;
+        this.teacherID = teacherID;
+        this.scheduleDate = scheduleDate;
+        this.scheduleTime = scheduleTime;
+        this.studentsCount = studentsCount;
     }
 
     public String getClassName() {
@@ -22,19 +28,42 @@ public class Class {
     }
 
     public String getTeacherID() {
-        return TeacherID;
+        return teacherID;
     }
 
     public void setTeacherID(String teacherID) {
-        TeacherID = teacherID;
+        this.teacherID = teacherID;
     }
 
-    public Date getScheduele() {
-        return scheduele;
+    public Date getScheduleDate() {
+        return scheduleDate;
     }
 
-    public void setScheduele(Date scheduele) {
-        this.scheduele = scheduele;
+    public void setScheduleDate(Date scheduleDate) {
+        this.scheduleDate = scheduleDate;
     }
-    
+
+    public Time getScheduleTime() {
+        return scheduleTime;
+    }
+
+    public void setScheduleTime(Time scheduleTime) {
+        this.scheduleTime = scheduleTime;
+    }
+
+    public int[] getStudentsCount() {
+        return studentsCount;
+    }
+
+    public void setStudentsCount(int[] studentsCount) {
+        this.studentsCount = studentsCount;
+    }
+
+    public void displayClassInfo() {
+        System.out.println("Class Name: " + className);
+        System.out.println("Teacher ID: " + teacherID);
+        System.out.println("Schedule Date: " + scheduleDate);
+        System.out.println("Schedule Time: " + scheduleTime);
+        System.out.println("Students Count: " + Arrays.toString(studentsCount));
+    }
 }
