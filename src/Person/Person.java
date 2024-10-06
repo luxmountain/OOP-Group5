@@ -18,7 +18,6 @@ public abstract class Person {
       this.id = id;
    }
 
-
    public String getName() {
       return this.name;
    }

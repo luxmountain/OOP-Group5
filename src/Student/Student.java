@@ -63,7 +63,6 @@ public class Student extends Person {
         System.out.println("CPA: " + cpa);
     }
 
-    // Phương thức xem tài khoản và thanh toán
     public void viewAccountInfo() {
         System.out.println("Account: " + account);
         System.out.println("Amount Paid: " + pay);
