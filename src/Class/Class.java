@@ -2,25 +2,22 @@ package Class;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 
 public class Class {
     private String className;
     private String teacherID;
-    private Date scheduleDate;
-    private Time scheduleTime;
+    private Timestamp schedule;
     private String[] studentNames; 
     private int studentCount;      
 
     public Class(String className, String teacherID, Date scheduleDate, Time scheduleTime, int maxStudents) {
         this.className = className;
         this.teacherID = teacherID;
-        this.scheduleDate = scheduleDate;
-        this.scheduleTime = scheduleTime;
+        this.schedule = new Timestamp(scheduleDate.getTime() + scheduleTime.getTime());
         this.studentNames = new String[maxStudents];
         this.studentCount = 0;
     }
-
-    // Getter và setter cho các thuộc tính
 
     public String getClassName() {
         return className;
@@ -38,20 +35,12 @@ public class Class {
         this.teacherID = teacherID;
     }
 
-    public Date getScheduleDate() {
-        return scheduleDate;
+    public Timestamp getSchedule() {
+        return schedule;
     }
 
-    public void setScheduleDate(Date scheduleDate) {
-        this.scheduleDate = scheduleDate;
-    }
-
-    public Time getScheduleTime() {
-        return scheduleTime;
-    }
-
-    public void setScheduleTime(Time scheduleTime) {
-        this.scheduleTime = scheduleTime;
+    public void setSchedule(Date scheduleDate, Time scheduleTime) {
+        this.schedule = new Timestamp(scheduleDate.getTime() + scheduleTime.getTime());
     }
 
     public String[] getStudentNames() {
@@ -71,4 +60,16 @@ public class Class {
         }
     }
 
+    public void displayClassInfo() {
+        System.out.println("Tên lớp: " + className);
+        System.out.println("Mã GV: " + teacherID);
+        System.out.println("Thời khóa biểu: " + schedule);
+        System.out.println("Học sinh: ");
+        for (int i = 0; i < studentCount; i++) {
+            System.out.println((i + 1) + ". " + studentNames[i]);
+        }
+        System.out.println("Sĩ số: " + studentCount);
+    }
+
+    
 }
