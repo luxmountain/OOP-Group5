@@ -2,22 +2,25 @@ package Class;
 
 import java.sql.Date;
 import java.sql.Time;
-import java.util.Arrays;
 
 public class Class {
     private String className;
     private String teacherID;
     private Date scheduleDate;
     private Time scheduleTime;
-    private int[] studentsCount;
+    private String[] studentNames; 
+    private int studentCount;      
 
-    public Class(String className, String teacherID, Date scheduleDate, Time scheduleTime, int[] studentsCount) {
+    public Class(String className, String teacherID, Date scheduleDate, Time scheduleTime, int maxStudents) {
         this.className = className;
         this.teacherID = teacherID;
         this.scheduleDate = scheduleDate;
         this.scheduleTime = scheduleTime;
-        this.studentsCount = studentsCount;
+        this.studentNames = new String[maxStudents];
+        this.studentCount = 0;
     }
+
+    // Getter và setter cho các thuộc tính
 
     public String getClassName() {
         return className;
@@ -51,19 +54,21 @@ public class Class {
         this.scheduleTime = scheduleTime;
     }
 
-    public int[] getStudentsCount() {
-        return studentsCount;
+    public String[] getStudentNames() {
+        return studentNames;
     }
 
-    public void setStudentsCount(int[] studentsCount) {
-        this.studentsCount = studentsCount;
+    public int getStudentCount() {
+        return studentCount;
     }
 
-    public void displayClassInfo() {
-        System.out.println("Class Name: " + className);
-        System.out.println("Teacher ID: " + teacherID);
-        System.out.println("Schedule Date: " + scheduleDate);
-        System.out.println("Schedule Time: " + scheduleTime);
-        System.out.println("Students Count: " + Arrays.toString(studentsCount));
+    public void addStudent(String studentName) {
+        if (studentCount < studentNames.length) {
+            studentNames[studentCount] = studentName;
+            studentCount++;
+        } else {
+            System.out.println("Lớp đã đầy, không thể thêm học sinh mới.");
+        }
     }
+
 }
