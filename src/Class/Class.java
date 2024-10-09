@@ -70,5 +70,4 @@ public class Class {
         }
         System.out.println("Sĩ số: " + studentCount);
     }
-
 }
