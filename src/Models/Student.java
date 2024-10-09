@@ -1,9 +1,7 @@
-package Student;
+package Models;
 
-import Person.Person;
-//import teacher.Teacher;
-import java.util.*;
 import java.time.*;
+import java.util.*;
 
 public class Student extends Person {
     private LocalDate enrollmentDate; 
