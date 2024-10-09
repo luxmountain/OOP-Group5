@@ -1,4 +1,4 @@
-package Person;
+package Models;
 
 public abstract class Person {
    private String name;
@@ -17,6 +17,8 @@ public abstract class Person {
       this.email = email;
       this.id = id;
    }
+
+   
 
    public String getName() {
       return this.name;

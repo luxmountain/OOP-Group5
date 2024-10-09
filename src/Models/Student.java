@@ -1,9 +1,7 @@
-package Student;
+package Models;
 
-import Person.Person;
-//import teacher.Teacher;
-import java.util.*;
 import java.time.*;
+import java.util.*;
 
 public class Student extends Person {
     private LocalDate enrollmentDate; 
@@ -12,15 +10,19 @@ public class Student extends Person {
     private double cpa; 
     private String account; 
     private double pay; 
-    //private Teacher teacher; 
+    private String birthDay;
+    private Teacher teacher; 
 
-    public Student(String name, String clazz, String role, String phone, String email, String id){
-                   //Teacher teacher) {
+    public Student(String name, String clazz, String role, String phone, String email, String id, String birthDay,Teacher teacher) {
         super(name, clazz, role, phone, email, id);
-        //this.teacher = teacher;
-     
+        this.teacher = teacher;
         this.enrollmentDate = LocalDate.now(); 
         this.status = true; 
+        this.birthDay = birthDay;
+    }
+
+    public String getBirthDay() {
+        return birthDay;
     }
 
     public LocalDate getEnrollmentDate() {
@@ -47,16 +49,16 @@ public class Student extends Person {
         return pay;
     }
 
-    // public Teacher getTeacher() {
-    //     return teacher;
-    // }
+    public Teacher getTeacher() {
+         return teacher;
+    }
 
-    // public void viewTeacherInfo() {
-    //     System.out.println("Teacher Name: " + teacher.getName());
-    //     System.out.println("Teacher Class: " + teacher.getClazz());
-    //     System.out.println("Teacher Phone: " + teacher.getPhone());
-    //     System.out.println("Teacher Email: " + teacher.getEmail());
-    // }
+    public void viewTeacherInfo() {
+        System.out.println("Teacher Name: " + teacher.getName());
+        //System.out.println("Teacher Class: " + teacher.getClazz());
+        System.out.println("Teacher Phone: " + teacher.getPhone());
+        System.out.println("Teacher Email: " + teacher.getEmail());
+    }
 
     public void viewGrades() {
         System.out.println("Grades: " + grades);
