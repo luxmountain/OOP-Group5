@@ -10,12 +10,9 @@ public class Student extends Person {
     private double cpa; 
     private String account; 
     private double pay; 
-    //private Teacher teacher; 
 
     public Student(String name, String clazz, String role, String phone, String email, String id){
-                   //Teacher teacher) {
         super(name, clazz, role, phone, email, id);
-        //this.teacher = teacher;
      
         this.enrollmentDate = LocalDate.now(); 
         this.status = true; 

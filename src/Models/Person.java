@@ -1,5 +1,5 @@
 package Models;
-
+import java.util.Date;
 public abstract class Person {
    private String name;
    private String className;
@@ -7,7 +7,7 @@ public abstract class Person {
    private String phone;
    private String email;
    private String id;
-
+   private Date birthdate;
 
    public Person(String name, String className, String role, String phone, String email, String id) {
       this.name = name;
@@ -22,6 +22,13 @@ public abstract class Person {
       return this.name;
    }
 
+   public Date setBirthdate(){
+      
+   }
+
+   public Date getBirthdate(){
+      return birthdate;
+   }
 
    public String getClassName() {
       return this.className;

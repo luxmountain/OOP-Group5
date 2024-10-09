@@ -1,39 +1,13 @@
 package Models;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class Teacher {
-    private String name;
-    private String email;
-    private String phone;
+public class Teacher extends Person{
     private List<Student> students;
     private List<Class> classes;
 
-    public Teacher(String name, String email, String phone) {
-        this.name = name;
-        this.email = email;
-        this.phone = phone;
-        this.students = new ArrayList<>();
-        this.classes = new ArrayList<>();
-    }
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getEmail() {
-        return email;
-    }
-    public void setEmail(String email) {
-        this.email = email;
-    }
-    public String getPhone() {
-        return phone;
-    }
-    public void setPhone(String phone) {
-        this.phone = phone;
+    public Teacher(String name, String clazz, String role, String phone, String email, String id) {
+        super(name, clazz, role, phone, email, id);
     }
     public void addStudent(Student student) {
         students.add(student);
@@ -48,10 +22,8 @@ public class Teacher {
         classes.remove(c);
     }
     public void updateTeacherInfo(String newEmail, String newPhone) {
-        this.email = newEmail;
-        this.phone = newPhone;
+        
     }
-    // Xem thông tin của một học sinh cụ thể
     public void viewStudentInfo(String studentName) {
         for (Student student : students) {
             if (student.getName().equalsIgnoreCase(studentName)) {
@@ -79,5 +51,10 @@ public class Teacher {
             }
         }
         System.out.println("Không tìm thấy lớp học có tên: " + className);
+    }
+
+    @Override
+    public void displayRole(){
+        System.out.println(getRole());
     }
 }
