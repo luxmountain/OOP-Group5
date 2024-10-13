@@ -100,7 +100,7 @@ public class Student extends Person {
     }
 
     public void doHomework() {
-        System.out.println("Doing homework...");
+        
     }
 
     public void payFee(double amount) {
