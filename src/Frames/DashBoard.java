@@ -19,17 +19,17 @@ public class DashBoard extends MyPanel{
         int yPosition = 20; 
     
         // Tạo các nút và menu
-        MyButton studentBtn = createBtn("Students", yPosition);
+        MyButton studentBtn = createBtn("Học sinh", yPosition);
         JPopupMenu studentMenu = createDropdownMenu();
         attachMenu(studentBtn, studentMenu);
         yPosition += 30 + 50; // Cập nhật vị trí Y cho nút tiếp theo
     
-        MyButton courseBtn = createBtn("Courses", yPosition);
+        MyButton courseBtn = createBtn("Môn học", yPosition);
         JPopupMenu courseMenu = createDropdownMenu();
         attachMenu(courseBtn, courseMenu);
         yPosition += 30 + 50; // Cập nhật vị trí Y cho nút tiếp theo
     
-        MyButton teacherBtn = createBtn("Teachers", yPosition);
+        MyButton teacherBtn = createBtn("Giáo viên", yPosition);
         JPopupMenu teacherMenu = createDropdownMenu();
         attachMenu(teacherBtn, teacherMenu);
     
@@ -42,7 +42,7 @@ public class DashBoard extends MyPanel{
     private MyButton createBtn(String text, int yPosition) {
         MyFont fontBtn = new MyFont(Font.BOLD, 18);
         Color colorTextBtn = Color.WHITE;
-        Color colorBackgroundBtn = Color.BLUE;
+        Color colorBackgroundBtn = new Color(100, 149, 237);
     
         MyButton button = new MyButton(text, fontBtn, colorTextBtn, colorBackgroundBtn);
         button.setSize(120, 30); // Kích thước của nút
@@ -63,7 +63,7 @@ public class DashBoard extends MyPanel{
         addItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Add clicked");
+            
             }
         });
 

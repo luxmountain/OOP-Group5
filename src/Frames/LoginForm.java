@@ -32,13 +32,11 @@ public class LoginForm {
         JPasswordField passwordField = new JPasswordField();
         passwordField.setBounds(480, 250, 300, 30);
 
-        // Tạo nút hiển thị/ẩn mật khẩu
         JButton togglePasswordButton = new JButton("👁");
         togglePasswordButton.setBounds(780, 250, 50, 30);
         togglePasswordButton.setFocusPainted(false); // Tắt viền khi click
         togglePasswordButton.setBorder(null);
         togglePasswordButton.setBackground(null);
-        
 
         togglePasswordButton.addActionListener(new ActionListener() {
             private boolean showPassword = false;
@@ -76,12 +74,24 @@ public class LoginForm {
             }
         });
 
+        MyButton registerButton = new MyButton("Đăng ký", new MyFont(Font.BOLD, 16), Color.WHITE, Color.BLUE);
+        registerButton.setBounds(490, 420, 150, 40);
+
+        registerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                new RegisterForm(); 
+            }
+        });
+
         loginPanel.add(usernameLabel);
         loginPanel.add(usernameField);
         loginPanel.add(passwordLabel);
         loginPanel.add(passwordField);
         loginPanel.add(togglePasswordButton);
         loginPanel.add(loginButton);
+        loginPanel.add(registerButton);
 
         frame.add(loginPanel);
 
