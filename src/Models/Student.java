@@ -10,8 +10,6 @@ public class Student extends Person {
     private Map<String, String> grades; 
     private String attendance; 
     private double gpa; 
-    private double payFee; 
-    private double paidFee; 
 
     public Student(String name, String className, String subject, String role, String phone, String email, String id, Date birthDate, String parentID) {
         super(name, className, subject, role, phone, email, id, birthDate);
@@ -20,11 +18,27 @@ public class Student extends Person {
         this.grades = new HashMap<>(); 
         this.attendance = ""; 
         this.gpa = 0.0; 
-        this.payFee = 1000.0; 
-        this.paidFee = 0.0; 
         this.parentID = parentID;
     }
-
+    public String getStudentInfo() {
+        StringBuilder info = new StringBuilder();
+        info.append("Tên: ").append(getName()).append("\n")
+            .append("Lớp: ").append(getClassName()).append("\n")
+            .append("Môn học: ").append(getSubject()).append("\n")
+            .append("Mã học sinh: ").append(getId()).append("\n")
+            .append("Ngày nhập học: ").append(enrollmentDate).append("\n")
+            .append("Trạng thái: ").append(status).append("\n")
+            .append("Điểm và môn học:\n");
+    
+        for (Map.Entry<String, String> entry : grades.entrySet()) {
+            info.append(entry.getKey()).append(": ").append(entry.getValue()).append("\n");
+        }
+    
+        info.append("GPA: ").append(gpa).append("\n")
+            .append("Điểm danh: ").append(attendance).append("\n");  // Thêm dấu chấm phẩy ở đây
+        return info.toString();
+    }
+    
     public String getParentID() {
         return parentID;
     }
@@ -70,56 +84,8 @@ public class Student extends Person {
             this.gpa = 0.0;
         else this.gpa = gpa;
     }
-
-    public double getPayFee() {
-        return payFee;
-    }
-
-    public void setPayFee(double payFee) {
-        this.payFee = payFee;
-    }
-
-    public double getPaidFee() {
-        return paidFee;
-    }
-
-    public void setPaidFee(double paidFee) {
-        this.paidFee = paidFee;
-    }
-
-    public void viewGrades() {
-        System.out.println("Grades:");
-        for (Map.Entry<String, String> entry : grades.entrySet()) {
-            System.out.println(entry.getKey() + ": " + entry.getValue());
-        }
-        System.out.println("GPA: " + gpa);
-    }
-
     public void viewAttendance() {
         System.out.println("Attendance: " + attendance);
-    }
-
-    public void doHomework() {
-        
-    }
-
-    public void payFee(double amount) {
-        if (amount > 0) {
-            if (paidFee + amount <= payFee) {
-                paidFee += amount;
-                System.out.println("Paid " + amount + ". Total paid: " + paidFee);
-            } else {
-                System.out.println("The amount exceeds the remaining fee. Total remaining: " + (payFee - paidFee));
-            }
-        } else {
-            System.out.println("Invalid amount.");
-        }
-    }
-
-    public void viewFee() {
-        System.out.println("Total Fee: " + payFee);
-        System.out.println("Paid Fee: " + paidFee);
-        System.out.println("Remaining Fee: " + (payFee - paidFee));
     }
 
     @Override
