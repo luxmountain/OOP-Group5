@@ -1,60 +1,76 @@
 package Models;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
 
-public class Teacher extends Person{
-    private List<Student> students;
-    private List<Class> classes;
+public class Teacher extends Person {
+    // Danh sách lưu trữ thông tin lớp học và sinh viên
+    private ArrayList<String> classList; // Danh sách các lớp
+    private ArrayList<String> studentList; // Danh sách sinh viên
 
-    public Teacher(String name, String clazz, String role, String phone, String email, String id) {
-        super(name, clazz, role, phone, email, id);
+    // Constructor
+    public Teacher(String name, String className, String role, String phone, String email, String id, Date birthDate) {
+        super(name, className, role, phone, email, id, birthDate);
+        this.classList = new ArrayList<>();
+        this.studentList = new ArrayList<>();
     }
-    public void addStudent(Student student) {
-        students.add(student);
+
+    // Phương thức CRUD lớp học
+    public void addClass(String className) {
+        classList.add(className);
+        System.out.println("Class " + className + " added successfully!");
     }
-    public void removeStudent(Student student) {
-        students.remove(student);
-    }
-    public void addClass(Class c) {
-        classes.add(c);
-    }
-    public void removeClass(Class c) {
-        classes.remove(c);
-    }
-    public void updateTeacherInfo(String newEmail, String newPhone) {
-        
-    }
-    public void viewStudentInfo(String studentName) {
-        for (Student student : students) {
-            if (student.getName().equalsIgnoreCase(studentName)) {
-                System.out.println("Thông tin học sinh:");
-                System.out.println("Tên: " + student.getName());
-                System.out.println("Ngày tháng năm sinh: " + student.getBirthDay());
-                System.out.println("Email: " + student.getEmail());
-                System.out.println("Số điện thoại: " + student.getPhone());
-                System.out.println("--------------------------");
-                return;
-            }
+
+    public void deleteClass(String className) {
+        if (classList.remove(className)) {
+            System.out.println("Class " + className + " deleted successfully!");
+        } else {
+            System.out.println("Class " + className + " not found!");
         }
-        System.out.println("Không tìm thấy học sinh có tên: " + studentName);
-    }
-    // Xem thông tin một lớp cụ thể
-    public void viewClassInfo(String className) {
-        for (Class c : classes) {
-            if (c.getClassName().equalsIgnoreCase(className)) {
-                System.out.println("Thông tin lớp học:");
-                System.out.println("Tên lớp: " + c.getClassName());
-                System.out.println("Thời khóa biểu: " + c.getSchedule());
-                System.out.println("Số lượng học sinh: " + c.getStudentCount());
-                System.out.println("--------------------------");
-                return;
-            }
-        }
-        System.out.println("Không tìm thấy lớp học có tên: " + className);
     }
 
-    @Override
-    public void displayRole(){
-        System.out.println(getRole());
+    public void updateClass(String oldClassName, String newClassName) {
+        int index = classList.indexOf(oldClassName);
+        if (index != -1) {
+            classList.set(index, newClassName);
+            System.out.println("Class " + oldClassName + " updated to " + newClassName);
+        } else {
+            System.out.println("Class " + oldClassName + " not found!");
+        }
+    }
+
+    public void readClasses() {
+        System.out.println("Classes: " + classList);
+    }
+
+    // Phương thức xem thông tin sinh viên
+    public void viewStudentInfo() {
+        System.out.println("Student Information:");
+        for (String student : studentList) {
+            System.out.println(student);
+        }
+    }
+
+    // Phương thức xem thông tin lớp học
+    public void viewClassInfo() {
+        System.out.println("Class Information:");
+        for (String className : classList) {
+            System.out.println(className);
+        }
+    }
+
+    // Phương thức nhập điểm
+    public void enterGrade(String student, String grade) {
+        System.out.println("Entered grade for " + student + ": " + grade);
+    }
+
+    // Phương thức điểm danh
+    public void checkAttendance() {
+        System.out.println("Attendance checked for class: " + getClassName());
+    }
+
+    public void addStudent(String student) {
+        studentList.add(student);
+        System.out.println("Student " + student + " added successfully!");
     }
 }
