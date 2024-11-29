@@ -10,7 +10,8 @@ public class Student extends Person {
     private Map<String, String> grades; 
     private String attendance; 
     private double gpa; 
-
+    
+    public Student(String name, String className, String role, String phone, String email, String id, Date birthDate, String parentID) {
         super(name, role, phone, email, id, birthDate);
         this.enrollmentDate = LocalDate.now();
         this.status = "Active"; 
@@ -19,6 +20,7 @@ public class Student extends Person {
         this.gpa = 0.0; 
         this.parentID = parentID;
     }
+
     public String getStudentInfo() {
         StringBuilder info = new StringBuilder();
         info.append("Tên: ").append(getName()).append("\n")
