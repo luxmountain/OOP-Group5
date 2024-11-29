@@ -1,24 +1,62 @@
 package Models;
 
-import java.sql.Date;
-import java.sql.Time;
-import java.sql.Timestamp;
+import java.util.Date;
+import java.util.ArrayList;
 
 public class Class {
+    // Attributes
     private String className;
-    private String teacherID;
-    private Timestamp schedule;
-    private String[] studentNames; 
-    private int studentCount;      
+    private Date[] schedule;
+    private Date beginTime;
+    private Date endTime;
+    private ArrayList<Student> students; // Aggregation relationship with Student class
 
-    public Class(String className, String teacherID, Date scheduleDate, Time scheduleTime, int maxStudents) {
+    // Constructor
+    public Class(String className, Date[] schedule, Date beginTime, Date endTime) {
         this.className = className;
-        this.teacherID = teacherID;
-        this.schedule = new Timestamp(scheduleDate.getTime() + scheduleTime.getTime());
-        this.studentNames = new String[maxStudents];
-        this.studentCount = 0;
+        this.schedule = schedule;
+        this.beginTime = beginTime;
+        this.endTime = endTime;
+        this.students = new ArrayList<>(); // Initialize the student list
     }
 
+    // Methods
+    public void viewStudentList() {
+        System.out.println("Danh Sách Học Sinh " + className);
+        for (Student student : students) {
+            System.out.println(student.getName());
+        }
+    }
+
+    public void viewTimeTable() {
+        System.out.println("Thời Khóa Biểu " + className);
+        System.out.println("Thời Gian Bắt Đầu: " + beginTime);
+        System.out.println("Thời Gian Kết Thúc: " + endTime);
+    }
+
+    // CRUD operations for Student
+    public void addStudent(Student student) {
+        students.add(student);
+    }
+
+    public void removeStudent(Student student) {
+        students.remove(student);
+    }
+
+    public void updateStudent(int index, Student newStudent) {
+        if (index >= 0 && index < students.size()) {
+            students.set(index, newStudent);
+        }
+    }
+
+    public Student getStudent(int index) {
+        if (index >= 0 && index < students.size()) {
+            return students.get(index);
+        }
+        return null;
+    }
+
+    // Getters and Setters
     public String getClassName() {
         return className;
     }
@@ -27,49 +65,27 @@ public class Class {
         this.className = className;
     }
 
-    public String getTeacherID() {
-        return teacherID;
-    }
-
-    public void setTeacherID(String teacherID) {
-        this.teacherID = teacherID;
-    }
-
-    public Timestamp getSchedule() {
+    public Date[] getSchedule() {
         return schedule;
     }
 
-    public void setSchedule(Date scheduleDate, Time scheduleTime) {
-        this.schedule = new Timestamp(scheduleDate.getTime() + scheduleTime.getTime());
+    public void setSchedule(Date[] schedule) {
+        this.schedule = schedule;
     }
 
-    public String[] getStudentNames() {
-        return studentNames;
+    public Date getBeginTime() {
+        return beginTime;
     }
 
-    public int getStudentCount() {
-        return studentCount;
+    public void setBeginTime(Date beginTime) {
+        this.beginTime = beginTime;
     }
 
-    public void addStudent(String studentName) {
-        if (studentCount < studentNames.length) {
-            studentNames[studentCount] = studentName;
-            studentCount++;
-        } else {
-            System.out.println("Lớp đã đầy, không thể thêm học sinh mới.");
-        }
+    public Date getEndTime() {
+        return endTime;
     }
 
-    public void displayClassInfo() {
-        System.out.println("Tên lớp: " + className);
-        System.out.println("Mã GV: " + teacherID);
-        System.out.println("Thời khóa biểu: " + schedule);
-        System.out.println("Học sinh: ");
-        for (int i = 0; i < studentCount; i++) {
-            System.out.println((i + 1) + ". " + studentNames[i]);
-        }
-        System.out.println("Sĩ số: " + studentCount);
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
-
-    
 }
