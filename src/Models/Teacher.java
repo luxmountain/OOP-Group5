@@ -7,12 +7,13 @@ public class Teacher extends Person {
     // Danh sách lưu trữ thông tin lớp học và sinh viên
     private ArrayList<String> classList; // Danh sách các lớp
     private ArrayList<String> studentList; // Danh sách sinh viên
-
+    private String className;
     // Constructor
     public Teacher(String name, String className, String role, String phone, String email, String id, Date birthDate) {
-        super(name, className, role, phone, email, id, birthDate);
+        super(name, role, phone, email, id, birthDate);
         this.classList = new ArrayList<>();
         this.studentList = new ArrayList<>();
+        this.className = className;
     }
 
     // Phương thức CRUD lớp học
@@ -54,19 +55,14 @@ public class Teacher extends Person {
     // Phương thức xem thông tin lớp học
     public void viewClassInfo() {
         System.out.println("Class Information:");
-        for (String className : classList) {
-            System.out.println(className);
+        for (String clazz : classList) {
+            System.out.println(clazz);
         }
     }
 
     // Phương thức nhập điểm
     public void enterGrade(String student, String grade) {
         System.out.println("Entered grade for " + student + ": " + grade);
-    }
-
-    // Phương thức điểm danh
-    public void checkAttendance() {
-        System.out.println("Attendance checked for class: " + getClassName());
     }
 
     public void addStudent(String student) {

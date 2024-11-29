@@ -11,8 +11,7 @@ public class Student extends Person {
     private String attendance; 
     private double gpa; 
 
-    public Student(String name, String className, String role, String phone, String email, String id, Date birthDate, String parentID) {
-        super(name, className, role, phone, email, id, birthDate);
+        super(name, role, phone, email, id, birthDate);
         this.enrollmentDate = LocalDate.now();
         this.status = "Active"; 
         this.grades = new HashMap<>(); 

@@ -2,41 +2,18 @@ package Models;
 
 import java.util.Date;
 
-<<<<<<< Updated upstream
 public class Person {
 
     private String name;
-    private String className;
     private String role;
     private String phone;
     private String email;
     private String id;
     private Date birthDate;
-=======
-public abstract class Person {
-   private String name;
-   private String subject;    
-   private String role;
-   private String phone;
-   private String email;
-   private String id;
-   private Date birthDate;
-
-   public Person(String name, String subject, String role, String phone, String email, String id, Date birthDate) {
-      this.name = name;
-      this.subject = subject;
-      this.role = role;
-      this.phone = phone;
-      this.email = email;
-      this.id = id;
-      this.birthDate = birthDate;
-   }
->>>>>>> Stashed changes
 
     // Constructor
-    public Person(String name, String className, String role, String phone, String email, String id, Date birthDate) {
+    public Person(String name, String role, String phone, String email, String id, Date birthDate) {
         this.name = name;
-        this.className = className;
         this.role = role;
         this.phone = phone;
         this.email = email;
@@ -52,15 +29,6 @@ public abstract class Person {
     public void setName(String name) {
         this.name = name;
     }
-
-    public String getClassName() {
-        return className;
-    }
-
-    public void setClassName(String className) {
-        this.className = className;
-    }
-
     public String getRole() {
         return role;
     }
@@ -110,7 +78,6 @@ public abstract class Person {
     public void viewPersonalInfo() {
         System.out.println("Personal Information:");
         System.out.println("Name: " + name);
-        System.out.println("Class: " + className);
         System.out.println("Role: " + role);
         System.out.println("Phone: " + phone);
         System.out.println("Email: " + email);
@@ -121,7 +88,6 @@ public abstract class Person {
     // Phương thức cập nhật thông tin cá nhân
     public void updatePersonalInfo(String name, String className, String role, String phone, String email, String id, Date birthDate) {
         if (name != null) this.name = name;
-        if (className != null) this.className = className;
         if (role != null) this.role = role;
         if (phone != null) this.phone = phone;
         if (email != null) this.email = email;
