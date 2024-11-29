@@ -3,41 +3,54 @@ package Models;
 import java.util.Date;
 
 public class Subject {
-    // Attributes
-    private String name;
-    private Date beginTime;
-    private Date endTime;
+    private String className;  
+    private String subjectID;  
+    private String teacherID;  
+    private Date schedule;     
 
-    // Constructor
-    public Subject(String name, Date beginTime, Date endTime) {
-        this.name = name;
-        this.beginTime = beginTime;
-        this.endTime = endTime;
+    public Subject(String className, String subjectID, String teacherID, Date schedule) {
+        this.className = className;
+        this.subjectID = subjectID;
+        this.teacherID = teacherID;
+        this.schedule = schedule;
     }
 
-    // Getters and Setters
-    public String getName() {
-        return name;
+    public String getClassName() {
+        return className;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setClassName(String className) {
+        this.className = className;
     }
 
-    public Date getBeginTime() {
-        return beginTime;
+    public String getSubjectID() {
+        return subjectID;
     }
 
-    public void setBeginTime(Date beginTime) {
-        this.beginTime = beginTime;
+    public void setSubjectID(String subjectID) {
+        this.subjectID = subjectID;
     }
 
-    public Date getEndTime() {
-        return endTime;
+    public String getTeacherID() {
+        return teacherID;
     }
 
-    public void setEndTime(Date endTime) {
-        this.endTime = endTime;
+    public void setTeacherID(String teacherID) {
+        this.teacherID = teacherID;
+    }
+
+    public Date getSchedule() {
+        return schedule;
+    }
+
+    public void setSchedule(Date schedule) {
+        this.schedule = schedule;
+    }
+
+    public void displayCourseInfo() {
+        System.out.println("Class Name: " + className);
+        System.out.println("Subject ID: " + subjectID);
+        System.out.println("Teacher ID: " + teacherID);
+        System.out.println("Schedule: " + schedule);
     }
 }
-
