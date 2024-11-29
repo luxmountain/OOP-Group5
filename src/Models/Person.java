@@ -2,6 +2,7 @@ package Models;
 
 import java.util.Date;
 
+<<<<<<< Updated upstream
 public class Person {
 
     private String name;
@@ -11,6 +12,26 @@ public class Person {
     private String email;
     private String id;
     private Date birthDate;
+=======
+public abstract class Person {
+   private String name;
+   private String subject;    
+   private String role;
+   private String phone;
+   private String email;
+   private String id;
+   private Date birthDate;
+
+   public Person(String name, String subject, String role, String phone, String email, String id, Date birthDate) {
+      this.name = name;
+      this.subject = subject;
+      this.role = role;
+      this.phone = phone;
+      this.email = email;
+      this.id = id;
+      this.birthDate = birthDate;
+   }
+>>>>>>> Stashed changes
 
     // Constructor
     public Person(String name, String className, String role, String phone, String email, String id, Date birthDate) {
