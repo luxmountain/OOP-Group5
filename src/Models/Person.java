@@ -2,93 +2,111 @@ package Models;
 
 import java.util.Date;
 
-public abstract class Person {
-   private String name;
-   private String className; 
-   private String subject;    
-   private String role;
-   private String phone;
-   private String email;
-   private String id;
-   private Date birthDate;
+public class Person {
 
-   public Person(String name, String className, String subject, String role, String phone, String email, String id, Date birthDate) {
-      this.name = name;
-      this.className = className;
-      this.subject = subject;
-      this.role = role;
-      this.phone = phone;
-      this.email = email;
-      this.id = id;
-      this.birthDate = birthDate;
-   }
+    private String name;
+    private String className;
+    private String role;
+    private String phone;
+    private String email;
+    private String id;
+    private Date birthDate;
 
-   public Person() {
-   }
+    // Constructor
+    public Person(String name, String className, String role, String phone, String email, String id, Date birthDate) {
+        this.name = name;
+        this.className = className;
+        this.role = role;
+        this.phone = phone;
+        this.email = email;
+        this.id = id;
+        this.birthDate = birthDate;
+    }
 
-   public String getName() {
-      return this.name;
-   }
+    // Getter và Setter
+    public String getName() {
+        return name;
+    }
 
-   public void setName(String name) {
-      this.name = name;
-   }
+    public void setName(String name) {
+        this.name = name;
+    }
 
-   public String getClassName() {
-      return this.className;
-   }
+    public String getClassName() {
+        return className;
+    }
 
-   public void setClassName(String className) {
-      this.className = className;
-   }
+    public void setClassName(String className) {
+        this.className = className;
+    }
 
-   public String getSubject() {
-      return this.subject;
-   }
+    public String getRole() {
+        return role;
+    }
 
-   public void setSubject(String subject) {
-      this.subject = subject;
-   }
+    public void setRole(String role) {
+        this.role = role;
+    }
 
-   public String getRole() {
-      return this.role;
-   }
+    public String getPhone() {
+        return phone;
+    }
 
-   public void setRole(String role) {
-      this.role = role;
-   }
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
 
-   public String getPhone() {
-      return this.phone;
-   }
+    public String getEmail() {
+        return email;
+    }
 
-   public void setPhone(String phone) {
-      this.phone = phone;
-   }
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-   public String getEmail() {
-      return this.email;
-   }
+    public String getId() {
+        return id;
+    }
 
-   public void setEmail(String email) {
-      this.email = email;
-   }
+    public void setId(String id) {
+        this.id = id;
+    }
 
-   public String getId() {
-      return this.id;
-   }
+    public Date getBirthDate() {
+        return birthDate;
+    }
 
-   public void setId(String id) {
-      this.id = id;
-   }
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
 
-   public Date getBirthdate() {
-      return birthDate;
-   }
+    // Phương thức hiển thị vai trò (role)
+    protected void displayRole() {
+        System.out.println("Role: " + role);
+    }
 
-   public void setBirthdate(Date birthdate) {
-      this.birthDate = birthdate;
-   }
+    // Phương thức xem thông tin cá nhân
+    public void viewPersonalInfo() {
+        System.out.println("Personal Information:");
+        System.out.println("Name: " + name);
+        System.out.println("Class: " + className);
+        System.out.println("Role: " + role);
+        System.out.println("Phone: " + phone);
+        System.out.println("Email: " + email);
+        System.out.println("ID: " + id);
+        System.out.println("Birth Date: " + birthDate);
+    }
 
-   public abstract void displayRole();
+    // Phương thức cập nhật thông tin cá nhân
+    public void updatePersonalInfo(String name, String className, String role, String phone, String email, String id, Date birthDate) {
+        if (name != null) this.name = name;
+        if (className != null) this.className = className;
+        if (role != null) this.role = role;
+        if (phone != null) this.phone = phone;
+        if (email != null) this.email = email;
+        if (id != null) this.id = id;
+        if (birthDate != null) this.birthDate = birthDate;
+        System.out.println("Personal information updated successfully!");
+    }
 }
+

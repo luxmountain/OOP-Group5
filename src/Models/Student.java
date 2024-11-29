@@ -11,8 +11,8 @@ public class Student extends Person {
     private String attendance; 
     private double gpa; 
 
-    public Student(String name, String className, String subject, String role, String phone, String email, String id, Date birthDate, String parentID) {
-        super(name, className, subject, role, phone, email, id, birthDate);
+    public Student(String name, String className, String role, String phone, String email, String id, Date birthDate, String parentID) {
+        super(name, className, role, phone, email, id, birthDate);
         this.enrollmentDate = LocalDate.now();
         this.status = "Active"; 
         this.grades = new HashMap<>(); 
@@ -24,7 +24,6 @@ public class Student extends Person {
         StringBuilder info = new StringBuilder();
         info.append("Tên: ").append(getName()).append("\n")
             .append("Lớp: ").append(getClassName()).append("\n")
-            .append("Môn học: ").append(getSubject()).append("\n")
             .append("Mã học sinh: ").append(getId()).append("\n")
             .append("Ngày nhập học: ").append(enrollmentDate).append("\n")
             .append("Trạng thái: ").append(status).append("\n")
@@ -35,7 +34,7 @@ public class Student extends Person {
         }
     
         info.append("GPA: ").append(gpa).append("\n")
-            .append("Điểm danh: ").append(attendance).append("\n");  // Thêm dấu chấm phẩy ở đây
+            .append("Điểm danh: ").append(attendance).append("\n");  
         return info.toString();
     }
     
