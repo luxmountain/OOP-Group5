@@ -1,60 +1,92 @@
 package Models;
 
-import java.util.List;
+import java.util.ArrayList;
+import java.util.Date;
 
-public class Teacher extends Person{
-    private List<Student> students;
-    private List<Class> classes;
+public class Teacher extends Person {
+    private ArrayList<String> classList; // List of classes
+    private ArrayList<String> studentList; // List of students
 
-    public Teacher(String name, String clazz, String role, String phone, String email, String id) {
-        super(name, clazz, role, phone, email, id);
+    // Constructor
+    public Teacher(String name, String role, String phone, String email, String id, Date birthDate) {
+        super(name, role, phone, email, id, birthDate);
+        this.classList = new ArrayList<>();
+        this.studentList = new ArrayList<>();
     }
-    public void addStudent(Student student) {
-        students.add(student);
+
+    // CRUD Methods for Classes
+    public void addClass(String className) {
+        if (!classList.contains(className)) {
+            classList.add(className);
+            System.out.println("Class " + className + " added successfully!");
+        } else {
+            System.out.println("Class " + className + " already exists!");
+        }
     }
-    public void removeStudent(Student student) {
-        students.remove(student);
+
+    public void deleteClass(String className) {
+        if (classList.remove(className)) {
+            System.out.println("Class " + className + " deleted successfully!");
+        } else {
+            System.out.println("Class " + className + " not found!");
+        }
     }
-    public void addClass(Class c) {
-        classes.add(c);
+
+    public void updateClass(String oldClassName, String newClassName) {
+        int index = classList.indexOf(oldClassName);
+        if (index != -1) {
+            classList.set(index, newClassName);
+            System.out.println("Class " + oldClassName + " updated to " + newClassName);
+        } else {
+            System.out.println("Class " + oldClassName + " not found!");
+        }
     }
-    public void removeClass(Class c) {
-        classes.remove(c);
-    }
-    public void updateTeacherInfo(String newEmail, String newPhone) {
-        
-    }
-    public void viewStudentInfo(String studentName) {
-        for (Student student : students) {
-            if (student.getName().equalsIgnoreCase(studentName)) {
-                System.out.println("Thông tin học sinh:");
-                System.out.println("Tên: " + student.getName());
-                System.out.println("Ngày tháng năm sinh: " + student.getBirthDay());
-                System.out.println("Email: " + student.getEmail());
-                System.out.println("Số điện thoại: " + student.getPhone());
-                System.out.println("--------------------------");
-                return;
+
+    public void viewClasses() {
+        System.out.println("Classes managed by " + getName() + ":");
+        if (classList.isEmpty()) {
+            System.out.println("No classes to display.");
+        } else {
+            for (String clazz : classList) {
+                System.out.println("- " + clazz);
             }
         }
-        System.out.println("Không tìm thấy học sinh có tên: " + studentName);
-    }
-    // Xem thông tin một lớp cụ thể
-    public void viewClassInfo(String className) {
-        for (Class c : classes) {
-            if (c.getClassName().equalsIgnoreCase(className)) {
-                System.out.println("Thông tin lớp học:");
-                System.out.println("Tên lớp: " + c.getClassName());
-                System.out.println("Thời khóa biểu: " + c.getSchedule());
-                System.out.println("Số lượng học sinh: " + c.getStudentCount());
-                System.out.println("--------------------------");
-                return;
-            }
-        }
-        System.out.println("Không tìm thấy lớp học có tên: " + className);
     }
 
-    @Override
-    public void displayRole(){
-        System.out.println(getRole());
+    // Methods for Student Information
+    public void addStudent(String student) {
+        if (!studentList.contains(student)) {
+            studentList.add(student);
+            System.out.println("Student " + student + " added successfully!");
+        } else {
+            System.out.println("Student " + student + " already exists!");
+        }
+    }
+
+    public void viewStudentInfo() {
+        System.out.println("Students in managed classes:");
+        if (studentList.isEmpty()) {
+            System.out.println("No students to display.");
+        } else {
+            for (String student : studentList) {
+                System.out.println("- " + student);
+            }
+        }
+    }
+
+    // Methods for Class and Student Management
+    public void viewClassInfo() {
+        viewClasses();
+        viewStudentInfo();
+    }
+
+    // Method for Grading
+    public void enterGrade(String student, String grade) {
+        if (studentList.contains(student)) {
+            System.out.println("Grade entered for " + student + ": " + grade);
+        } else {
+            System.out.println("Student " + student + " not found in the list.");
+        }
     }
 }
+

@@ -2,13 +2,13 @@ package Models;
 
 import java.util.Date;
 
-public class Courses {
+public class Subject {
     private String className;  
     private String subjectID;  
     private String teacherID;  
     private Date schedule;     
 
-    public Courses(String className, String subjectID, String teacherID, Date schedule) {
+    public Subject(String className, String subjectID, String teacherID, Date schedule) {
         this.className = className;
         this.subjectID = subjectID;
         this.teacherID = teacherID;
