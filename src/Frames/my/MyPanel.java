@@ -16,4 +16,8 @@ public class MyPanel extends JPanel{
         this.setBackground(color);
         this.setPreferredSize(new Dimension(width, height));
     }
+    public void setDefaultCloseOperation(int exitOnClose) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'setDefaultCloseOperation'");
+    }
 }

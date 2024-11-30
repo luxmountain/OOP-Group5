@@ -108,6 +108,10 @@ public class Student extends Person {
         this.attendance = attendance;
     }
 
+    public Student(String name, String role, String phone, String email, String id, Date birthDate) {
+        super(name, role, phone, email, id, birthDate);
+    }
+
     // Getter và Setter cho enrollmentDate
     public Date getEnrollmentDate() {
         return enrollmentDate;
