@@ -4,22 +4,24 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class Teacher extends Person {
-    // Danh sách lưu trữ thông tin lớp học và sinh viên
-    private ArrayList<String> classList; // Danh sách các lớp
-    private ArrayList<String> studentList; // Danh sách sinh viên
-    private String className;
+    private ArrayList<String> classList; // List of classes
+    private ArrayList<String> studentList; // List of students
+
     // Constructor
-    public Teacher(String name, String className, String role, String phone, String email, String id, Date birthDate) {
+    public Teacher(String name, String role, String phone, String email, String id, Date birthDate) {
         super(name, role, phone, email, id, birthDate);
         this.classList = new ArrayList<>();
         this.studentList = new ArrayList<>();
-        this.className = className;
     }
 
-    // Phương thức CRUD lớp học
+    // CRUD Methods for Classes
     public void addClass(String className) {
-        classList.add(className);
-        System.out.println("Class " + className + " added successfully!");
+        if (!classList.contains(className)) {
+            classList.add(className);
+            System.out.println("Class " + className + " added successfully!");
+        } else {
+            System.out.println("Class " + className + " already exists!");
+        }
     }
 
     public void deleteClass(String className) {
@@ -40,33 +42,51 @@ public class Teacher extends Person {
         }
     }
 
-    public void readClasses() {
-        System.out.println("Classes: " + classList);
-    }
-
-    // Phương thức xem thông tin sinh viên
-    public void viewStudentInfo() {
-        System.out.println("Student Information:");
-        for (String student : studentList) {
-            System.out.println(student);
+    public void viewClasses() {
+        System.out.println("Classes managed by " + getName() + ":");
+        if (classList.isEmpty()) {
+            System.out.println("No classes to display.");
+        } else {
+            for (String clazz : classList) {
+                System.out.println("- " + clazz);
+            }
         }
     }
 
-    // Phương thức xem thông tin lớp học
-    public void viewClassInfo() {
-        System.out.println("Class Information:");
-        for (String clazz : classList) {
-            System.out.println(clazz);
-        }
-    }
-
-    // Phương thức nhập điểm
-    public void enterGrade(String student, String grade) {
-        System.out.println("Entered grade for " + student + ": " + grade);
-    }
-
+    // Methods for Student Information
     public void addStudent(String student) {
-        studentList.add(student);
-        System.out.println("Student " + student + " added successfully!");
+        if (!studentList.contains(student)) {
+            studentList.add(student);
+            System.out.println("Student " + student + " added successfully!");
+        } else {
+            System.out.println("Student " + student + " already exists!");
+        }
+    }
+
+    public void viewStudentInfo() {
+        System.out.println("Students in managed classes:");
+        if (studentList.isEmpty()) {
+            System.out.println("No students to display.");
+        } else {
+            for (String student : studentList) {
+                System.out.println("- " + student);
+            }
+        }
+    }
+
+    // Methods for Class and Student Management
+    public void viewClassInfo() {
+        viewClasses();
+        viewStudentInfo();
+    }
+
+    // Method for Grading
+    public void enterGrade(String student, String grade) {
+        if (studentList.contains(student)) {
+            System.out.println("Grade entered for " + student + ": " + grade);
+        } else {
+            System.out.println("Student " + student + " not found in the list.");
+        }
     }
 }
+
