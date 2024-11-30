@@ -1,7 +1,6 @@
 package Frames;
 
 import java.awt.*;
-import javax.swing.*;
 
 import Frames.my.MyFrame;
 import Frames.my.MyPanel;
@@ -20,3 +19,4 @@ public TeacherForm() {
     frame.setVisible(true);
 }
 }
+
