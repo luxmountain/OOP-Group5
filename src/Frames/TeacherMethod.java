@@ -87,6 +87,8 @@ package Frames;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
 
 import Models.Student;
 
@@ -98,35 +100,22 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class TeacherMethod extends JPanel {
-    private JTable table;
-    private DefaultTableModel tableModel;
-    private ArrayList<Student> studentList;
-    private JTextField searchField;
+    protected JTable table;
+    protected DefaultTableModel tableModel;
+    protected static ArrayList<Student> studentList;
+    protected JTextField searchField;
 
     public TeacherMethod() {
         setLayout(new BorderLayout());
 
-        // Danh sách học viên
         studentList = new ArrayList<>();
+        addTable();
 
-        // Model bảng
-        tableModel = new DefaultTableModel(new String[]{"STT", "Tên học viên", "Ngày sinh", "SĐT", "Email"}, 0);
-        table = new JTable(tableModel);
-        JScrollPane scrollPane = new JScrollPane(table);
-
-        // Giao diện các nút và ô tìm kiếm
         JPanel topPanel = new JPanel(new BorderLayout());
         searchField = new JTextField();
         JButton searchButton = new JButton("Tìm kiếm");
-        JButton addButton = new JButton("Thêm");
-        JButton editButton = new JButton("Sửa");
-        JButton deleteButton = new JButton("Xóa");
 
         JPanel buttonPanel = new JPanel();
-        buttonPanel.add(addButton);
-        buttonPanel.add(editButton);
-        buttonPanel.add(deleteButton);
-
         JPanel searchPanel = new JPanel(new BorderLayout());
         searchPanel.add(new JLabel("Tìm kiếm: "), BorderLayout.WEST);
         searchPanel.add(searchField, BorderLayout.CENTER);
@@ -136,16 +125,43 @@ public class TeacherMethod extends JPanel {
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
 
         add(topPanel, BorderLayout.NORTH);
-        add(scrollPane, BorderLayout.CENTER);
-
-        // Gắn chức năng cho các nút
-        addButton.addActionListener(e -> addStudent());
-        editButton.addActionListener(e -> editStudent());
-        deleteButton.addActionListener(e -> deleteStudent());
-        searchButton.addActionListener(e -> searchStudent());
     }
 
-    private void addStudent() {
+    protected void addTable() {
+        // Create the table model with the column names
+        tableModel = new DefaultTableModel(new String[]{"STT", "Tên học viên", "Ngày sinh", "SĐT", "Email"}, 0);
+        table = new JTable(tableModel);
+    
+        // Set up the table sorter
+        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel) {
+            @Override
+            public boolean isSortable(int column) {
+                // Disable sorting for the STT column (column index 0)
+                return column != 0;
+            }
+        };
+        table.setRowSorter(sorter);
+    
+        // Add listener to the table header
+        JTableHeader header = table.getTableHeader();
+        header.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent e) {
+                int columnIndex = header.columnAtPoint(e.getPoint()); // Get the clicked column index
+                if (columnIndex != -1 && sorter.isSortable(columnIndex)) {
+                    // Toggle sort order for the clicked column if sortable
+                    sorter.toggleSortOrder(columnIndex);
+                }
+            }
+        });
+    
+        // Wrap the table in a scroll pane and add it to the layout
+        JScrollPane scrollPane = new JScrollPane(table);
+        add(scrollPane, BorderLayout.CENTER);
+    }
+    
+
+    protected void addStudent() {
         JTextField nameField = new JTextField();
         JTextField birthDateField = new JTextField();
         JTextField phoneField = new JTextField();
@@ -153,7 +169,7 @@ public class TeacherMethod extends JPanel {
 
         Object[] message = {
                 "Tên học viên:", nameField,
-                "Ngày sinh (dd/MM/yyyy):", birthDateField,
+                "Ngày sinh (dd/mm/yyyy):", birthDateField,
                 "SĐT:", phoneField,
                 "Email:", emailField
         };
@@ -166,19 +182,19 @@ public class TeacherMethod extends JPanel {
             String email = emailField.getText();
 
             try {
-                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
                 Date birthDate = dateFormat.parse(birthDateStr); 
 
                 Student newStudent = new Student(name, "Học viên", phone, email, String.valueOf(studentList.size() + 1), birthDate);
                 studentList.add(newStudent);
                 tableModel.addRow(new Object[]{studentList.size(), name, dateFormat.format(birthDate), phone, email});
             } catch (ParseException e) {
-                JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/mm/yyyy", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
 
-    private void editStudent() {
+    protected void editStudent() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một học viên để sửa.");
@@ -188,7 +204,7 @@ public class TeacherMethod extends JPanel {
         Student selectedStudent = studentList.get(selectedRow);
 
         JTextField nameField = new JTextField(selectedStudent.getName());
-        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
         JFormattedTextField birthDateField = new JFormattedTextField(dateFormat);
         birthDateField.setValue(selectedStudent.getBirthDate());
         JTextField phoneField = new JTextField(selectedStudent.getPhone());
@@ -207,7 +223,7 @@ public class TeacherMethod extends JPanel {
             try {
                 selectedStudent.setBirthDate(dateFormat.parse(birthDateField.getText()));
             } catch (ParseException e) {
-                JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/mm/yyyy", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return; // Không cập nhật nếu ngày sinh không hợp lệ
             }
             selectedStudent.setPhone(phoneField.getText());
@@ -220,7 +236,7 @@ public class TeacherMethod extends JPanel {
         }
     }
 
-    private void deleteStudent() {
+    protected void deleteStudent() {
         int selectedRow = table.getSelectedRow();
         if (selectedRow == -1) {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một học viên để xóa.");
@@ -231,7 +247,7 @@ public class TeacherMethod extends JPanel {
         tableModel.removeRow(selectedRow);
     }
 
-    private void searchStudent() {
+    protected void searchStudent() {
         String keyword = searchField.getText().toLowerCase();
         DefaultTableModel searchTableModel = new DefaultTableModel(new String[]{"STT", "Tên học viên", "Ngày sinh", "SĐT", "Email"}, 0);
 
@@ -239,7 +255,7 @@ public class TeacherMethod extends JPanel {
             if (student.getName().toLowerCase().contains(keyword) ||
                     student.getPhone().toLowerCase().contains(keyword) ||
                     student.getEmail().toLowerCase().contains(keyword)) {
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy"); // Định dạng ngày tháng năm
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy"); // Định dạng ngày tháng năm
                 String formattedBirthDate = dateFormat.format(student.getBirthDate());
                 searchTableModel.addRow(new Object[]{
                         studentList.indexOf(student) + 1,
