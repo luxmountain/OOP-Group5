@@ -70,7 +70,7 @@ public class DashBoard extends MyPanel{
         manageItem.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                SwingUtilities.invokeLater(() -> CourseManagementUI.main(new String[]{}));
+                System.out.println("Manage clicked");
             }
         });
         menu.add(addItem);
