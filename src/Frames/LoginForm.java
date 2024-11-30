@@ -67,7 +67,8 @@ public class LoginForm {
                     JOptionPane.showMessageDialog(frame, "Đăng nhập thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
 
                     frame.dispose();
-                    new MainForm();
+                    //new MainForm();
+                    new TeacherForm();
                 } else {
                     JOptionPane.showMessageDialog(frame, "Tên tài khoản hoặc mật khẩu sai!", "Error", JOptionPane.ERROR_MESSAGE);
                 }

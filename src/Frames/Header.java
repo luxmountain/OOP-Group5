@@ -46,7 +46,7 @@ public class Header extends MyPanel {
         }
     }
 
-    private void addTitle() {
+    protected void addTitle() {
         MyLabel titleLabel = new MyLabel("Student Management System", new MyFont(Font.BOLD, 24), Color.BLACK);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         this.add(titleLabel, BorderLayout.CENTER);
