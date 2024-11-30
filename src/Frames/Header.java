@@ -39,14 +39,14 @@ public class Header extends MyPanel {
 
             JPanel logoPanel = new JPanel(new BorderLayout());
             logoPanel.setBackground(Color.WHITE);
-            logoPanel.setBorder(new EmptyBorder(0, 20, 0, 0)); // Padding trái 20px
+            logoPanel.setBorder(new EmptyBorder(0, 20, 0, 0)); // Padding trái  20px
             logoPanel.add(errorLabel, BorderLayout.CENTER);
 
             this.add(logoPanel, BorderLayout.WEST);
         }
     }
 
-    private void addTitle() {
+    protected void addTitle() {
         MyLabel titleLabel = new MyLabel("Student Management System", new MyFont(Font.BOLD, 24), Color.BLACK);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         this.add(titleLabel, BorderLayout.CENTER);
