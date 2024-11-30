@@ -108,6 +108,10 @@ public class Student extends Person {
         this.attendance = attendance;
     }
 
+    public Student(String name, String role, String phone, String email, String id, Date birthDate) {
+        super(name, role, phone, email, id, birthDate);
+    }
+
     // Getter và Setter cho enrollmentDate
     public Date getEnrollmentDate() {
         return enrollmentDate;
@@ -129,6 +133,7 @@ public class Student extends Person {
             System.out.println("Invalid CPA! Please enter a value between 0.0 and 4.0.");
         }
     }
+    
 
     // Getter và Setter cho attendance
     public String getAttendance() {
