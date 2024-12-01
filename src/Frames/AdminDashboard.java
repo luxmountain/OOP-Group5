@@ -1,22 +1,23 @@
 package Frames;
 
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
 
 import Frames.my.AdminForm;
 import Frames.my.MyButton;
 import Frames.my.MyFont;
 import Frames.my.MyPanel;
 
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
 public class AdminDashboard extends MyPanel {
     private JButton buttonLop; // Button for "Lớp"
     private JButton buttonHocSinh; // Button for "Học sinh"
-    private JButton addClassButton; // Button for "Thêm lớp"
-    private JButton deleteClassButton; // Button for "Xóa lớp"
-    private JButton updateClassButton; // Button for "Cập nhật lớp"
+    private JButton addTeacherBtn; // Button for "Thêm lớp"
+    private JButton deleteTeacherBtn; // Button for "Xóa lớp"
+    private JButton updateTeacherBtn; // Button for "Cập nhật lớp"
     private JButton viewStuInfo;
     private JButton entGrade;
     private AdminForm mainForm;
@@ -33,7 +34,7 @@ public class AdminDashboard extends MyPanel {
         MyButton toggleButton = createBtn("≡", 20);
 
         // Create the buttons for "Lớp" and "Học sinh"
-        buttonLop = createBtn("Lớp", 60);
+        buttonLop = createBtn("Giáo viên", 60);
         buttonHocSinh = createBtn("Học sinh", 100);
 
         buttonLop.setVisible(false);
@@ -47,15 +48,15 @@ public class AdminDashboard extends MyPanel {
         mainForm.mainPanel.add(npanel);
 
         // Initially hide the buttons for "Thêm lớp", "Xóa lớp", "Cập nhật lớp"
-        addClassButton = createBtn("Thêm lớp", 140);
-        deleteClassButton = createBtn("Xóa lớp", 180);
-        updateClassButton = createBtn("Cập nhật lớp", 220);
+        addTeacherBtn = createBtn("Thêm giáo viên", 140);
+        deleteTeacherBtn = createBtn("Xóa giáo viên", 180);
+        updateTeacherBtn = createBtn("Cập nhật giáo viên", 220);
         viewStuInfo = createBtn("Thông tin học sinh", 300);
         entGrade = createBtn("Nhập điểm", 340);
 
-        addClassButton.setVisible(false);
-        deleteClassButton.setVisible(false);
-        updateClassButton.setVisible(false);
+        addTeacherBtn.setVisible(false);
+        deleteTeacherBtn.setVisible(false);
+        updateTeacherBtn.setVisible(false);
         viewStuInfo.setVisible(false);
         entGrade.setVisible(false);
 
@@ -82,24 +83,24 @@ public class AdminDashboard extends MyPanel {
             }
         });
 
-        addClassButton.addActionListener(new ActionListener() {
+        addTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                npanel.addClass();
+                npanel.addTeacher();
             }
         });
 
-        deleteClassButton.addActionListener(new ActionListener() {
+        deleteTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                npanel.deleteStudent();
+                npanel.deleteTeacher();
             }
         });
 
-        updateClassButton.addActionListener(new ActionListener() {
+        updateTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                npanel.editStudent();
+                npanel.updateTeacher();
             }
         });
 
@@ -135,31 +136,31 @@ public class AdminDashboard extends MyPanel {
         mainForm.mainPanel.revalidate();
         mainForm.mainPanel.repaint();
 
-        boolean areClassButtonsVisible = addClassButton.isVisible();
+        boolean areClassButtonsVisible = addTeacherBtn.isVisible();
 
         // Show/hide class-related buttons under "Lớp"
-        addClassButton.setVisible(!areClassButtonsVisible);
-        deleteClassButton.setVisible(!areClassButtonsVisible);
-        updateClassButton.setVisible(!areClassButtonsVisible);
+        addTeacherBtn.setVisible(!areClassButtonsVisible);
+        deleteTeacherBtn.setVisible(!areClassButtonsVisible);
+        updateTeacherBtn.setVisible(!areClassButtonsVisible);
 
         // Reposition buttons to appear below "Lớp"
         buttonHocSinh.setBounds(10, 260, 120, 30);
-        addClassButton.setBounds(10, 100, 120, 30);
-        deleteClassButton.setBounds(10, 140, 120, 30);
-        updateClassButton.setBounds(10, 180, 120, 30);
+        addTeacherBtn.setBounds(10, 100, 120, 30);
+        deleteTeacherBtn.setBounds(10, 140, 120, 30);
+        updateTeacherBtn.setBounds(10, 180, 120, 30);
 
         // Add buttons when they become visible
         if (!areClassButtonsVisible) {
-            add(addClassButton);
-            add(deleteClassButton);
-            add(updateClassButton);
+            add(addTeacherBtn);
+            add(deleteTeacherBtn);
+            add(updateTeacherBtn);
             // Remove "Lớp" and "Học sinh" buttons
             buttonLop.setVisible(true);
             buttonHocSinh.setVisible(false);
         } else {
-            remove(addClassButton);
-            remove(deleteClassButton);
-            remove(updateClassButton);
+            remove(addTeacherBtn);
+            remove(deleteTeacherBtn);
+            remove(updateTeacherBtn);
             // Show "Lớp" and "Học sinh" buttons again
             buttonLop.setVisible(true);
             buttonHocSinh.setVisible(true);
