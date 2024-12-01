@@ -1,9 +1,9 @@
 package Models;
 
-import java.util.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 
 public class Class {
     // Attributes
@@ -22,12 +22,13 @@ public class Class {
         this.beginTime = beginTime;
         this.endTime = endTime;
         this.studentList = new ArrayList<>(); // Initialize the student list
+        
     }
 
     public Class() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         this.studentList = new ArrayList<>(); // Initialize the student list
-        studentList.add(new Student("Vu", "admin", "09089090", "vâ@gmail.com", "001", dateFormat.parse("01/12/2024")));
+        studentList.add(new Student("Vu", "09089090", "vâ@gmail.com", "001", dateFormat.parse("01/12/2024")));
     }
 
     // Methods

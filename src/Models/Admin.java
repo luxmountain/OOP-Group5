@@ -2,16 +2,15 @@ package Models;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Date;
+import java.util.List;
 
 public class Admin extends Person{
     private List<Teacher> teacherList;
-
-    public Admin(String name, String role, String phone, String email, String id, Date birthDate) throws ParseException {
-        super(name, role, phone, email, id, birthDate);
-        this.teacherList = new ArrayList<>();
-        teacherList.add(new Teacher(name, role, phone, email, id, birthDate));
+    public Admin(String name, String phone, String email, String id, Date birthDate) throws ParseException {
+        super(name, "Admin", phone, email, id, birthDate);
+        this.teacherList = new ArrayList<>();      
+        teacherList.add(new Teacher(name, phone, email, id, birthDate));
     }
 
     public List<Teacher> getTeachers() {
