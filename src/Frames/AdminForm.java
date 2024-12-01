@@ -1,9 +1,9 @@
-package Frames.my;
+package Frames;
 
 import java.awt.*;
 
-import Frames.AdminDashboard;
-import Frames.Header;
+import Frames.my.MyFrame;
+import Frames.my.MyPanel;
 
 public class AdminForm {
     public MyPanel mainPanel = new MyPanel();
