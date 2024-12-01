@@ -1,7 +1,9 @@
 package Frames.my;
 
-import java.awt.*;
-import javax.swing.*;
+import java.awt.Color;
+import java.awt.Dimension;
+
+import javax.swing.JPanel;
 
 public class MyPanel extends JPanel{
     public MyPanel(){

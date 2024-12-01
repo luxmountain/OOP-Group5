@@ -21,28 +21,30 @@ import application.Main;
 public class LoginForm {
     public LoginForm() {
         MyFrame frame = new MyFrame("Login Form");
+        frame.setSize(1080, 720); // Set frame size to 1080x720
 
         MyPanel loginPanel = new MyPanel();
         loginPanel.setLayout(null); 
 
+        // Update font size and label positions for more space
         Color colorLabel = Color.BLACK;
-        MyFont fontLabel = new MyFont(Font.BOLD, 18);
+        MyFont fontLabel = new MyFont(Font.BOLD, 22); // Increased font size
 
         MyLabel usernameLabel = new MyLabel("Tên tài khoản:", fontLabel, colorLabel);
-        usernameLabel.setBounds(290, 150, 200, 30);
+        usernameLabel.setBounds(290, 180, 250, 40);  // Increased Y position
 
         JTextField usernameField = new JTextField();
-        usernameField.setBounds(480, 150, 300, 30);
+        usernameField.setBounds(480, 180, 350, 40);  // Increased field width and height
 
         MyLabel passwordLabel = new MyLabel("Mật khẩu:", fontLabel, colorLabel);
-        passwordLabel.setBounds(290, 250, 200, 30);
+        passwordLabel.setBounds(290, 260, 250, 40);  // Increased Y position
 
         JPasswordField passwordField = new JPasswordField();
-        passwordField.setBounds(480, 250, 300, 30);
+        passwordField.setBounds(480, 260, 350, 40);  // Increased field width and height
 
         JButton togglePasswordButton = new JButton("👁");
-        togglePasswordButton.setBounds(780, 250, 50, 30);
-        togglePasswordButton.setFocusPainted(false); // Tắt viền khi click
+        togglePasswordButton.setBounds(840, 260, 60, 40);  // Adjusted position for larger button
+        togglePasswordButton.setFocusPainted(false);
         togglePasswordButton.setBorder(null);
         togglePasswordButton.setBackground(null);
 
@@ -62,8 +64,8 @@ public class LoginForm {
             }
         });
 
-        MyButton loginButton = new MyButton("Đăng nhập", new MyFont(Font.BOLD, 16), Color.WHITE, Color.BLUE);
-        loginButton.setBounds(490, 350, 150, 40);
+        MyButton loginButton = new MyButton("Đăng nhập", new MyFont(Font.BOLD, 20), Color.WHITE, Color.BLUE);
+        loginButton.setBounds(490, 360, 180, 50);  // Increased button size
 
         loginButton.addActionListener(new ActionListener() {
             @Override
@@ -77,7 +79,7 @@ public class LoginForm {
                         JOptionPane.showMessageDialog(frame, "Đăng nhập thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
     
                         frame.dispose();
-                        new AdminForm();
+                        new AdminForm(ad);
                         fail = false;
                     }
                 }
@@ -85,8 +87,8 @@ public class LoginForm {
             }
         });
 
-        MyButton registerButton = new MyButton("Đăng ký", new MyFont(Font.BOLD, 16), Color.WHITE, Color.BLUE);
-        registerButton.setBounds(490, 420, 150, 40);
+        MyButton registerButton = new MyButton("Đăng ký", new MyFont(Font.BOLD, 20), Color.WHITE, Color.BLUE);
+        registerButton.setBounds(490, 440, 180, 50);  // Increased button size
 
         registerButton.addActionListener(new ActionListener() {
             @Override
@@ -96,6 +98,7 @@ public class LoginForm {
             }
         });
 
+        // Add components to the panel
         loginPanel.add(usernameLabel);
         loginPanel.add(usernameField);
         loginPanel.add(passwordLabel);
@@ -105,7 +108,7 @@ public class LoginForm {
         loginPanel.add(registerButton);
 
         frame.add(loginPanel);
-
+        frame.setLocationRelativeTo(null); // Center the frame on screen
         frame.setVisible(true);
     }
 }
