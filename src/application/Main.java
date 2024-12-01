@@ -1,11 +1,12 @@
 package application;
 
-import Frames.LoginForm;
-import Models.Admin;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+
+import Frames.LoginForm;
+import Models.Admin;
 
 public class Main {
     public static ArrayList<Admin> adminList = new ArrayList<>();
