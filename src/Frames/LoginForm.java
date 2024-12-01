@@ -1,5 +1,15 @@
 package Frames;
 
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import javax.swing.JButton;
+import javax.swing.JOptionPane;
+import javax.swing.JPasswordField;
+import javax.swing.JTextField;
+
 import Frames.my.MyButton;
 import Frames.my.MyFont;
 import Frames.my.MyFrame;
@@ -7,10 +17,6 @@ import Frames.my.MyLabel;
 import Frames.my.MyPanel;
 import Models.Admin;
 import application.Main;
-import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import javax.swing.*;
 
 public class LoginForm {
     public LoginForm() {
@@ -65,16 +71,17 @@ public class LoginForm {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
 
+                boolean fail = true;
                 for(Admin ad: Main.adminList){
                     if (username.equals(ad.getAccount().getUserID()) && password.equals(ad.getAccount().getPassword())) {
                         JOptionPane.showMessageDialog(frame, "Đăng nhập thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
     
                         frame.dispose();
                         new AdminForm();
-                    } else {
-                        JOptionPane.showMessageDialog(frame, "Tên tài khoản hoặc mật khẩu sai!", "Error", JOptionPane.ERROR_MESSAGE);
+                        fail = false;
                     }
                 }
+                if(fail) JOptionPane.showMessageDialog(frame, "Tên tài khoản hoặc mật khẩu sai!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
 
