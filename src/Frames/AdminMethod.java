@@ -99,13 +99,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class TeacherMethod extends JPanel {
+public class AdminMethod extends JPanel {
     protected JTable table;
     protected DefaultTableModel tableModel;
     protected static ArrayList<Student> studentList;
     protected JTextField searchField;
 
-    public TeacherMethod() {
+    public AdminMethod() {
         setLayout(new BorderLayout());
 
         studentList = new ArrayList<>();

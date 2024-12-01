@@ -1,6 +1,8 @@
 package Models;
 
 import java.util.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Class {
@@ -9,21 +11,29 @@ public class Class {
     private Date[] schedule;
     private Date beginTime;
     private Date endTime;
-    private ArrayList<Student> students; // Aggregation relationship with Student class
+    private ArrayList<Student> studentList; // Aggregation relationship with Student class
 
     // Constructor
+
+    
     public Class(String className, Date[] schedule, Date beginTime, Date endTime) {
         this.className = className;
         this.schedule = schedule;
         this.beginTime = beginTime;
         this.endTime = endTime;
-        this.students = new ArrayList<>(); // Initialize the student list
+        this.studentList = new ArrayList<>(); // Initialize the student list
+    }
+
+    public Class() throws ParseException {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        this.studentList = new ArrayList<>(); // Initialize the student list
+        studentList.add(new Student("Vu", "admin", "09089090", "vâ@gmail.com", "001", dateFormat.parse("01/12/2024")));
     }
 
     // Methods
     public void viewStudentList() {
         System.out.println("Danh Sách Học Sinh " + className);
-        for (Student student : students) {
+        for (Student student : studentList) {
             System.out.println(student.getName());
         }
     }
@@ -36,22 +46,22 @@ public class Class {
 
     // CRUD operations for Student
     public void addStudent(Student student) {
-        students.add(student);
+        studentList.add(student);
     }
 
     public void removeStudent(Student student) {
-        students.remove(student);
+        studentList.remove(student);
     }
 
     public void updateStudent(int index, Student newStudent) {
-        if (index >= 0 && index < students.size()) {
-            students.set(index, newStudent);
+        if (index >= 0 && index < studentList.size()) {
+            studentList.set(index, newStudent);
         }
     }
 
     public Student getStudent(int index) {
-        if (index >= 0 && index < students.size()) {
-            return students.get(index);
+        if (index >= 0 && index < studentList.size()) {
+            return studentList.get(index);
         }
         return null;
     }
