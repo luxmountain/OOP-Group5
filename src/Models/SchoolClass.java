@@ -25,7 +25,8 @@ public class SchoolClass {
         
     }
 
-    public SchoolClass() throws ParseException {
+    public SchoolClass(String className) throws ParseException {
+        this.className = className;
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         this.studentList = new ArrayList<>(); // Initialize the student list
         studentList.add(new Student("Vu", "09089090", "vâ@gmail.com", "001", dateFormat.parse("01/12/2024")));

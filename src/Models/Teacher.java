@@ -9,7 +9,7 @@ public class Teacher extends Person {
     // Constructor
     public Teacher(String name, String phone, String email, String id, Date birthDate) throws ParseException {
         super(name, "Teacher", phone, email, id, birthDate);
-        this.clazz = new SchoolClass();
+        this.clazz = new SchoolClass("test");
     }
 
     public Teacher(String name, String phone, String email, String id, Date birthDate, SchoolClass clazz) {
@@ -17,9 +17,9 @@ public class Teacher extends Person {
         this.clazz = clazz;
     }
 
-    // public SchoolClass getClass(){
-    //     return clazz;
-    // }
+    public SchoolClass getClazz(){
+        return clazz;
+    }
 
     // public void updateClass(String oldClassName, String newClassName) {
     //     int index = clazz.indexOf(oldClassName);
