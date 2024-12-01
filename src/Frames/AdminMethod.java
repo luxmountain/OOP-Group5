@@ -1,91 +1,8 @@
-// package Frames;
-
-// import java.awt.*;
-// import java.awt.event.*;
-// import java.util.regex.*;
-// import javax.swing.*;
-// import javax.swing.table.*;
-// import Frames.my.MyPanel;
-
-// public class TeacherMethod extends MyPanel {
-//     private JTable table;
-//     private DefaultTableModel model;
-
-//     public TeacherMethod() {
-//         // Set up the panel layout
-//         setLayout(new BorderLayout());
-
-//         // Table data and columns
-//         Object rows[][] = {
-//             {"Adithya", "Content Developer", 25000},
-//             {"Jai", "SME", 30000},
-//             {"Chaitanya", "Java Engineer", 45000},
-//             {"Ramesh", "Scala Developer", 40000},
-//             {"Ravi", "SAP Consultant", 70000}
-//         };
-//         Object columns[] = {"Name", "Designation", "Salary"};
-
-//         // Create table model
-//         model = new DefaultTableModel(rows, columns) {
-//             @Override
-//             public Class<?> getColumnClass(int column) {
-//                 if (column >= 0 && column < getColumnCount()) {
-//                     return getValueAt(0, column).getClass();
-//                 } else {
-//                     return Object.class;
-//                 }
-//             }
-//         };
-
-//         // Initialize table
-//         table = new JTable(model);
-//         TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
-//         table.setRowSorter(sorter);
-
-//         // Add table to the panel
-//         add(new JScrollPane(table), BorderLayout.CENTER);
-
-//         // Filter panel
-//         JPanel filterPanel = new JPanel(new BorderLayout());
-//         JLabel label = new JLabel("Filter:");
-//         filterPanel.add(label, BorderLayout.WEST);
-//         JTextField filterText = new JTextField();
-//         filterPanel.add(filterText, BorderLayout.CENTER);
-
-//         add(filterPanel, BorderLayout.NORTH);
-
-//         // Filter button
-//         JButton filterButton = new JButton("Filter");
-//         filterButton.addActionListener(new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 String text = filterText.getText();
-//                 if (text.isEmpty()) {
-//                     sorter.setRowFilter(null);
-//                 } else {
-//                     try {
-//                         sorter.setRowFilter(RowFilter.regexFilter(text));
-//                     } catch (PatternSyntaxException pse) {
-//                         JOptionPane.showMessageDialog(
-//                             TeacherMethod.this, // Referencing the current panel
-//                             "Invalid regex pattern.",
-//                             "Error",
-//                             JOptionPane.ERROR_MESSAGE
-//                         );
-//                     }
-//                 }
-//             }
-//         });
-
-//         JPanel buttonPanel = new JPanel();
-//         buttonPanel.add(filterButton);
-//         add(buttonPanel, BorderLayout.SOUTH);
-//     }
-// }
-
 package Frames;
 
 import Models.Student;
+import application.Main;
+
 import java.awt.*;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -159,7 +76,7 @@ public class AdminMethod extends JPanel {
     }
     
 
-    protected void addStudent() {
+    protected void addClass() {
         JTextField nameField = new JTextField();
         JTextField birthDateField = new JTextField();
         JTextField phoneField = new JTextField();
@@ -182,7 +99,8 @@ public class AdminMethod extends JPanel {
             try {
                 DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
                 Date birthDate = dateFormat.parse(birthDateStr); 
-
+                
+                //Main.adminList.getTeachers().getClass();
                 Student newStudent = new Student(name, phone, email, String.valueOf(studentList.size() + 1), birthDate);
                 studentList.add(newStudent);
                 tableModel.addRow(new Object[]{studentList.size(), name, dateFormat.format(birthDate), phone, email});

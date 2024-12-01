@@ -1,6 +1,8 @@
 package Frames;
 
 import javax.swing.*;
+
+import Frames.my.AdminForm;
 import Frames.my.MyButton;
 import Frames.my.MyFont;
 import Frames.my.MyPanel;
@@ -83,7 +85,7 @@ public class AdminDashboard extends MyPanel {
         addClassButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                npanel.addStudent();
+                //npanel.addStudent();
             }
         });
 

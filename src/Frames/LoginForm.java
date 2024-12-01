@@ -10,6 +10,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import Frames.my.AdminForm;
 import Frames.my.MyButton;
 import Frames.my.MyFont;
 import Frames.my.MyFrame;

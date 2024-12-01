@@ -5,7 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-public class Class {
+public class SchoolClass {
     // Attributes
     private String className;
     private Date[] schedule;
@@ -16,7 +16,7 @@ public class Class {
     // Constructor
 
     
-    public Class(String className, Date[] schedule, Date beginTime, Date endTime) {
+    public SchoolClass(String className, Date[] schedule, Date beginTime, Date endTime) {
         this.className = className;
         this.schedule = schedule;
         this.beginTime = beginTime;
@@ -25,7 +25,7 @@ public class Class {
         
     }
 
-    public Class() throws ParseException {
+    public SchoolClass() throws ParseException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         this.studentList = new ArrayList<>(); // Initialize the student list
         studentList.add(new Student("Vu", "09089090", "vâ@gmail.com", "001", dateFormat.parse("01/12/2024")));
