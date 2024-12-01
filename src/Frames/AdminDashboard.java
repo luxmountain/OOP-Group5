@@ -7,7 +7,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import Frames.my.AdminForm;
 import Frames.my.MyButton;
 import Frames.my.MyFont;
 import Frames.my.MyPanel;

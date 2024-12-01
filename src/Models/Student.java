@@ -46,7 +46,6 @@ public class Student extends Person {
         super.viewPersonalInfo();
         System.out.println("Enrollment Date: " + enrollmentDate);
         System.out.println("CPA: " + cpa);
-        System.out.println("Attendance: " + attendance);
     }
 
     // Phương thức cập nhật thông tin sinh viên
