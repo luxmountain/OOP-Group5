@@ -1,21 +1,19 @@
 package Models;
 
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
-import Models.Class;
 
 public class Teacher extends Person {
     private Class clazz;
 
     // Constructor
-    public Teacher(String name, String role, String phone, String email, String id, Date birthDate) throws ParseException {
-        super(name, role, phone, email, id, birthDate);
+    public Teacher(String name, String phone, String email, String id, Date birthDate) throws ParseException {
+        super(name, "Teacher", phone, email, id, birthDate);
         this.clazz = new Class();
     }
 
-    public Teacher(String name, String role, String phone, String email, String id, Date birthDate, Class clazz) {
-        super(name, role, phone, email, id, birthDate);
+    public Teacher(String name, String phone, String email, String id, Date birthDate, Class clazz) {
+        super(name, "Teacher", phone, email, id, birthDate);
         this.clazz = clazz;
     }
 

@@ -21,9 +21,9 @@ public class TeacherDashBoard extends MyPanel {
     private TeacherMethod npanel;
 
     public TeacherDashBoard(TeacherForm mainPanel) {
+        super(150, 720, Color.GRAY);
         this.mainForm = mainPanel;
         // Set up the main panel
-        super(150, 720, Color.GRAY);
         this.setLayout(null);
 
         // Create toggle button with "≡" icon

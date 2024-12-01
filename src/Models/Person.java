@@ -10,7 +10,7 @@ public class Person {
     private String email;
     private String id;
     private Date birthDate;
-
+    private Account account;
     // Constructor
     public Person(String name, String role, String phone, String email, String id, Date birthDate) {
         this.name = name;
@@ -19,8 +19,12 @@ public class Person {
         this.email = email;
         this.id = id;
         this.birthDate = birthDate;
+        account = new Account(String.format("admin%s", id), phone);
     }
 
+    public Account getAccount(){
+        return account;
+    }
     // Getter và Setter
     public String getName() {
         return name;

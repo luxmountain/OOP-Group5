@@ -85,19 +85,17 @@
 
 package Frames;
 
-import javax.swing.*;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableRowSorter;
-
 import Models.Student;
-
 import java.awt.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import javax.swing.*;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.JTableHeader;
+import javax.swing.table.TableRowSorter;
 
 public class TeacherMethod extends JPanel {
     protected JTable table;
@@ -185,7 +183,7 @@ public class TeacherMethod extends JPanel {
                 DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
                 Date birthDate = dateFormat.parse(birthDateStr); 
 
-                Student newStudent = new Student(name, "Học viên", phone, email, String.valueOf(studentList.size() + 1), birthDate);
+                Student newStudent = new Student(name, phone, email, String.valueOf(studentList.size() + 1), birthDate);
                 studentList.add(newStudent);
                 tableModel.addRow(new Object[]{studentList.size(), name, dateFormat.format(birthDate), phone, email});
             } catch (ParseException e) {

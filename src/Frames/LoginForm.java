@@ -5,6 +5,8 @@ import Frames.my.MyFont;
 import Frames.my.MyFrame;
 import Frames.my.MyLabel;
 import Frames.my.MyPanel;
+import Models.Admin;
+import application.Main;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -63,13 +65,15 @@ public class LoginForm {
                 String username = usernameField.getText();
                 String password = new String(passwordField.getPassword());
 
-                if (username.equals("") && password.equals("")) {
-                    JOptionPane.showMessageDialog(frame, "Đăng nhập thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
-
-                    frame.dispose();
-                    new AdminForm();
-                } else {
-                    JOptionPane.showMessageDialog(frame, "Tên tài khoản hoặc mật khẩu sai!", "Error", JOptionPane.ERROR_MESSAGE);
+                for(Admin ad: Main.adminList){
+                    if (username.equals(ad.getAccount().getUserID()) && password.equals(ad.getAccount().getPassword())) {
+                        JOptionPane.showMessageDialog(frame, "Đăng nhập thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
+    
+                        frame.dispose();
+                        new AdminForm();
+                    } else {
+                        JOptionPane.showMessageDialog(frame, "Tên tài khoản hoặc mật khẩu sai!", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
                 }
             }
         });
