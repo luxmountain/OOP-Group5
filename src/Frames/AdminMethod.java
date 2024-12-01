@@ -1,101 +1,26 @@
-// package Frames;
-
-// import java.awt.*;
-// import java.awt.event.*;
-// import java.util.regex.*;
-// import javax.swing.*;
-// import javax.swing.table.*;
-// import Frames.my.MyPanel;
-
-// public class TeacherMethod extends MyPanel {
-//     private JTable table;
-//     private DefaultTableModel model;
-
-//     public TeacherMethod() {
-//         // Set up the panel layout
-//         setLayout(new BorderLayout());
-
-//         // Table data and columns
-//         Object rows[][] = {
-//             {"Adithya", "Content Developer", 25000},
-//             {"Jai", "SME", 30000},
-//             {"Chaitanya", "Java Engineer", 45000},
-//             {"Ramesh", "Scala Developer", 40000},
-//             {"Ravi", "SAP Consultant", 70000}
-//         };
-//         Object columns[] = {"Name", "Designation", "Salary"};
-
-//         // Create table model
-//         model = new DefaultTableModel(rows, columns) {
-//             @Override
-//             public Class<?> getColumnClass(int column) {
-//                 if (column >= 0 && column < getColumnCount()) {
-//                     return getValueAt(0, column).getClass();
-//                 } else {
-//                     return Object.class;
-//                 }
-//             }
-//         };
-
-//         // Initialize table
-//         table = new JTable(model);
-//         TableRowSorter<TableModel> sorter = new TableRowSorter<>(model);
-//         table.setRowSorter(sorter);
-
-//         // Add table to the panel
-//         add(new JScrollPane(table), BorderLayout.CENTER);
-
-//         // Filter panel
-//         JPanel filterPanel = new JPanel(new BorderLayout());
-//         JLabel label = new JLabel("Filter:");
-//         filterPanel.add(label, BorderLayout.WEST);
-//         JTextField filterText = new JTextField();
-//         filterPanel.add(filterText, BorderLayout.CENTER);
-
-//         add(filterPanel, BorderLayout.NORTH);
-
-//         // Filter button
-//         JButton filterButton = new JButton("Filter");
-//         filterButton.addActionListener(new ActionListener() {
-//             @Override
-//             public void actionPerformed(ActionEvent e) {
-//                 String text = filterText.getText();
-//                 if (text.isEmpty()) {
-//                     sorter.setRowFilter(null);
-//                 } else {
-//                     try {
-//                         sorter.setRowFilter(RowFilter.regexFilter(text));
-//                     } catch (PatternSyntaxException pse) {
-//                         JOptionPane.showMessageDialog(
-//                             TeacherMethod.this, // Referencing the current panel
-//                             "Invalid regex pattern.",
-//                             "Error",
-//                             JOptionPane.ERROR_MESSAGE
-//                         );
-//                     }
-//                 }
-//             }
-//         });
-
-//         JPanel buttonPanel = new JPanel();
-//         buttonPanel.add(filterButton);
-//         add(buttonPanel, BorderLayout.SOUTH);
-//     }
-// }
-
 package Frames;
 
-import Models.Student;
-import java.awt.*;
+import java.awt.BorderLayout;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-import javax.swing.*;
+import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFormattedTextField;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
-import javax.swing.table.TableRowSorter;
+
+import Models.SchoolClass;
+import Models.Student;
+import Models.Teacher;
+import application.Main;
 
 public class AdminMethod extends JPanel {
     protected JTable table;
@@ -107,7 +32,7 @@ public class AdminMethod extends JPanel {
         setLayout(new BorderLayout());
 
         studentList = new ArrayList<>();
-        addTable();
+        addTeacherTable();
 
         JPanel topPanel = new JPanel(new BorderLayout());
         searchField = new JTextField();
@@ -125,72 +50,141 @@ public class AdminMethod extends JPanel {
         add(topPanel, BorderLayout.NORTH);
     }
 
-    protected void addTable() {
-        // Create the table model with the column names
-        tableModel = new DefaultTableModel(new String[]{"STT", "Lớp", "Sĩ số"}, 0);
-        table = new JTable(tableModel);
-    
-        // Set up the table sorter
-        TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel) {
+    protected void addTeacherTable() {
+        // Danh sách giáo viên
+        List<Teacher> teacherList = Main.adminList.get(0).getTeachers();
+
+        // Tạo DefaultTableModel và chỉ cho phép chỉnh sửa cột "Giáo viên" (cột 1)
+        DefaultTableModel tableModel = new DefaultTableModel(new String[]{"STT", "Giáo viên", "Lớp"}, 0) {
             @Override
-            public boolean isSortable(int column) {
-                // Disable sorting for the STT column (column index 0)
-                return column != 0;
+            public boolean isCellEditable(int row, int column) {
+                // Chỉ cho phép chỉnh sửa cột "Giáo viên" (cột 1)
+                return column == 1;
             }
         };
-        table.setRowSorter(sorter);
-    
-        // Add listener to the table header
-        JTableHeader header = table.getTableHeader();
-        header.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent e) {
-                int columnIndex = header.columnAtPoint(e.getPoint()); // Get the clicked column index
-                if (columnIndex != -1 && sorter.isSortable(columnIndex)) {
-                    // Toggle sort order for the clicked column if sortable
-                    sorter.toggleSortOrder(columnIndex);
-                }
+
+        // Thêm dữ liệu từ danh sách giáo viên vào bảng
+        for (int i = 0; i < teacherList.size(); i++) {
+            Teacher teacher = teacherList.get(i);
+            tableModel.addRow(new Object[]{i + 1, teacher.getName(), teacher.getClazz().getClassName()});
+        }
+
+        // Tạo JTable
+        JTable table = new JTable(tableModel);
+
+        // Lắng nghe thay đổi trong bảng và cập nhật danh sách giáo viên
+        tableModel.addTableModelListener(e -> {
+            int row = e.getFirstRow();
+            int column = e.getColumn();
+
+            if (column == 1) { // Chỉ xử lý thay đổi ở cột "Giáo viên"
+                String newName = tableModel.getValueAt(row, column).toString();
+
+                // Cập nhật tên giáo viên trong danh sách
+                Teacher updatedTeacher = teacherList.get(row);
+                updatedTeacher.setName(newName);
+                System.out.println(updatedTeacher.getName());
+
+                JOptionPane.showMessageDialog(table, "Tên giáo viên đã được cập nhật thành: " + newName, "Cập nhật thành công", JOptionPane.INFORMATION_MESSAGE);
             }
         });
-    
-        // Wrap the table in a scroll pane and add it to the layout
+
+        // Bọc JTable trong JScrollPane và thêm vào giao diện
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
     }
-    
 
-    protected void addStudent() {
-        JTextField nameField = new JTextField();
-        JTextField birthDateField = new JTextField();
-        JTextField phoneField = new JTextField();
-        JTextField emailField = new JTextField();
+
+    protected void addClass() {
+        JTextField nameClass = new JTextField();
 
         Object[] message = {
-                "Tên lớp", nameField,
-                "Ngày sinh (dd/mm/yyyy):", birthDateField,
-                "SĐT:", phoneField,
-                "Email:", emailField
+                "Tên lớp", nameClass,
         };
-
-        int option = JOptionPane.showConfirmDialog(this, message, "Thêm học viên mới", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(this, message, "Thêm lớp mới", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            String name = nameField.getText();
-            String birthDateStr = birthDateField.getText();
-            String phone = phoneField.getText();
-            String email = emailField.getText();
-
+            String name = nameClass.getText();
+ 
             try {
-                DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-                Date birthDate = dateFormat.parse(birthDateStr); 
-
-                Student newStudent = new Student(name, phone, email, String.valueOf(studentList.size() + 1), birthDate);
-                studentList.add(newStudent);
-                tableModel.addRow(new Object[]{studentList.size(), name, dateFormat.format(birthDate), phone, email});
+                Teacher teacher = Main.adminList.get(0).getTeachers().get(0);
+                String nameTeacher = teacher.getName();
+                String totalStu = "10";
+                SchoolClass newClazz = new SchoolClass(name);
+                // System.out.println(schoolClass.getClassName());
+                // Student newStudent = new Student(name, totalStu, email, String.valueOf(studentList.size() + 1), birthDate);
+                // studentList.add(newStudent);
+                tableModel.addRow(new Object[]{studentList.size(), name, totalStu});
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/mm/yyyy", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
+
+    protected void deleteTeacher() {}
+        protected void updateTeacher() {}
+
+    protected void addTeacher() {
+        JTextField nameField = new JTextField();
+        JTextField emailField = new JTextField();
+        JTextField phoneField = new JTextField();
+        JTextField dobField = new JTextField();
+        JTextField classField = new JTextField();
+    
+        Object[] message = {
+                "Tên giáo viên:", nameField,
+                "Email:", emailField,
+                "Số điện thoại:", phoneField,
+                "Ngày sinh (dd/mm/yyyy):", dobField,
+                "Lớp", classField,
+        };
+    
+        int option = JOptionPane.showConfirmDialog(
+                this,
+                message,
+                "Thêm giáo viên mới",
+                JOptionPane.OK_CANCEL_OPTION
+        );
+    
+        if (option == JOptionPane.OK_OPTION) {
+            try {
+                // Lấy dữ liệu từ JTextField
+                String name = nameField.getText();
+                String email = emailField.getText();
+                String phone = phoneField.getText();
+                String dob = dobField.getText();
+                String clazz = classField.getText();
+
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                // Kiểm tra tính hợp lệ của dữ liệu
+                if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dob.isEmpty()) {
+                    throw new IllegalArgumentException("Tất cả các trường đều phải được điền.");
+                }
+                SchoolClass newClazz = new SchoolClass(clazz);
+                // Tạo đối tượng Teacher
+                Teacher newTeacher = new Teacher(name, email, phone, String.format("%d", ++Main.IDX), dateFormat.parse(dob), newClazz);
+    
+                // Thêm giáo viên vào danh sách quản lý (ví dụ: danh sách adminList)
+                Main.adminList.get(0).getTeachers().add(newTeacher);
+    
+                // Thêm thông tin vào bảng giao diện
+                tableModel.addRow(new Object[]{
+                        Main.adminList.get(0).getTeachers().size(),
+                        newTeacher.getName(),
+                        newTeacher.getClazz().getClassName(),
+                        newTeacher.getEmail(),
+                        newTeacher.getPhone(),
+                        newTeacher.getBirthDate()
+                });
+                // Thông báo thành công
+                JOptionPane.showMessageDialog(this, "Thêm giáo viên thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+            } catch (IllegalArgumentException e) {
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+            } catch (Exception e) {
+                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi thêm giáo viên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+    
 
     protected void editStudent() {
         int selectedRow = table.getSelectedRow();
@@ -201,35 +195,35 @@ public class AdminMethod extends JPanel {
 
         Student selectedStudent = studentList.get(selectedRow);
 
-        JTextField nameField = new JTextField(selectedStudent.getName());
+        JTextField nameClass = new JTextField(selectedStudent.getName());
         DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-        JFormattedTextField birthDateField = new JFormattedTextField(dateFormat);
-        birthDateField.setValue(selectedStudent.getBirthDate());
-        JTextField phoneField = new JTextField(selectedStudent.getPhone());
+        JFormattedTextField nameTeacher = new JFormattedTextField(dateFormat);
+        nameTeacher.setValue(selectedStudent.getBirthDate());
+        //JTextField totalStu = new JTextField(selectedStudent.gettotalStu());
         JTextField emailField = new JTextField(selectedStudent.getEmail());
 
         Object[] message = {
-                "Tên học viên:", nameField,
-                "Ngày sinh:", birthDateField,
-                "SĐT:", phoneField,
+                "Tên học viên:", nameClass,
+                "Ngày sinh:", nameTeacher,
+                //"SĐT:", totalStu,
                 "Email:", emailField
         };
 
         int option = JOptionPane.showConfirmDialog(this, message, "Sửa học viên", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            selectedStudent.setName(nameField.getText());
+            selectedStudent.setName(nameClass.getText());
             try {
-                selectedStudent.setBirthDate(dateFormat.parse(birthDateField.getText()));
+                selectedStudent.setBirthDate(dateFormat.parse(nameTeacher.getText()));
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/mm/yyyy", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return; // Không cập nhật nếu ngày sinh không hợp lệ
             }
-            selectedStudent.setPhone(phoneField.getText());
+            //selectedStudent.settotalStu(totalStu.getText());
             selectedStudent.setEmail(emailField.getText());
 
             tableModel.setValueAt(selectedStudent.getName(), selectedRow, 1);
             tableModel.setValueAt(dateFormat.format(selectedStudent.getBirthDate()), selectedRow, 2);
-            tableModel.setValueAt(selectedStudent.getPhone(), selectedRow, 3);
+            //tableModel.setValueAt(selectedStudent.gettotalStu(), selectedRow, 3);
             tableModel.setValueAt(selectedStudent.getEmail(), selectedRow, 4);
         }
     }
@@ -251,7 +245,7 @@ public class AdminMethod extends JPanel {
 
         for (Student student : studentList) {
             if (student.getName().toLowerCase().contains(keyword) ||
-                    student.getPhone().toLowerCase().contains(keyword) ||
+                    //student.gettotalStu().toLowerCase().contains(keyword) ||
                     student.getEmail().toLowerCase().contains(keyword)) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy"); // Định dạng ngày tháng năm
                 String formattedBirthDate = dateFormat.format(student.getBirthDate());
@@ -259,7 +253,7 @@ public class AdminMethod extends JPanel {
                         studentList.indexOf(student) + 1,
                         student.getName(),
                         formattedBirthDate,
-                        student.getPhone(),
+                        //student.gettotalStu(),
                         student.getEmail()
                 });
             }

@@ -35,7 +35,11 @@ package Models;
     }
 
     public void setMarks(float marks) {
-        this.marks = marks;
+        if (marks >= 0.0 && marks <= 10.0) {
+            this.marks = marks; // *Sửa: Thêm kiểm tra điểm hợp lệ*
+        } else {
+            System.out.println("Invalid marks! It should be between 0 and 10."); // *Sửa: Thêm thông báo lỗi*
+        }
     }
 
     public String getRemarks() {
