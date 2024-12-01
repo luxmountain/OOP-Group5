@@ -1,6 +1,8 @@
 package Frames;
 
+import Models.SchoolClass;
 import Models.Student;
+import Models.Teacher;
 import application.Main;
 
 import java.awt.*;
@@ -77,33 +79,24 @@ public class AdminMethod extends JPanel {
     
 
     protected void addClass() {
-        JTextField nameField = new JTextField();
-        JTextField birthDateField = new JTextField();
-        JTextField phoneField = new JTextField();
-        JTextField emailField = new JTextField();
+        JTextField nameClass = new JTextField();
 
         Object[] message = {
-                "Tên lớp", nameField,
-                "Ngày sinh (dd/mm/yyyy):", birthDateField,
-                "SĐT:", phoneField,
-                "Email:", emailField
+                "Tên lớp", nameClass,
         };
-
-        int option = JOptionPane.showConfirmDialog(this, message, "Thêm học viên mới", JOptionPane.OK_CANCEL_OPTION);
+        int option = JOptionPane.showConfirmDialog(this, message, "Thêm lớp mới", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            String name = nameField.getText();
-            String birthDateStr = birthDateField.getText();
-            String phone = phoneField.getText();
-            String email = emailField.getText();
-
+            String name = nameClass.getText();
+ 
             try {
-                DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-                Date birthDate = dateFormat.parse(birthDateStr); 
-                
-                //Main.adminList.getTeachers().getClass();
-                Student newStudent = new Student(name, phone, email, String.valueOf(studentList.size() + 1), birthDate);
-                studentList.add(newStudent);
-                tableModel.addRow(new Object[]{studentList.size(), name, dateFormat.format(birthDate), phone, email});
+                Teacher teacher = Main.adminList.get(0).getTeachers().get(0);
+                String nameTeacher = teacher.getName();
+                String totalStu = "10";
+                SchoolClass newClazz = new SchoolClass(name);
+                // System.out.println(schoolClass.getClassName());
+                // Student newStudent = new Student(name, totalStu, email, String.valueOf(studentList.size() + 1), birthDate);
+                // studentList.add(newStudent);
+                tableModel.addRow(new Object[]{studentList.size(), name, totalStu});
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/mm/yyyy", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
@@ -119,35 +112,35 @@ public class AdminMethod extends JPanel {
 
         Student selectedStudent = studentList.get(selectedRow);
 
-        JTextField nameField = new JTextField(selectedStudent.getName());
+        JTextField nameClass = new JTextField(selectedStudent.getName());
         DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
-        JFormattedTextField birthDateField = new JFormattedTextField(dateFormat);
-        birthDateField.setValue(selectedStudent.getBirthDate());
-        JTextField phoneField = new JTextField(selectedStudent.getPhone());
+        JFormattedTextField nameTeacher = new JFormattedTextField(dateFormat);
+        nameTeacher.setValue(selectedStudent.getBirthDate());
+        //JTextField totalStu = new JTextField(selectedStudent.gettotalStu());
         JTextField emailField = new JTextField(selectedStudent.getEmail());
 
         Object[] message = {
-                "Tên học viên:", nameField,
-                "Ngày sinh:", birthDateField,
-                "SĐT:", phoneField,
+                "Tên học viên:", nameClass,
+                "Ngày sinh:", nameTeacher,
+                //"SĐT:", totalStu,
                 "Email:", emailField
         };
 
         int option = JOptionPane.showConfirmDialog(this, message, "Sửa học viên", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
-            selectedStudent.setName(nameField.getText());
+            selectedStudent.setName(nameClass.getText());
             try {
-                selectedStudent.setBirthDate(dateFormat.parse(birthDateField.getText()));
+                selectedStudent.setBirthDate(dateFormat.parse(nameTeacher.getText()));
             } catch (ParseException e) {
                 JOptionPane.showMessageDialog(this, "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/mm/yyyy", "Lỗi", JOptionPane.ERROR_MESSAGE);
                 return; // Không cập nhật nếu ngày sinh không hợp lệ
             }
-            selectedStudent.setPhone(phoneField.getText());
+            //selectedStudent.settotalStu(totalStu.getText());
             selectedStudent.setEmail(emailField.getText());
 
             tableModel.setValueAt(selectedStudent.getName(), selectedRow, 1);
             tableModel.setValueAt(dateFormat.format(selectedStudent.getBirthDate()), selectedRow, 2);
-            tableModel.setValueAt(selectedStudent.getPhone(), selectedRow, 3);
+            //tableModel.setValueAt(selectedStudent.gettotalStu(), selectedRow, 3);
             tableModel.setValueAt(selectedStudent.getEmail(), selectedRow, 4);
         }
     }
@@ -169,7 +162,7 @@ public class AdminMethod extends JPanel {
 
         for (Student student : studentList) {
             if (student.getName().toLowerCase().contains(keyword) ||
-                    student.getPhone().toLowerCase().contains(keyword) ||
+                    //student.gettotalStu().toLowerCase().contains(keyword) ||
                     student.getEmail().toLowerCase().contains(keyword)) {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy"); // Định dạng ngày tháng năm
                 String formattedBirthDate = dateFormat.format(student.getBirthDate());
@@ -177,7 +170,7 @@ public class AdminMethod extends JPanel {
                         studentList.indexOf(student) + 1,
                         student.getName(),
                         formattedBirthDate,
-                        student.getPhone(),
+                        //student.gettotalStu(),
                         student.getEmail()
                 });
             }

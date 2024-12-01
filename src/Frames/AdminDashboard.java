@@ -85,7 +85,7 @@ public class AdminDashboard extends MyPanel {
         addClassButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                //npanel.addStudent();
+                npanel.addClass();
             }
         });
 
