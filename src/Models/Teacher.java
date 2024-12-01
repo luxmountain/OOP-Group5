@@ -4,20 +4,22 @@ import java.text.ParseException;
 import java.util.Date;
 
 public class Teacher extends Person {
-    private Class clazz;
+    private SchoolClass clazz;
 
     // Constructor
     public Teacher(String name, String phone, String email, String id, Date birthDate) throws ParseException {
         super(name, "Teacher", phone, email, id, birthDate);
-        this.clazz = new Class();
+        this.clazz = new SchoolClass();
     }
 
-    public Teacher(String name, String phone, String email, String id, Date birthDate, Class clazz) {
+    public Teacher(String name, String phone, String email, String id, Date birthDate, SchoolClass clazz) {
         super(name, "Teacher", phone, email, id, birthDate);
         this.clazz = clazz;
     }
 
-    
+    // public SchoolClass getClass(){
+    //     return clazz;
+    // }
 
     // public void updateClass(String oldClassName, String newClassName) {
     //     int index = clazz.indexOf(oldClassName);
