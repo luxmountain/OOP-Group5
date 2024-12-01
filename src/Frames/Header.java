@@ -7,13 +7,23 @@ import javax.swing.*;
 import javax.swing.border.EmptyBorder;
 
 public class Header extends MyPanel {
+
+    public Header(String title) {
+        super(1080, 50, Color.WHITE);
+
+        this.setLayout(new BorderLayout()); // Sử dụng BorderLayout để chia header thành các vùng
+
+        addLogo();
+        addTitle(title);
+    }
+
     public Header() {
         super(1080, 50, Color.WHITE);
 
         this.setLayout(new BorderLayout()); // Sử dụng BorderLayout để chia header thành các vùng
 
         addLogo();
-        addTitle();
+        addTitle("Student Management System");
     }
 
     private void addLogo() {
@@ -39,15 +49,15 @@ public class Header extends MyPanel {
 
             JPanel logoPanel = new JPanel(new BorderLayout());
             logoPanel.setBackground(Color.WHITE);
-            logoPanel.setBorder(new EmptyBorder(0, 20, 0, 0)); // Padding trái 20px
+            logoPanel.setBorder(new EmptyBorder(0, 20, 0, 0)); // Padding trái  20px
             logoPanel.add(errorLabel, BorderLayout.CENTER);
 
             this.add(logoPanel, BorderLayout.WEST);
         }
     }
 
-    private void addTitle() {
-        MyLabel titleLabel = new MyLabel("Student Management System", new MyFont(Font.BOLD, 24), Color.BLACK);
+    private void addTitle(String title ) {
+        MyLabel titleLabel = new MyLabel(title , new MyFont(Font.BOLD, 24), Color.BLACK);
         titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
         this.add(titleLabel, BorderLayout.CENTER);
     }
