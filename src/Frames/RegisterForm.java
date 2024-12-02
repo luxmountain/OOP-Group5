@@ -23,6 +23,7 @@ import javax.swing.JTextField;
 import Frames.my.MyFrame;
 import Frames.my.MyPanel;
 import Models.Admin;
+import application.Database;
 import application.Main;
 
 public class RegisterForm {
@@ -184,20 +185,22 @@ public class RegisterForm {
             String password = new String(passwordField.getPassword()).trim();
             String confirmPassword = new String(confirmPasswordField.getPassword()).trim();
         
-            // Validation code here...
-        
             if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || day.isEmpty() || month.isEmpty() || year.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
                 messageLabel.setText("Vui lòng điền đầy đủ thông tin!");
             } else {
                 try {
                     String birthDateStr = day + "/" + month + "/" + year;
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    sdf.setLenient(false); // Strict validation
+                    sdf.setLenient(false);
                     Date birthDate = sdf.parse(birthDateStr);
-        
-                    Admin newAdmin = new Admin(name, phone, email, String.format("%d", ++Main.IDX), birthDate);
+                    String currentId = String.format("%d", ++Main.IDX);
+
+                    Admin newAdmin = new Admin(name, phone, email, currentId, birthDate);
                     newAdmin.getAccount().setPassword(password);
                     Main.adminList.add(newAdmin);
+                    
+                    Database dtb = new Database();
+                    dtb.insertAdmin(currentId, name, phone, email, birthDate, password);
                     JOptionPane.showMessageDialog(frame, "Đăng ký thành công!\nChào " + name, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     frame.dispose();
                     new LoginForm();

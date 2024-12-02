@@ -11,6 +11,7 @@ import Models.Admin;
 public class Main {
     public static ArrayList<Admin> adminList = new ArrayList<>();
     public static long IDX = 0;
+    public static Database database = new Database();
     public static void main(String[] args) throws SQLException {
         try {
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -21,7 +22,6 @@ public class Main {
                 System.out.println(adminList.get(0).getAccount().getPassword());
                 new LoginForm();
             });
-            // Database dtb = new Database();
         } catch (ParseException e) {
             System.err.println("Error parsing date: " + e.getMessage());
         }
