@@ -7,18 +7,21 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import Frames.my.AdminForm;
 import Frames.my.MyButton;
 import Frames.my.MyFont;
 import Frames.my.MyPanel;
 
 public class AdminDashboard extends MyPanel {
-    private JButton buttonLop; // Button for "Lớp"
+    private JButton buttonGiaoVien; // Button for "Lớp"
     private JButton buttonHocSinh; // Button for "Học sinh"
-    private JButton addTeacherBtn; // Button for "Thêm lớp"
-    private JButton deleteTeacherBtn; // Button for "Xóa lớp"
+    private JButton buttonLopHoc; //Button for "Lớp học"
+    private JButton addTeacherBtn; // Button for "Thêm"
+    private JButton deleteTeacherBtn; // Button for "Xóa"
     private JButton updateTeacherBtn; // Button for "Cập nhật lớp"
-    private JButton viewStuInfo;
+    private JButton viewStudentBtn;
+    private JButton deleteStudentBtn;
+    private JButton addStudentBtn;
+    private JButton viewClassInfoBtn;
     private JButton entGrade;
     private AdminForm mainForm;
     private AdminMethod npanel;
@@ -34,11 +37,13 @@ public class AdminDashboard extends MyPanel {
         MyButton toggleButton = createBtn("≡", 20);
 
         // Create the buttons for "Lớp" and "Học sinh"
-        buttonLop = createBtn("Giáo viên", 60);
-        buttonHocSinh = createBtn("Học sinh", 100);
+        buttonGiaoVien = createBtn("Giáo Viên", 60);
+        buttonHocSinh = createBtn("Học Sinh", 100);
+        buttonLopHoc = createBtn("Lớp Học", 140);
 
-        buttonLop.setVisible(false);
+        buttonGiaoVien.setVisible(false);
         buttonHocSinh.setVisible(false);
+        buttonLopHoc.setVisible(false);
 
         npanel = new AdminMethod();
         npanel.setBounds(0, 0, 915, 630);
@@ -47,18 +52,28 @@ public class AdminDashboard extends MyPanel {
         npanel.setEnabled(true);
         mainForm.mainPanel.add(npanel);
 
-        // Initially hide the buttons for "Thêm lớp", "Xóa lớp", "Cập nhật lớp"
-        addTeacherBtn = createBtn("Thêm giáo viên", 140);
-        deleteTeacherBtn = createBtn("Xóa giáo viên", 180);
-        updateTeacherBtn = createBtn("Cập nhật giáo viên", 220);
-        viewStuInfo = createBtn("Thông tin học sinh", 300);
-        entGrade = createBtn("Nhập điểm", 340);
+        // Initially hide the buttons for "Thêm", "Xóa", "Cập nhật"
+        addTeacherBtn = createBtn("Thêm ", 180);
+        deleteTeacherBtn = createBtn("Xóa ", 220);
+        updateTeacherBtn = createBtn("Thông Tin GV", 260);
+        //Khởi tạo button cho Học Sinh
+        viewStudentBtn = createBtn("Thông tin HS", 300);
+        deleteStudentBtn = createBtn("Xóa", 340);
+        addStudentBtn = createBtn("Thêm", 380);
+        //Khởi tạo button cho Lớp Học
+        viewClassInfoBtn = createBtn("Thông tin", 420);
+
+        // entGrade = createBtn("Nhập điểm", 340);
 
         addTeacherBtn.setVisible(false);
         deleteTeacherBtn.setVisible(false);
         updateTeacherBtn.setVisible(false);
-        viewStuInfo.setVisible(false);
-        entGrade.setVisible(false);
+        viewStudentBtn.setVisible(false);
+        //entGrade.setVisible(false);
+        viewStudentBtn.setVisible(false);
+        deleteStudentBtn.setVisible(false);
+        addStudentBtn.setVisible(false);
+        viewClassInfoBtn.setVisible(false);
 
         // Event for toggle button
         toggleButton.addActionListener(new ActionListener() {
@@ -68,21 +83,29 @@ public class AdminDashboard extends MyPanel {
             }
         });
 
-        // Event for "Lớp" button
-        buttonLop.addActionListener(new ActionListener() {
+        // Event for "Giáo Viên" button
+        buttonGiaoVien.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                toggleClassButtonsVisibility();
+                toggleTeacherButtonsVisibility();
             }
         });
-
+        // Event for "Học Sinh" button
         buttonHocSinh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toggleStuButtonsVisibility();
             }
         });
-
+        // Event for "Lơp Học" button
+        buttonLopHoc.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                toggleClassButtonsVisibility();
+            }
+        });
+        
+        // Them chuc nang cho cac nut cua button Teacher
         addTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
@@ -100,14 +123,15 @@ public class AdminDashboard extends MyPanel {
         updateTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                npanel.updateTeacher();
+                
             }
         });
 
         // Add buttons to the panel
         add(toggleButton);
-        add(buttonLop);
+        add(buttonGiaoVien);
         add(buttonHocSinh); // Add "Học sinh" button permanently
+        add(buttonLopHoc);
     }
 
     private MyButton createBtn(String text, int yPosition) {
@@ -123,13 +147,14 @@ public class AdminDashboard extends MyPanel {
 
     // Toggle visibility of "Lớp" and "Học sinh" buttons
     private void toggleButtonsVisibility() {
-        boolean areButtonsVisible = buttonLop.isVisible();
-        buttonLop.setVisible(!areButtonsVisible);
+        boolean areButtonsVisible = buttonGiaoVien.isVisible();
+        buttonGiaoVien.setVisible(!areButtonsVisible);
         buttonHocSinh.setVisible(!areButtonsVisible);
+        buttonLopHoc.setVisible(!areButtonsVisible);
     }
 
-    // Toggle visibility of "Thêm lớp", "Xóa lớp", "Cập nhật lớp" buttons under "Lớp"
-    private void toggleClassButtonsVisibility() {
+    // Toggle visibility of "Thêm", "Xóa", "Cập nhật" buttons under "Giáo Viên"
+    private void toggleTeacherButtonsVisibility() {
         if(!npanel.isVisible()){
             npanel.setVisible(true);
         }
@@ -145,6 +170,7 @@ public class AdminDashboard extends MyPanel {
 
         // Reposition buttons to appear below "Lớp"
         buttonHocSinh.setBounds(10, 260, 120, 30);
+        buttonLopHoc.setBounds(10, 300, 120, 30);
         addTeacherBtn.setBounds(10, 100, 120, 30);
         deleteTeacherBtn.setBounds(10, 140, 120, 30);
         updateTeacherBtn.setBounds(10, 180, 120, 30);
@@ -155,16 +181,19 @@ public class AdminDashboard extends MyPanel {
             add(deleteTeacherBtn);
             add(updateTeacherBtn);
             // Remove "Lớp" and "Học sinh" buttons
-            buttonLop.setVisible(true);
+            buttonGiaoVien.setVisible(true);
             buttonHocSinh.setVisible(false);
+            buttonLopHoc.setVisible(false);
         } else {
             remove(addTeacherBtn);
             remove(deleteTeacherBtn);
             remove(updateTeacherBtn);
             // Show "Lớp" and "Học sinh" buttons again
-            buttonLop.setVisible(true);
+            buttonGiaoVien.setVisible(true);
             buttonHocSinh.setVisible(true);
+            buttonLopHoc.setVisible(true);
             buttonHocSinh.setBounds(10, 100, 120, 30);
+            buttonLopHoc.setBounds(10, 140, 120, 30);
         }
 
         // Revalidate and repaint to reflect changes in UI
@@ -173,27 +202,54 @@ public class AdminDashboard extends MyPanel {
     }
 
     private void toggleStuButtonsVisibility() {
-        boolean areStuButtonsVisible = viewStuInfo.isVisible();
+        boolean areStuButtonsVisible = viewStudentBtn.isVisible();
 
-        viewStuInfo.setVisible(!areStuButtonsVisible);
-        entGrade.setVisible(!areStuButtonsVisible);
+        viewStudentBtn.setVisible(!areStuButtonsVisible);
+        deleteStudentBtn.setVisible(!areStuButtonsVisible);
+        addStudentBtn.setVisible(!areStuButtonsVisible);
 
-        viewStuInfo.setBounds(10, 140, 120, 30);
-        entGrade.setBounds(10, 180, 120, 30);
+        addStudentBtn.setBounds(10, 140, 120, 30);
+        deleteStudentBtn.setBounds(10, 180, 120, 30);
+        viewStudentBtn.setBounds(10, 220, 120, 30);
 
         if (!areStuButtonsVisible) {
-            add(viewStuInfo);
-            add(entGrade);
-            buttonLop.setVisible(true);
+            add(addStudentBtn);
+            add(deleteStudentBtn);
+            add(viewStudentBtn);
+            buttonGiaoVien.setVisible(true);
             buttonHocSinh.setVisible(true);
+            buttonLopHoc.setVisible(false);
         } else {
-            remove(viewStuInfo);
-            remove(entGrade);
-            buttonLop.setVisible(true);
+            remove(addStudentBtn);
+            remove(deleteStudentBtn);
+            remove(viewStudentBtn);
+            buttonGiaoVien.setVisible(true);
             buttonHocSinh.setVisible(true);
+            buttonLopHoc.setVisible(true);
+            buttonLopHoc.setBounds(10, 140, 120, 30);
         }
 
         revalidate();
         repaint();
     } 
+
+    private void toggleClassButtonsVisibility() {
+        boolean areClassButtonsVisible = viewClassInfoBtn.isVisible();
+
+        viewClassInfoBtn.setVisible(!areClassButtonsVisible);
+
+        viewClassInfoBtn.setBounds(10, 180, 120, 30);
+
+        if (!areClassButtonsVisible) {
+            add(viewClassInfoBtn);
+        } else {
+            remove(viewClassInfoBtn);
+        }
+        buttonGiaoVien.setVisible(true);
+        buttonHocSinh.setVisible(true);
+        buttonLopHoc.setVisible(true);
+        revalidate();
+        repaint();
+    } 
+
 }
