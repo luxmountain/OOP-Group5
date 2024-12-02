@@ -4,10 +4,19 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
+
 import Frames.my.MyButton;
 import Frames.my.MyFont;
 import Frames.my.MyPanel;
+import Models.SchoolClass;
+import Models.Teacher;
+import application.Main;
 
 public class AdminDashboard extends MyPanel {
     private MyButton toggleButton; // Nút 3 gạch
@@ -20,6 +29,7 @@ public class AdminDashboard extends MyPanel {
     private AdminForm mainForm;
     private AdminMethod npanel;
 
+    private ClassInfoPanel cpanel;
     private ClassInfoPanel cpanel;
 
  
@@ -189,7 +199,41 @@ public class AdminDashboard extends MyPanel {
 });
 
 
-        // Thêm các nút vào giao diện
+
+        viewClassInfoBtn.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        // Lấy danh sách lớp học từ adminList (hoặc nơi bạn lưu trữ danh sách lớp học)
+        List<SchoolClass> classList = new ArrayList<>(); // Lấy danh sách lớp học từ hệ thống
+        for (Teacher teacher : Main.adminList.get(0).getTeachers()) {
+            if (teacher.getClazz() != null) {
+                classList.add(teacher.getClazz());
+            }
+        }
+
+        // Kiểm tra nếu không có lớp học nào
+        if (classList.isEmpty()) {
+            JOptionPane.showMessageDialog(npanel, "Không có lớp học nào để hiển thị.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+            return;
+        }
+
+        // Tạo ClassInfoPanel và truyền danh sách lớp học
+        ClassInfoPanel cpanel = new ClassInfoPanel((ArrayList<SchoolClass>) classList);
+        
+        // Thiết lập kích thước và các thuộc tính của ClassInfoPanel
+        cpanel.setBounds(0, 0, 915, 630);
+        cpanel.setBackground(Color.LIGHT_GRAY);
+        cpanel.setVisible(true);
+        
+        
+        // Gọi phương thức viewClassInfo() để hiển thị thông tin chi tiết của lớp đầu tiên (hoặc lớp được chọn)
+        // Bạn có thể thay đổi chỉ số lớp (classIndex) theo nhu cầu
+        cpanel.viewClassInfo(0);  // Ví dụ, gọi thông tin lớp đầu tiên
+        toggleClassButtonsVisibility();
+    }
+});
+
+
         add(toggleButton);
         add(buttonGiaoVien);
         add(buttonHocSinh);
@@ -345,7 +389,9 @@ public class AdminDashboard extends MyPanel {
     }
 
     private void toggleClassButtonsVisibility() {
+
         boolean isClassInfoVisible = viewClassInfoBtn.isVisible();
+
 
         viewClassInfoBtn.setBounds(25, 180, 120, 30);
 

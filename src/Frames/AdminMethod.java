@@ -445,6 +445,7 @@ public class AdminMethod extends JPanel {
             }
         }
     }
+<<<<<<< Updated upstream
    protected void viewClassInfo() {
     List<Teacher> teacherList = Main.adminList.get(0).getTeachers();
 
@@ -458,18 +459,49 @@ public class AdminMethod extends JPanel {
         Teacher classTeacher = schoolClass.getTeacher();
         String teacherName = (classTeacher != null) ? classTeacher.getName() : "Chưa có giáo viên";
         String totalStudents = String.valueOf(schoolClass.getStudentList().size()); // Số học sinh trong lớp
+=======
+    protected void viewClassInfo() {
+    // Lấy danh sách lớp học từ adminList (hoặc cách khác tùy theo cấu trúc của bạn)
+    List<SchoolClass> classList = new ArrayList<>(); // Danh sách lớp học
+    for (Teacher teacher : Main.adminList.get(0).getTeachers()) {
+        if (teacher.getClazz() != null) {
+            classList.add(teacher.getClazz());
+        }
+    }
+
+    // Kiểm tra nếu không có lớp học nào
+    if (classList.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Không có lớp học nào để hiển thị.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        return;
+    }
+
+    // Tạo bảng để hiển thị thông tin lớp học
+    DefaultTableModel classTableModel = new DefaultTableModel(new String[]{"Tên lớp", "Giáo viên", "Sĩ số", "Thời gian bắt đầu", "Thời gian kết thúc"}, 0);
+    
+    // Duyệt qua danh sách lớp học và thêm vào bảng
+    for (SchoolClass schoolClass : classList) {
+        String className = schoolClass.getClassName();
+        Teacher classTeacher = schoolClass.getTeacher();
+        String teacherName = (classTeacher != null) ? classTeacher.getName() : "Chưa có giáo viên";
+        String totalStudents = String.valueOf(schoolClass.getStudentList().size()); // Lấy số học sinh trong lớp
+>>>>>>> Stashed changes
         String beginTime = schoolClass.getBeginTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getBeginTime()) : "Chưa có";
         String endTime = schoolClass.getEndTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getEndTime()) : "Chưa có";
 
         // Thêm một dòng vào bảng với thông tin lớp học
         classTableModel.addRow(new Object[]{
+<<<<<<< Updated upstream
                 i + 1, schoolClass.getClassName(), teacherName, totalStudents, beginTime, endTime
+=======
+                className, teacherName, totalStudents, beginTime, endTime
+>>>>>>> Stashed changes
         });
     }
 
     // Tạo bảng và hiển thị trong một JScrollPane
     JTable classTable = new JTable(classTableModel);
     JScrollPane scrollPane = new JScrollPane(classTable);
+<<<<<<< Updated upstream
     add(scrollPane, BorderLayout.CENTER);  // Thêm bảng vào JPanel
 
     // Xử lý sự kiện khi click vào lớp học
@@ -491,3 +523,12 @@ public class AdminMethod extends JPanel {
 
 
 }
+=======
+    
+    // Tạo hộp thoại để hiển thị bảng lớp học
+    //JOptionPane.showMessageDialog(this, scrollPane, "Thông tin các lớp học", JOptionPane.INFORMATION_MESSAGE);
+    
+}
+
+}
+>>>>>>> Stashed changes
