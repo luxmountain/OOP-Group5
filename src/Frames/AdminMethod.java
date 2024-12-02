@@ -1,12 +1,17 @@
 package Frames;
 
+
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -15,12 +20,18 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableRowSorter;
+
 
 import Models.SchoolClass;
 import Models.Student;
 import Models.Teacher;
 import application.Main;
+
 
 public class AdminMethod extends JPanel {
     protected JTable table;
@@ -28,15 +39,19 @@ public class AdminMethod extends JPanel {
     protected static ArrayList<Student> studentList;
     protected JTextField searchField;
 
+
     public AdminMethod() {
         setLayout(new BorderLayout());
+
 
         studentList = new ArrayList<>();
         addTeacherTable();
 
+
         JPanel topPanel = new JPanel(new BorderLayout());
         searchField = new JTextField();
         JButton searchButton = new JButton("Tìm kiếm");
+
 
         JPanel buttonPanel = new JPanel();
         JPanel searchPanel = new JPanel(new BorderLayout());
@@ -44,8 +59,10 @@ public class AdminMethod extends JPanel {
         searchPanel.add(searchField, BorderLayout.CENTER);
         searchPanel.add(searchButton, BorderLayout.EAST);
 
+
         topPanel.add(searchPanel, BorderLayout.NORTH);
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
+
 
         add(topPanel, BorderLayout.NORTH);
     }
@@ -57,6 +74,7 @@ public class AdminMethod extends JPanel {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; // Chỉ cho phép chỉnh sửa cột "Giáo viên"
+
                 }
             };
         }
@@ -68,9 +86,11 @@ public class AdminMethod extends JPanel {
         List<Teacher> teacherList = Main.adminList.get(0).getTeachers();
         for (int i = 0; i < teacherList.size(); i++) {
             Teacher teacher = teacherList.get(i);
-            tableModel.addRow(new Object[]{i + 1, teacher.getName(), teacher.getClazz().getClassName()});
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
+            String formattedBirthDate = dateFormat.format(teacher.getBirthDate());
+            tableModel.addRow(new Object[]{i + 1, teacher.getName(), teacher.getEmail(), teacher.getPhone(), teacher.getId(), formattedBirthDate, teacher.getClazz().getClassName()});
         }
-
+   
         // Tạo JTable
         if (table == null) {
             table = new JTable(tableModel);
@@ -159,6 +179,7 @@ public class AdminMethod extends JPanel {
     protected void addClass() {
         JTextField nameClass = new JTextField();
 
+
         Object[] message = {
                 "Tên lớp", nameClass,
         };
@@ -210,6 +231,7 @@ public class AdminMethod extends JPanel {
             } else {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn một hàng để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
             }
+
     }
 
 
@@ -220,9 +242,10 @@ public class AdminMethod extends JPanel {
         JTextField nameField = new JTextField();
         JTextField emailField = new JTextField();
         JTextField phoneField = new JTextField();
+        JTextField idField = new JTextField();
         JTextField dobField = new JTextField();
         JTextField classField = new JTextField();
-    
+   
         Object[] message = {
             "Tên giáo viên:", nameField,
             "Email:", emailField,
@@ -231,14 +254,14 @@ public class AdminMethod extends JPanel {
             "Ngày sinh (dd/MM/yyyy):", dobField,
             "Lớp:", classField,
         };
-    
+
         int option = JOptionPane.showConfirmDialog(
-                this,
-                message,
-                "Thêm giáo viên mới",
-                JOptionPane.OK_CANCEL_OPTION
+            this,
+            message,
+            "Thêm giáo viên mới",
+            JOptionPane.OK_CANCEL_OPTION
         );
-    
+   
         if (option == JOptionPane.OK_OPTION) {
             try {
                 // Lấy dữ liệu từ các trường nhập
@@ -282,6 +305,7 @@ public class AdminMethod extends JPanel {
                 // Thêm giáo viên vào bảng
                 tableModel.addRow(new Object[]{
                     tableModel.getRowCount() + 1, // STT
+
                     newTeacher.getName(),
                     newTeacher.getEmail(),
                     newTeacher.getPhone(),
@@ -302,7 +326,9 @@ public class AdminMethod extends JPanel {
             }
         }
     }
-    
+   
+   
+
 
     protected void editStudent() {
         int selectedRow = table.getSelectedRow();
@@ -311,7 +337,9 @@ public class AdminMethod extends JPanel {
             return;
         }
 
+
         Student selectedStudent = studentList.get(selectedRow);
+
 
         JTextField nameClass = new JTextField(selectedStudent.getName());
         DateFormat dateFormat = new SimpleDateFormat("dd/mm/yyyy");
@@ -320,12 +348,14 @@ public class AdminMethod extends JPanel {
         //JTextField totalStu = new JTextField(selectedStudent.gettotalStu());
         JTextField emailField = new JTextField(selectedStudent.getEmail());
 
+
         Object[] message = {
                 "Tên học viên:", nameClass,
                 "Ngày sinh:", nameTeacher,
                 //"SĐT:", totalStu,
                 "Email:", emailField
         };
+
 
         int option = JOptionPane.showConfirmDialog(this, message, "Sửa học viên", JOptionPane.OK_CANCEL_OPTION);
         if (option == JOptionPane.OK_OPTION) {
@@ -339,12 +369,14 @@ public class AdminMethod extends JPanel {
             //selectedStudent.settotalStu(totalStu.getText());
             selectedStudent.setEmail(emailField.getText());
 
+
             tableModel.setValueAt(selectedStudent.getName(), selectedRow, 1);
             tableModel.setValueAt(dateFormat.format(selectedStudent.getBirthDate()), selectedRow, 2);
             //tableModel.setValueAt(selectedStudent.gettotalStu(), selectedRow, 3);
             tableModel.setValueAt(selectedStudent.getEmail(), selectedRow, 4);
         }
     }
+
 
     protected void deleteStudent() {
         int selectedRow = table.getSelectedRow();
@@ -353,13 +385,16 @@ public class AdminMethod extends JPanel {
             return;
         }
 
+
         studentList.remove(selectedRow);
         tableModel.removeRow(selectedRow);
     }
 
+
     protected void searchStudent() {
         String keyword = searchField.getText().toLowerCase();
         DefaultTableModel searchTableModel = new DefaultTableModel(new String[]{"STT", "Tên học viên", "Ngày sinh", "SĐT", "Email"}, 0);
+
 
         for (Student student : studentList) {
             if (student.getName().toLowerCase().contains(keyword) ||
@@ -376,6 +411,7 @@ public class AdminMethod extends JPanel {
                 });
             }
         }
+
 
         table.setModel(searchTableModel);
     }
