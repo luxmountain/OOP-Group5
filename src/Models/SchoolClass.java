@@ -102,6 +102,7 @@ public class SchoolClass {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
+<<<<<<< Updated upstream
 
     public Teacher getTeacher() {
         return teacher;
@@ -110,4 +111,15 @@ public class SchoolClass {
     public void setTeacher(Teacher teacher) {
         this.teacher = teacher;
     }
+=======
+     public ArrayList<Student> getStudentList() {
+        return studentList;
+    }
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
+    }
+     public Teacher getTeacher() {
+        return teacher;  
+    }
+>>>>>>> Stashed changes
 }
