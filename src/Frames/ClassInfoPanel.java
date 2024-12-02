@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.SimpleDateFormat;
+import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -112,6 +113,28 @@ public class ClassInfoPanel extends JPanel {
             });
         }
     } 
+    protected void viewClassInfo() {
+        List<Teacher> teacherList = Main.adminList.get(0).getTeachers();
+
+
+        // Tạo bảng để hiển thị thông tin lớp học
+        DefaultTableModel classTableModel = new DefaultTableModel(new String[]{"STT", "Tên lớp", "Giáo viên", "Sĩ số", "Thời gian bắt đầu", "Thời gian kết thúc"}, 0);
+
+        // Duyệt qua danh sách lớp học và thêm vào bảng
+        for (int i = 0; i < teacherList.size(); i++) {
+            SchoolClass schoolClass = teacherList.get(i).getClazz();
+            Teacher classTeacher = teacherList.get(i);
+            String teacherName = (classTeacher != null) ? classTeacher.getName() : "Chưa có giáo viên";
+            String totalStudents = String.valueOf(schoolClass.getStudentList().size()); // Số học sinh trong lớp
+            String beginTime = schoolClass.getBeginTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getBeginTime()) : "Chưa có";
+            String endTime = schoolClass.getEndTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getEndTime()) : "Chưa có";
+
+            // Thêm một dòng vào bảng với thông tin lớp học
+            classTableModel.addRow(new Object[]{
+                    i + 1, schoolClass.getClassName(), teacherName, totalStudents, beginTime, endTime
+            });
+        }
+    }
 
     private void showClassDetails(int rowIndex) {
         SchoolClass selectedClass = Main.adminList.get(0).getTeachers().get(rowIndex).getClazz();

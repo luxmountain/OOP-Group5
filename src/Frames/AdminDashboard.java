@@ -5,18 +5,11 @@ import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
 
 import Frames.my.MyButton;
 import Frames.my.MyFont;
 import Frames.my.MyPanel;
-import Models.SchoolClass;
-import Models.Teacher;
-import application.Main;
 
 public class AdminDashboard extends MyPanel {
     private MyButton toggleButton; // Nút 3 gạch
@@ -28,32 +21,12 @@ public class AdminDashboard extends MyPanel {
     private JButton viewClassInfoBtn; // Nút chức năng của "Lớp Học"
     private AdminForm mainForm;
     private AdminMethod npanel;
-
     private ClassInfoPanel cpanel;
-    private ClassInfoPanel cpanel;
-
- 
-
 
     public AdminDashboard(AdminForm mainPanel) {
         super(150, 720, Color.GRAY);
         this.mainForm = mainPanel;
         this.setLayout(null);
-
-        npanel = new AdminMethod();
-        npanel.setBounds(0, 0, 915, 630);
-        npanel.setBackground(Color.BLUE);
-        npanel.setVisible(false);
-        npanel.setEnabled(true);
-        mainForm.mainPanel.add(npanel);
-
-        mpanel = new AdminMethod();
-        mpanel.setBounds(0, 0, 915, 630);
-        mpanel.setBackground(Color.BLUE);
-        mpanel.setVisible(false);
-        mpanel.setEnabled(true);
-        mainForm.mainPanel.add(mpanel);
-
         // Tạo nút 3 gạch
         toggleButton = createBtn("≡", 20);
 
@@ -122,7 +95,7 @@ public class AdminDashboard extends MyPanel {
         buttonHocSinh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                mpanel.addStudentTable();
+                // mpanel.addStudentTable();
                 toggleStuButtonsVisibility();
             }
         });
@@ -132,7 +105,7 @@ public class AdminDashboard extends MyPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                  // Tạo ClassInfoPanel và truyền danh sách lớp học
-            ClassInfoPanel cpanel = new ClassInfoPanel();
+            cpanel = new ClassInfoPanel();
             
             // Thiết lập kích thước và các thuộc tính của ClassInfoPanel
             cpanel.setBounds(0, 0, 915, 630);
@@ -159,7 +132,7 @@ public class AdminDashboard extends MyPanel {
         deleteTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                npanel.delete();
+                npanel.deleteTeacher();
             }
         });
 
@@ -173,14 +146,14 @@ public class AdminDashboard extends MyPanel {
         addStudentBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                mpanel.addStudent();
+                // mpanel.addStudent();
             }
         });
 
         deleteStudentBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                mpanel.delete();
+                // mpanel.delete();
             }
         });
 
@@ -191,48 +164,12 @@ public class AdminDashboard extends MyPanel {
             }
         });
         viewClassInfoBtn.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        
-        toggleClassButtonsVisibility();
-    }
-});
-
-
-
-        viewClassInfoBtn.addActionListener(new ActionListener() {
-    @Override
-    public void actionPerformed(ActionEvent e) {
-        // Lấy danh sách lớp học từ adminList (hoặc nơi bạn lưu trữ danh sách lớp học)
-        List<SchoolClass> classList = new ArrayList<>(); // Lấy danh sách lớp học từ hệ thống
-        for (Teacher teacher : Main.adminList.get(0).getTeachers()) {
-            if (teacher.getClazz() != null) {
-                classList.add(teacher.getClazz());
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                
+                toggleClassButtonsVisibility();
             }
-        }
-
-        // Kiểm tra nếu không có lớp học nào
-        if (classList.isEmpty()) {
-            JOptionPane.showMessageDialog(npanel, "Không có lớp học nào để hiển thị.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            return;
-        }
-
-        // Tạo ClassInfoPanel và truyền danh sách lớp học
-        ClassInfoPanel cpanel = new ClassInfoPanel((ArrayList<SchoolClass>) classList);
-        
-        // Thiết lập kích thước và các thuộc tính của ClassInfoPanel
-        cpanel.setBounds(0, 0, 915, 630);
-        cpanel.setBackground(Color.LIGHT_GRAY);
-        cpanel.setVisible(true);
-        
-        
-        // Gọi phương thức viewClassInfo() để hiển thị thông tin chi tiết của lớp đầu tiên (hoặc lớp được chọn)
-        // Bạn có thể thay đổi chỉ số lớp (classIndex) theo nhu cầu
-        cpanel.viewClassInfo(0);  // Ví dụ, gọi thông tin lớp đầu tiên
-        toggleClassButtonsVisibility();
-    }
-});
-
+        });
 
         add(toggleButton);
         add(buttonGiaoVien);
@@ -338,9 +275,9 @@ public class AdminDashboard extends MyPanel {
     }
 
     private void toggleStuButtonsVisibility() {
-        if(!mpanel.isVisible()){
-            mpanel.setVisible(true);
-        }
+        // if(!mpanel.isVisible()){
+        //     mpanel.setVisible(true);
+        // }
         mainForm.mainPanel.revalidate();
         mainForm.mainPanel.repaint();
 

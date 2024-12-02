@@ -1,17 +1,15 @@
 package Frames;
 
+
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -28,17 +26,27 @@ import Models.Student;
 import Models.Teacher;
 import application.Main;
 
+
 public class AdminMethod extends JPanel {
     protected JTable table;
     protected DefaultTableModel tableModel;
     protected JTextField searchField;
 
+
+
+
     public AdminMethod() {
         setLayout(new BorderLayout());
+        addTeacherTable();
+        addStudentTable();
+
 
         JPanel topPanel = new JPanel(new BorderLayout());
         searchField = new JTextField();
         JButton searchButton = new JButton("Tìm kiếm");
+
+
+
 
         JPanel buttonPanel = new JPanel();
         JPanel searchPanel = new JPanel(new BorderLayout());
@@ -46,11 +54,18 @@ public class AdminMethod extends JPanel {
         searchPanel.add(searchField, BorderLayout.CENTER);
         searchPanel.add(searchButton, BorderLayout.EAST);
 
+
+
+
         topPanel.add(searchPanel, BorderLayout.NORTH);
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
 
+
+
+
         add(topPanel, BorderLayout.NORTH);
     }
+
 
     protected void addTeacherTable() {
         // Khởi tạo tableModel nếu chưa có
@@ -59,6 +74,8 @@ public class AdminMethod extends JPanel {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; // Chỉ cho phép chỉnh sửa cột "Giáo viên"
+
+
                 }
             };
         }
@@ -82,6 +99,9 @@ public class AdminMethod extends JPanel {
             table.setModel(tableModel);
         }
 
+
+
+
         // Cài đặt căn lề cho các cột
         for (int i = 0; i < table.getColumnCount(); i++) {
             if (i == 0 || i == 3 || i == 4 || i == 5 || i == 6) { // Cột "STT", "SĐT", "ID", "Ngày sinh"
@@ -97,6 +117,9 @@ public class AdminMethod extends JPanel {
                 table.getColumnModel().getColumn(i).setCellRenderer(new TableCellRendererWithIndent(10));
             }
         }
+
+
+
 
          // Thiết lập độ rộng các cột
         table.getColumnModel().getColumn(0).setPreferredWidth(30);  // Thu nhỏ cột "STT" đi 20
@@ -121,6 +144,9 @@ public class AdminMethod extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
+
+
+
         // Lùi table vào mỗi bên 10
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));  // Lùi vào 10px ở mỗi bên
     }
@@ -129,9 +155,15 @@ public class AdminMethod extends JPanel {
     class TableCellRendererWithIndent extends DefaultTableCellRenderer {
         private int indent;
 
+
+
+
         public TableCellRendererWithIndent(int indent) {
             this.indent = indent;
         }
+
+
+
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -142,7 +174,8 @@ public class AdminMethod extends JPanel {
         }
     }
 
-    protected void delete() {
+
+    protected void deleteTeacher() {
             // Lấy chỉ số hàng được chọn
             int selectedRow = table.getSelectedRow();
        
@@ -171,6 +204,7 @@ public class AdminMethod extends JPanel {
                 JOptionPane.showMessageDialog(this, "Vui lòng chọn một hàng để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
             }
     }
+
 
     protected void addTeacher() {
         JTextField nameField = new JTextField();
@@ -265,6 +299,7 @@ public class AdminMethod extends JPanel {
         }
     }
 
+
     //tên, ngày sinh, giới tính, id, sđt, email, lớp, ngày nhập học
     protected void addStudentTable() {
         // Khởi tạo tableModel nếu chưa có
@@ -282,7 +317,7 @@ public class AdminMethod extends JPanel {
    
         // Thêm dữ liệu từ danh sách giáo viên
         SchoolClass tenLop = Main.adminList.get(0).getTeachers().get(0).getClazz();
-        List<Student> studentsList = Main.adminList.get(0).getTeachers().get(0).getClazz().getStudenList();
+        List<Student> studentsList = Main.adminList.get(0).getTeachers().get(0).getClazz().getStudentList();
         for (int i = 0; i < studentsList.size(); i++) {
             Student stu = studentsList.get(i);
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
@@ -299,6 +334,9 @@ public class AdminMethod extends JPanel {
             table.setModel(tableModel);
         }
 
+
+
+
         // Cài đặt căn lề cho các cột
         for (int i = 0; i < table.getColumnCount(); i++) {
             if (i == 0 || i == 3 || i == 4 || i == 5 || i == 6) { // Cột "STT", "SĐT", "ID", "Ngày sinh"
@@ -314,6 +352,9 @@ public class AdminMethod extends JPanel {
                 table.getColumnModel().getColumn(i).setCellRenderer(new TableCellRendererWithIndent(10));
             }
         }
+
+
+
 
          // Thiết lập độ rộng các cột
         table.getColumnModel().getColumn(0).setPreferredWidth(30);  // Thu nhỏ cột "STT" đi 20
@@ -338,9 +379,13 @@ public class AdminMethod extends JPanel {
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
 
+
+
+
         // Lùi table vào mỗi bên 10
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));  // Lùi vào 10px ở mỗi bên
     }
+
 
     protected void addStudent() {
         JTextField nameField = new JTextField();
@@ -363,6 +408,7 @@ public class AdminMethod extends JPanel {
             "Ngày nhập học:", eobField,
         };
 
+
         boolean isValid = false; // Biến kiểm tra tính hợp lệ
         while (!isValid) {
             int option = JOptionPane.showConfirmDialog(
@@ -377,6 +423,7 @@ public class AdminMethod extends JPanel {
             return; // Thoát nếu người dùng hủy bỏ
         }
 
+
         try {
             // Lấy dữ liệu từ các trường nhập
             String name = nameField.getText().trim();
@@ -388,49 +435,57 @@ public class AdminMethod extends JPanel {
             String clazz = classField.getText().trim();
             String eob = eobField.getText().trim();
 
+
             // Kiểm tra dữ liệu rỗng
             if (name.isEmpty() || dob.isEmpty() || gender.isEmpty() || id.isEmpty() || phone.isEmpty() || email.isEmpty() || clazz.isEmpty() || eob.isEmpty()) {
                 throw new IllegalArgumentException("Tất cả các trường đều phải được điền.");
             }
+
 
             // Kiểm tra định dạng email
             if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
                 throw new IllegalArgumentException("Email không hợp lệ.");
             }
 
+
             // Kiểm tra định dạng số điện thoại
             if (!phone.matches("^\\d{9,11}$")) {
                     throw new IllegalArgumentException("Số điện thoại không hợp lệ (9-11 chữ số).");
             }
 
-            // Kiểm tra định dạng ngày sinh
-            SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
-            dateFormat1.setLenient(false);
-            Date birthDate = dateFormat1.parse(dob);
-            SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
-            dateFormat2.setLenient(false);
-            Date enrollDate = dateFormat2.parse(eob);
 
-            // Tạo đối tượng giáo viên mới
-            Student newStu = new Student(name, phone, email, id, birthDate, enrollDate);
-
-            // Thêm học sinh vào danh sách
-            Main.adminList.get(0).getTeachers().get(0).getClazz().addStudent(newStu);
-
-            // Định dạng ngày sinh trước khi thêm vào bảng
-            String formattedDob = dateFormat1.format(birthDate);
+                // Kiểm tra định dạng ngày sinh
+                SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
+                dateFormat1.setLenient(false);
+                Date birthDate = dateFormat1.parse(dob);
+                SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
+                dateFormat2.setLenient(false);
+                Date enrollDate = dateFormat2.parse(eob);
 
 
-            // Thêm giáo viên vào bảng
-            tableModel.addRow(new Object[]{
-                tableModel.getRowCount() + 1,
-                newStu.getName(),
-                newStu.getEmail(),
-                newStu.getPhone(),
-                newStu.getId(),
-                formattedDob,
-                clazz
-            });
+                // Tạo đối tượng giáo viên mới
+                Student newStu = new Student(name, phone, email, id, birthDate, enrollDate);
+
+
+                // Thêm học sinh vào danh sách
+                Main.adminList.get(0).getTeachers().get(0).getClazz().addStudent(newStu);
+                //Main.adminList.get(0).getTeachers().add(newTeacher);
+
+
+                // Định dạng ngày sinh trước khi thêm vào bảng
+                String formattedDob = dateFormat1.format(birthDate);
+
+
+                // Thêm giáo viên vào bảng
+                tableModel.addRow(new Object[]{
+                    tableModel.getRowCount() + 1,
+                    newStu.getName(),
+                    newStu.getEmail(),
+                    newStu.getPhone(),
+                    newStu.getId(),
+                    formattedDob,
+                    clazz
+                });
 
 
                 // Hiển thị thông báo thành công
@@ -445,90 +500,4 @@ public class AdminMethod extends JPanel {
             }
         }
     }
-<<<<<<< Updated upstream
-   protected void viewClassInfo() {
-    List<Teacher> teacherList = Main.adminList.get(0).getTeachers();
-
-
-    // Tạo bảng để hiển thị thông tin lớp học
-    DefaultTableModel classTableModel = new DefaultTableModel(new String[]{"STT", "Tên lớp", "Giáo viên", "Sĩ số", "Thời gian bắt đầu", "Thời gian kết thúc"}, 0);
-
-    // Duyệt qua danh sách lớp học và thêm vào bảng
-    for (int i = 0; i < teacherList.size(); i++) {
-        SchoolClass schoolClass = teacherList.get(i).getClazz();
-        Teacher classTeacher = schoolClass.getTeacher();
-        String teacherName = (classTeacher != null) ? classTeacher.getName() : "Chưa có giáo viên";
-        String totalStudents = String.valueOf(schoolClass.getStudentList().size()); // Số học sinh trong lớp
-=======
-    protected void viewClassInfo() {
-    // Lấy danh sách lớp học từ adminList (hoặc cách khác tùy theo cấu trúc của bạn)
-    List<SchoolClass> classList = new ArrayList<>(); // Danh sách lớp học
-    for (Teacher teacher : Main.adminList.get(0).getTeachers()) {
-        if (teacher.getClazz() != null) {
-            classList.add(teacher.getClazz());
-        }
-    }
-
-    // Kiểm tra nếu không có lớp học nào
-    if (classList.isEmpty()) {
-        JOptionPane.showMessageDialog(this, "Không có lớp học nào để hiển thị.", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-        return;
-    }
-
-    // Tạo bảng để hiển thị thông tin lớp học
-    DefaultTableModel classTableModel = new DefaultTableModel(new String[]{"Tên lớp", "Giáo viên", "Sĩ số", "Thời gian bắt đầu", "Thời gian kết thúc"}, 0);
-    
-    // Duyệt qua danh sách lớp học và thêm vào bảng
-    for (SchoolClass schoolClass : classList) {
-        String className = schoolClass.getClassName();
-        Teacher classTeacher = schoolClass.getTeacher();
-        String teacherName = (classTeacher != null) ? classTeacher.getName() : "Chưa có giáo viên";
-        String totalStudents = String.valueOf(schoolClass.getStudentList().size()); // Lấy số học sinh trong lớp
->>>>>>> Stashed changes
-        String beginTime = schoolClass.getBeginTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getBeginTime()) : "Chưa có";
-        String endTime = schoolClass.getEndTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getEndTime()) : "Chưa có";
-
-        // Thêm một dòng vào bảng với thông tin lớp học
-        classTableModel.addRow(new Object[]{
-<<<<<<< Updated upstream
-                i + 1, schoolClass.getClassName(), teacherName, totalStudents, beginTime, endTime
-=======
-                className, teacherName, totalStudents, beginTime, endTime
->>>>>>> Stashed changes
-        });
-    }
-
-    // Tạo bảng và hiển thị trong một JScrollPane
-    JTable classTable = new JTable(classTableModel);
-    JScrollPane scrollPane = new JScrollPane(classTable);
-<<<<<<< Updated upstream
-    add(scrollPane, BorderLayout.CENTER);  // Thêm bảng vào JPanel
-
-    // Xử lý sự kiện khi click vào lớp học
-    classTable.getSelectionModel().addListSelectionListener(e -> {
-        int selectedRow = classTable.getSelectedRow();
-        if (selectedRow != -1) {
-            // Lấy thông tin lớp học được chọn
-            SchoolClass selectedClass = teacherList.get(selectedRow).getClazz();
-            String className = selectedClass.getClassName();
-            String classInfo = "Lớp: " + className + "\n";
-            classInfo += "Sĩ số: " + selectedClass.getStudentList().size() + "\n";  // Hiển thị sĩ số lớp
-
-
-            // Hiển thị thông tin lớp học trong một cửa sổ thông báo
-            JOptionPane.showMessageDialog(this, classInfo, "Thông tin lớp học", JOptionPane.INFORMATION_MESSAGE);
-        }
-    });
 }
-
-
-}
-=======
-    
-    // Tạo hộp thoại để hiển thị bảng lớp học
-    //JOptionPane.showMessageDialog(this, scrollPane, "Thông tin các lớp học", JOptionPane.INFORMATION_MESSAGE);
-    
-}
-
-}
->>>>>>> Stashed changes

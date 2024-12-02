@@ -16,16 +16,11 @@ public class SchoolClass {
 
     private List<Student> studentList; // Aggregation relationship with Student class
 
-
-
-
-    
-    public SchoolClass(String className, Date beginTime, Date endTime, Teacher teacher) {
+    public SchoolClass(String className, Date beginTime, Date endTime) {
 
         this.className = className;
         this.beginTime = beginTime;
         this.endTime = endTime;
-        this.teacher = teacher;
         this.studentList = new ArrayList<>(); // Initialize the student list
        
     }
@@ -73,8 +68,6 @@ public class SchoolClass {
         }
     }
 
-
-
     public Student getStudent(int index) {
 
         if (index >= 0 && index < studentList.size()) {
@@ -84,13 +77,7 @@ public class SchoolClass {
     }
 
 
-    public List<Student> getStudenList() {
-        return studentList;
-    }
-
-
-    // Getters and Setters
-     public ArrayList<Student> getStudentList() {
+    public List<Student> getStudentList() {
         return studentList;
     }
 
@@ -122,24 +109,4 @@ public class SchoolClass {
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
     }
-<<<<<<< Updated upstream
-
-    public Teacher getTeacher() {
-        return teacher;
-    }
-
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-=======
-     public ArrayList<Student> getStudentList() {
-        return studentList;
-    }
-    public void setTeacher(Teacher teacher) {
-        this.teacher = teacher;
-    }
-     public Teacher getTeacher() {
-        return teacher;  
-    }
->>>>>>> Stashed changes
 }
