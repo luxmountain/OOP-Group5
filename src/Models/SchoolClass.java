@@ -8,19 +8,19 @@ import java.util.Date;
 public class SchoolClass {
     // Attributes
     private String className;
-    private Date[] schedule;
     private Date beginTime;
     private Date endTime;
+    private Teacher teacher;
     private ArrayList<Student> studentList; // Aggregation relationship with Student class
 
     // Constructor
 
     
-    public SchoolClass(String className, Date[] schedule, Date beginTime, Date endTime) {
+    public SchoolClass(String className, Date beginTime, Date endTime, Teacher teacher) {
         this.className = className;
-        this.schedule = schedule;
         this.beginTime = beginTime;
         this.endTime = endTime;
+        this.teacher = teacher;
         this.studentList = new ArrayList<>(); // Initialize the student list
         
     }
@@ -40,10 +40,15 @@ public class SchoolClass {
         }
     }
 
-    public void viewTimeTable() {
-        System.out.println("Thời Khóa Biểu " + className);
-        System.out.println("Thời Gian Bắt Đầu: " + beginTime);
-        System.out.println("Thời Gian Kết Thúc: " + endTime);
+    // public void viewTimeTable() {
+    //     System.out.println("Thời Khóa Biểu " + className);
+    //     System.out.println("Thời Gian Bắt Đầu: " + beginTime);
+    //     System.out.println("Thời Gian Kết Thúc: " + endTime);
+    // }
+
+   // Phương thức trả về sĩ số lớp
+    public int getClassSize() {
+        return studentList.size();
     }
 
     // CRUD operations for Student
@@ -61,7 +66,8 @@ public class SchoolClass {
         }
     }
 
-    public Student getStudent(int index) {
+    public Student getStudent() {
+        int index = 0;
         if (index >= 0 && index < studentList.size()) {
             return studentList.get(index);
         }
@@ -69,20 +75,16 @@ public class SchoolClass {
     }
 
     // Getters and Setters
+     public ArrayList<Student> getStudentList() {
+        return studentList;
+    }
+
     public String getClassName() {
         return className;
     }
 
     public void setClassName(String className) {
         this.className = className;
-    }
-
-    public Date[] getSchedule() {
-        return schedule;
-    }
-
-    public void setSchedule(Date[] schedule) {
-        this.schedule = schedule;
     }
 
     public Date getBeginTime() {
@@ -99,5 +101,13 @@ public class SchoolClass {
 
     public void setEndTime(Date endTime) {
         this.endTime = endTime;
+    }
+
+    public Teacher getTeacher() {
+        return teacher;
+    }
+
+    public void setTeacher(Teacher teacher) {
+        this.teacher = teacher;
     }
 }

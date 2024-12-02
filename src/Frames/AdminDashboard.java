@@ -25,6 +25,7 @@ public class AdminDashboard extends MyPanel {
     private JButton entGrade;
     private AdminForm mainForm;
     private AdminMethod npanel;
+    private ClassInfoPanel cpanel;
 
     public AdminDashboard(AdminForm mainPanel) {
         super(150, 720, Color.GRAY);
@@ -45,12 +46,7 @@ public class AdminDashboard extends MyPanel {
         buttonHocSinh.setVisible(false);
         buttonLopHoc.setVisible(false);
 
-        npanel = new AdminMethod();
-        npanel.setBounds(0, 0, 915, 630);
-        npanel.setBackground(Color.BLUE);
-        npanel.setVisible(false);
-        npanel.setEnabled(true);
-        mainForm.mainPanel.add(npanel);
+       
 
         // Initially hide the buttons for "Thêm", "Xóa", "Cập nhật"
         addTeacherBtn = createBtn("Thêm ", 180);
@@ -87,6 +83,15 @@ public class AdminDashboard extends MyPanel {
         buttonGiaoVien.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                 npanel = new AdminMethod();
+                    npanel.setBounds(0, 0, 915, 630);
+                    npanel.setBackground(Color.BLUE);
+                    npanel.setVisible(false);
+                    npanel.setEnabled(true);
+                    mainForm.mainPanel.removeAll(); 
+                    mainForm.mainPanel.add(npanel);
+                    mainForm.mainPanel.revalidate();
+                    mainForm.mainPanel.repaint();
                 toggleTeacherButtonsVisibility();
             }
         });
@@ -101,7 +106,21 @@ public class AdminDashboard extends MyPanel {
         buttonLopHoc.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                toggleClassButtonsVisibility();
+                 // Tạo ClassInfoPanel và truyền danh sách lớp học
+            ClassInfoPanel cpanel = new ClassInfoPanel();
+            
+            // Thiết lập kích thước và các thuộc tính của ClassInfoPanel
+            cpanel.setBounds(0, 0, 915, 630);
+            cpanel.setBackground(Color.LIGHT_GRAY);
+            cpanel.setVisible(true);
+            cpanel.setEnabled(true);
+                    
+            // Thêm ClassInfoPanel vào mainPanel
+            mainForm.mainPanel.removeAll(); // Xóa các component cũ trong mainPanel
+            mainForm.mainPanel.add(cpanel);
+            mainForm.mainPanel.revalidate();
+            mainForm.mainPanel.repaint();
+                    toggleClassButtonsVisibility();
             }
         });
         
@@ -126,6 +145,14 @@ public class AdminDashboard extends MyPanel {
                 
             }
         });
+        viewClassInfoBtn.addActionListener(new ActionListener() {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        
+        toggleClassButtonsVisibility();
+    }
+});
+
 
         // Add buttons to the panel
         add(toggleButton);

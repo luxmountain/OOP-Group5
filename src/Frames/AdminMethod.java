@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
@@ -20,12 +19,10 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.RowFilter;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
-
 
 import Models.SchoolClass;
 import Models.Student;
@@ -415,4 +412,49 @@ public class AdminMethod extends JPanel {
 
         table.setModel(searchTableModel);
     }
+   protected void viewClassInfo() {
+    List<Teacher> teacherList = Main.adminList.get(0).getTeachers();
+
+
+    // Tạo bảng để hiển thị thông tin lớp học
+    DefaultTableModel classTableModel = new DefaultTableModel(new String[]{"STT", "Tên lớp", "Giáo viên", "Sĩ số", "Thời gian bắt đầu", "Thời gian kết thúc"}, 0);
+
+    // Duyệt qua danh sách lớp học và thêm vào bảng
+    for (int i = 0; i < teacherList.size(); i++) {
+        SchoolClass schoolClass = teacherList.get(i).getClazz();
+        Teacher classTeacher = schoolClass.getTeacher();
+        String teacherName = (classTeacher != null) ? classTeacher.getName() : "Chưa có giáo viên";
+        String totalStudents = String.valueOf(schoolClass.getStudentList().size()); // Số học sinh trong lớp
+        String beginTime = schoolClass.getBeginTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getBeginTime()) : "Chưa có";
+        String endTime = schoolClass.getEndTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getEndTime()) : "Chưa có";
+
+        // Thêm một dòng vào bảng với thông tin lớp học
+        classTableModel.addRow(new Object[]{
+                i + 1, schoolClass.getClassName(), teacherName, totalStudents, beginTime, endTime
+        });
+    }
+
+    // Tạo bảng và hiển thị trong một JScrollPane
+    JTable classTable = new JTable(classTableModel);
+    JScrollPane scrollPane = new JScrollPane(classTable);
+    add(scrollPane, BorderLayout.CENTER);  // Thêm bảng vào JPanel
+
+    // Xử lý sự kiện khi click vào lớp học
+    classTable.getSelectionModel().addListSelectionListener(e -> {
+        int selectedRow = classTable.getSelectedRow();
+        if (selectedRow != -1) {
+            // Lấy thông tin lớp học được chọn
+            SchoolClass selectedClass = teacherList.get(selectedRow).getClazz();
+            String className = selectedClass.getClassName();
+            String classInfo = "Lớp: " + className + "\n";
+            classInfo += "Sĩ số: " + selectedClass.getStudentList().size() + "\n";  // Hiển thị sĩ số lớp
+
+
+            // Hiển thị thông tin lớp học trong một cửa sổ thông báo
+            JOptionPane.showMessageDialog(this, classInfo, "Thông tin lớp học", JOptionPane.INFORMATION_MESSAGE);
+        }
+    });
+}
+
+
 }

@@ -21,6 +21,7 @@ public class Teacher extends Person {
         return clazz;
     }
     
+    
     @Override
     public String toString() {
         return "Student [getName()=" + getName() + "]";
