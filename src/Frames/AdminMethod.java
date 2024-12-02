@@ -67,17 +67,14 @@ public class AdminMethod extends JPanel {
         add(topPanel, BorderLayout.NORTH);
     }
 
-
-   
-
-
     protected void addTeacherTable() {
         // Khởi tạo tableModel nếu chưa có
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID","Ngày sinh", "Lớp"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID", "Ngày sinh", "Lớp"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    return column != 0; // Chỉ cho phép chỉnh sửa cột "Giáo viên"
+                    return false; // Chỉ cho phép chỉnh sửa cột "Giáo viên"
+
                 }
             };
         }
@@ -95,7 +92,11 @@ public class AdminMethod extends JPanel {
         }
    
         // Tạo JTable
-        JTable table = new JTable(tableModel);
+        if (table == null) {
+            table = new JTable(tableModel);
+        } else {
+            table.setModel(tableModel);
+        }
 
 
         // Cài đặt căn lề cho các cột
@@ -143,16 +144,16 @@ public class AdminMethod extends JPanel {
         scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));  // Lùi vào 10px ở mỗi bên
    
         // Lắng nghe thay đổi trong bảng
-        tableModel.addTableModelListener(e -> {
-            int row = e.getFirstRow();
-            int column = e.getColumn();
-            if (column == 1) { // Chỉ xử lý thay đổi ở cột "Giáo viên"
-                String newName = tableModel.getValueAt(row, column).toString();
-                Teacher updatedTeacher = teacherList.get(table.convertRowIndexToModel(row));
-                updatedTeacher.setName(newName);
-                JOptionPane.showMessageDialog(table, "Cập nhật thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
-            }
-        });
+        // tableModel.addTableModelListener(e -> {
+        //     int row = e.getFirstRow();
+        //     int column = e.getColumn();
+        //     if (column == 1) { // Chỉ xử lý thay đổi ở cột "Giáo viên"
+        //         String newName = tableModel.getValueAt(row, column).toString();
+        //         Teacher updatedTeacher = teacherList.get(table.convertRowIndexToModel(row));
+        //         updatedTeacher.setName(newName);
+        //         JOptionPane.showMessageDialog(table, "Cập nhật thành công", "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+        //     }
+        // });
     }
    
    // Tạo lớp TableCellRendererWithIndent để lùi vào các cột
@@ -203,7 +204,34 @@ public class AdminMethod extends JPanel {
 
 
     protected void deleteTeacher() {
-       
+            // Lấy chỉ số hàng được chọn
+            int selectedRow = table.getSelectedRow();
+        
+            if (selectedRow != -1) { // Kiểm tra nếu có hàng được chọn
+                // Xác nhận từ người dùng trước khi xóa
+                int confirm = JOptionPane.showConfirmDialog(
+                    this,
+                    "Bạn có chắc chắn muốn xóa hàng này?",
+                    "Xác nhận xóa",
+                    JOptionPane.YES_NO_OPTION
+                );
+        
+                if (confirm == JOptionPane.YES_OPTION) {
+                    // Xóa hàng khỏi tableModel
+                    int modelRow = table.convertRowIndexToModel(selectedRow); // Chuyển từ view row sang model row
+                    tableModel.removeRow(modelRow);
+        
+                    // Cập nhật lại STT sau khi xóa
+                    for (int i = 0; i < tableModel.getRowCount(); i++) {
+                        tableModel.setValueAt(i + 1, i, 0); // Cột STT là cột 0
+                    }
+        
+                    JOptionPane.showMessageDialog(this, "Xóa hàng thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                }
+            } else {
+                JOptionPane.showMessageDialog(this, "Vui lòng chọn một hàng để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
+            }
+
     }
 
 
@@ -222,11 +250,11 @@ public class AdminMethod extends JPanel {
             "Tên giáo viên:", nameField,
             "Email:", emailField,
             "Số điện thoại:", phoneField,
-            "ID", idField,
+            "ID:", idField,
             "Ngày sinh (dd/MM/yyyy):", dobField,
             "Lớp:", classField,
-        }; //"Họ và tên", "Email", "SĐT", "ID","Ngày sinh", "Lớp"
-   
+        };
+
         int option = JOptionPane.showConfirmDialog(
             this,
             message,
@@ -236,40 +264,63 @@ public class AdminMethod extends JPanel {
    
         if (option == JOptionPane.OK_OPTION) {
             try {
+                // Lấy dữ liệu từ các trường nhập
                 String name = nameField.getText().trim();
                 String email = emailField.getText().trim();
                 String phone = phoneField.getText().trim();
-                String id = phoneField.getText().trim();
+                String id = idField.getText().trim();
                 String dob = dobField.getText().trim();
                 String clazz = classField.getText().trim();
-   
+    
+                // Kiểm tra dữ liệu rỗng
                 if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dob.isEmpty() || clazz.isEmpty() || id.isEmpty()) {
                     throw new IllegalArgumentException("Tất cả các trường đều phải được điền.");
                 }
-   
+    
+                // Kiểm tra định dạng email
+                if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
+                    throw new IllegalArgumentException("Email không hợp lệ.");
+                }
+    
+                // Kiểm tra định dạng số điện thoại
+                if (!phone.matches("^\\d{9,11}$")) {
+                    throw new IllegalArgumentException("Số điện thoại không hợp lệ (9-11 chữ số).");
+                }
+    
+                // Kiểm tra định dạng ngày sinh
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                dateFormat.setLenient(false);
+                Date birthDate = dateFormat.parse(dob);
+    
+                // Tạo đối tượng giáo viên mới
                 SchoolClass newClazz = new SchoolClass(clazz);
-                Teacher newTeacher = new Teacher(name, phone, email, String.format("%d", ++Main.IDX), dateFormat.parse(dob), newClazz);
-
-
-                SimpleDateFormat dateBirthFormat = new SimpleDateFormat("dd/MM/yyyy");
-                String fB = dateBirthFormat.format(newTeacher.getBirthDate());
+                Teacher newTeacher = new Teacher(name, phone, email, id, birthDate, newClazz);
+    
+                // Thêm giáo viên vào danh sách
                 Main.adminList.get(0).getTeachers().add(newTeacher);
-   
+    
+                // Định dạng ngày sinh trước khi thêm vào bảng
+                String formattedDob = dateFormat.format(birthDate);
+    
+                // Thêm giáo viên vào bảng
                 tableModel.addRow(new Object[]{
-                    Main.adminList.get(0).getTeachers().size(),
+                    tableModel.getRowCount() + 1, // STT
+
                     newTeacher.getName(),
                     newTeacher.getEmail(),
                     newTeacher.getPhone(),
                     newTeacher.getId(),
-                    fB,
+                    formattedDob,
                     newTeacher.getClazz().getClassName()
                 });
-   
+    
+                // Hiển thị thông báo thành công
                 JOptionPane.showMessageDialog(this, "Thêm giáo viên thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-   
+    
             } catch (IllegalArgumentException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+            } catch (ParseException e) {
+                JOptionPane.showMessageDialog(this, "Ngày sinh không đúng định dạng (dd/MM/yyyy).", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi thêm giáo viên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
             }
