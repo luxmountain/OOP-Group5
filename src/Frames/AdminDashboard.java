@@ -19,11 +19,26 @@ public class AdminDashboard extends MyPanel {
     private JButton viewClassInfoBtn; // Nút chức năng của "Lớp Học"
     private AdminForm mainForm;
     private AdminMethod npanel;
+    private AdminMethod mpanel;
 
     public AdminDashboard(AdminForm mainPanel) {
         super(150, 720, Color.GRAY);
         this.mainForm = mainPanel;
         this.setLayout(null);
+
+        npanel = new AdminMethod();
+        npanel.setBounds(0, 0, 915, 630);
+        npanel.setBackground(Color.BLUE);
+        npanel.setVisible(false);
+        npanel.setEnabled(true);
+        mainForm.mainPanel.add(npanel);
+
+        mpanel = new AdminMethod();
+        mpanel.setBounds(0, 0, 915, 630);
+        mpanel.setBackground(Color.BLUE);
+        mpanel.setVisible(false);
+        mpanel.setEnabled(true);
+        mainForm.mainPanel.add(mpanel);
 
         // Tạo nút 3 gạch
         toggleButton = createBtn("≡", 20);
@@ -71,6 +86,7 @@ public class AdminDashboard extends MyPanel {
         buttonGiaoVien.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                npanel.addTeacherTable();
                 toggleTeacherButtonsVisibility();
             }
         });
@@ -79,6 +95,7 @@ public class AdminDashboard extends MyPanel {
         buttonHocSinh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                mpanel.addStudentTable();
                 toggleStuButtonsVisibility();
             }
         });
@@ -88,6 +105,48 @@ public class AdminDashboard extends MyPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 toggleClassButtonsVisibility();
+            }
+        });
+
+        addTeacherBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e2) {
+                npanel.addTeacher();
+            }
+        });
+
+        deleteTeacherBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e2) {
+                npanel.delete();
+            }
+        });
+
+        updateTeacherBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e2) {
+
+            }
+        });
+
+        addStudentBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e2) {
+                mpanel.addStudent();
+            }
+        });
+
+        deleteStudentBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e2) {
+                mpanel.delete();
+            }
+        });
+
+        updateTeacherBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e2) {
+
             }
         });
 
@@ -123,6 +182,7 @@ public class AdminDashboard extends MyPanel {
 
 
     private void toggleButtonsVisibility() {
+
         boolean areMainButtonsVisible = buttonGiaoVien.isVisible();
 
         // Ẩn hoặc hiện 3 nút chính
@@ -138,6 +198,12 @@ public class AdminDashboard extends MyPanel {
     }
 
     private void toggleTeacherButtonsVisibility() {
+        if(!npanel.isVisible()){
+            npanel.setVisible(true);
+        }
+        mainForm.mainPanel.revalidate();
+        mainForm.mainPanel.repaint();
+
         boolean areTeacherButtonsVisible = addTeacherBtn.isVisible();
 
         addTeacherBtn.setBounds(25, 100, 120, 30);
@@ -189,6 +255,12 @@ public class AdminDashboard extends MyPanel {
     }
 
     private void toggleStuButtonsVisibility() {
+        if(!mpanel.isVisible()){
+            mpanel.setVisible(true);
+        }
+        mainForm.mainPanel.revalidate();
+        mainForm.mainPanel.repaint();
+
         boolean areStudentButtonsVisible = viewStudentBtn.isVisible();
 
         addStudentBtn.setBounds(25, 140, 120, 30);
