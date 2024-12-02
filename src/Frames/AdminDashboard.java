@@ -21,6 +21,8 @@ public class AdminDashboard extends MyPanel {
     private JButton viewClassInfoBtn; // Nút chức năng của "Lớp Học"
     private AdminForm mainForm;
     private AdminMethod npanel;
+    private TeacherMethod tpanel;
+    private StudentMethod spanel;
     private ClassInfoPanel cpanel;
 
     public AdminDashboard(AdminForm mainPanel) {
@@ -39,8 +41,6 @@ public class AdminDashboard extends MyPanel {
         buttonGiaoVien.setVisible(false);
         buttonHocSinh.setVisible(false);
         buttonLopHoc.setVisible(false);
-
-
 
         // Tạo các nút chức năng
         addTeacherBtn = methodBtn("Thêm", 180);
@@ -75,17 +75,15 @@ public class AdminDashboard extends MyPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
 
-                 npanel = new AdminMethod();
-                    npanel.setBounds(0, 0, 915, 630);
-                    npanel.setBackground(Color.BLUE);
-                    npanel.setVisible(false);
-                    npanel.setEnabled(true);
-                    mainForm.mainPanel.removeAll(); 
-                    mainForm.mainPanel.add(npanel);
-                    mainForm.mainPanel.revalidate();
-                    mainForm.mainPanel.repaint();
-
-               
+                tpanel = new TeacherMethod();
+                tpanel.setBounds(0, 0, 915, 630);
+                tpanel.setBackground(Color.BLUE);
+                tpanel.setVisible(false);
+                tpanel.setEnabled(true);
+                mainForm.mainPanel.removeAll(); 
+                mainForm.mainPanel.add(tpanel);
+                mainForm.mainPanel.revalidate();
+                mainForm.mainPanel.repaint();
 
                 toggleTeacherButtonsVisibility();
             }
@@ -95,7 +93,16 @@ public class AdminDashboard extends MyPanel {
         buttonHocSinh.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // mpanel.addStudentTable();
+                spanel = new StudentMethod();
+                spanel.setBounds(0, 0, 915, 630);
+                spanel.setBackground(Color.BLUE);
+                spanel.setVisible(false);
+                spanel.setEnabled(true);
+                mainForm.mainPanel.removeAll(); 
+                mainForm.mainPanel.add(spanel);
+                mainForm.mainPanel.revalidate();
+                mainForm.mainPanel.repaint();
+
                 toggleStuButtonsVisibility();
             }
         });
@@ -125,14 +132,14 @@ public class AdminDashboard extends MyPanel {
         addTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                npanel.addTeacher();
+                tpanel.addTeacher();
             }
         });
 
         deleteTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                npanel.deleteTeacher();
+                tpanel.deleteTeacher();
             }
         });
 
@@ -146,14 +153,14 @@ public class AdminDashboard extends MyPanel {
         addStudentBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                // mpanel.addStudent();
+                spanel.addStudent();
             }
         });
 
         deleteStudentBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                // mpanel.delete();
+                spanel.deleteStudent();
             }
         });
 
@@ -199,8 +206,6 @@ public class AdminDashboard extends MyPanel {
         return button;
     }
 
-
-
     private void toggleButtonsVisibility() {
 
         boolean areMainButtonsVisible = buttonGiaoVien.isVisible();
@@ -218,8 +223,8 @@ public class AdminDashboard extends MyPanel {
     }
 
     private void toggleTeacherButtonsVisibility() {
-        if(!npanel.isVisible()){
-            npanel.setVisible(true);
+        if(!tpanel.isVisible()){
+            tpanel.setVisible(true);
         }
         mainForm.mainPanel.revalidate();
         mainForm.mainPanel.repaint();
@@ -275,9 +280,11 @@ public class AdminDashboard extends MyPanel {
     }
 
     private void toggleStuButtonsVisibility() {
-        // if(!mpanel.isVisible()){
-        //     mpanel.setVisible(true);
-        // }
+        if(!spanel.isVisible()){
+            spanel.setVisible(true);
+        }
+        mainForm.mainPanel.revalidate();
+        mainForm.mainPanel.repaint();
         mainForm.mainPanel.revalidate();
         mainForm.mainPanel.repaint();
 
@@ -328,7 +335,6 @@ public class AdminDashboard extends MyPanel {
     private void toggleClassButtonsVisibility() {
 
         boolean isClassInfoVisible = viewClassInfoBtn.isVisible();
-
 
         viewClassInfoBtn.setBounds(25, 180, 120, 30);
 

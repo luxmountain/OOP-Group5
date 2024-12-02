@@ -32,21 +32,13 @@ public class AdminMethod extends JPanel {
     protected DefaultTableModel tableModel;
     protected JTextField searchField;
 
-
-
-
     public AdminMethod() {
         setLayout(new BorderLayout());
         addTeacherTable();
-        addStudentTable();
-
 
         JPanel topPanel = new JPanel(new BorderLayout());
         searchField = new JTextField();
         JButton searchButton = new JButton("Tìm kiếm");
-
-
-
 
         JPanel buttonPanel = new JPanel();
         JPanel searchPanel = new JPanel(new BorderLayout());
