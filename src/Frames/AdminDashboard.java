@@ -146,7 +146,7 @@ public class AdminDashboard extends MyPanel {
         updateTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-
+                tpanel.editTeacher();
             }
         });
 
