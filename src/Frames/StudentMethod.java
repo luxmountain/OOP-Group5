@@ -66,26 +66,22 @@ public class StudentMethod extends JPanel {
         // Xóa dữ liệu cũ
         tableModel.setRowCount(0);
    
-Database dtb = new Database();
-        String sql = "SELECT id, name, email, phone, birthDate FROM teachers";
+        Database dtb = new Database();
+        String sql = "SELECT id, name, email, phone, birthDate FROM students";
 
         try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             int i = 1; // Số thứ tự bắt đầu từ 1
             while (resultSet.next()) {
-                // Lấy dữ liệu từ ResultSet
                 String id = resultSet.getString("id");
                 String name = resultSet.getString("name");
                 String email = resultSet.getString("email");
                 String phone = resultSet.getString("phone");
                 Date birthDate = resultSet.getDate("birthDate");
-                // String className = resultSet.getString("className");
 
-                // Format ngày tháng nếu cần
                 String formattedBirthDate = new SimpleDateFormat("dd/MM/yyyy").format(birthDate);
 
-                // Thêm vào tableModel
                 tableModel.addRow(new Object[]{
                     i,         // Số thứ tự
                     name,      // Tên giáo viên

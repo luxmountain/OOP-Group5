@@ -6,6 +6,12 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
 import java.net.URL;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -15,23 +21,27 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import Frames.my.MyFont;
 import Frames.my.MyLabel;
 import Frames.my.MyPanel;
+import Models.Admin;
+import application.Database;
 
 public class Header extends MyPanel {
 
     private Frame parentFrame; // Tham chiếu đến frame cha để xử lý đăng xuất
     private String adminID;
+    private Database dtb;
     public Header(String title, Frame parentFrame, String adminID) {
         super(1080, 50, Color.WHITE);
         this.parentFrame = parentFrame;
         this.adminID = adminID;
         this.setLayout(new BorderLayout()); // Sử dụng BorderLayout để chia header thành các vùng
-
+        dtb = new Database();
         addLogo();
         addTitle(title);
         addUserMenu();
@@ -90,7 +100,12 @@ public class Header extends MyPanel {
         JMenuItem logout = new JMenuItem("Đăng xuất");
     
         // Xử lý sự kiện cho các mục menu
-        editInfo.addActionListener(e -> updatePersonalInfo());
+        editInfo.addActionListener(e -> {
+            try {
+                updatePersonalInfo();
+            } catch (ParseException ex) {
+            }
+        });
         logout.addActionListener(e -> {
             JOptionPane.showMessageDialog(this, "Đăng xuất thành công!");
             if (parentFrame != null) {
@@ -120,58 +135,97 @@ public class Header extends MyPanel {
     }
     
 
-    private void updatePersonalInfo() {
-        // // Tạo các trường nhập thông tin
-        // JTextField nameField = new JTextField(admin.getName());
-        // JTextField emailField = new JTextField(admin.getEmail());
-        // JTextField phoneField = new JTextField(admin.getPhone());
-        // SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        // String formattedDate = dateFormat.format(admin.getBirthDate());
-
-        // JTextField dobField = new JTextField(formattedDate);
-
-        // Object[] message = {
-        //     "Tên:", nameField,
-        //     "Email:", emailField,
-        //     "Số điện thoại:", phoneField,
-        //     "Ngày sinh (dd/MM/yyyy):", dobField,
-        // };
-
-        // int option = JOptionPane.showConfirmDialog(
-        //     this,
-        //     message,
-        //     "Cập nhật thông tin cá nhân",
-        //     JOptionPane.OK_CANCEL_OPTION
-        // );
-
-        // if (option == JOptionPane.OK_OPTION) {
-        //     String name = nameField.getText();
-        //     String email = emailField.getText();
-        //     String phone = phoneField.getText();
-        //     String dobText = dobField.getText();
-
-        //     if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dobText.isEmpty()) {
-        //         JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-        //     } else {
-        //         try {
-        //             dateFormat.setLenient(false); // Đảm bảo kiểm tra chặt chẽ định dạng
-        //             Date dob = dateFormat.parse(dobText);
-
-        //             JOptionPane.showMessageDialog(this, "Thông tin cá nhân đã được cập nhật thành công!");
-        //             admin.setName(name);
-        //             admin.setEmail(email);
-        //             admin.setPhone(phone);
-        //             admin.setBirthDate(dob);
-        //             System.out.println(admin.getName());
-        //         } catch (Exception e) {
-        //             JOptionPane.showMessageDialog(
-        //                 this,
-        //                 "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy",
-        //                 "Lỗi",
-        //                 JOptionPane.ERROR_MESSAGE
-        //             );
-        //         }
-        //     }
-        // }
+    private void updatePersonalInfo() throws ParseException {
+        String sql = "SELECT name, email, phone, birthDate FROM admins WHERE id = ?";
+        Admin admin = null;
+        
+        // Fetch admin data from the database
+        try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(sql)) {
+            preparedStatement.setString(1, this.adminID);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                admin = new Admin(
+                    resultSet.getString("name"), 
+                    resultSet.getString("phone"), 
+                    resultSet.getString("email"), 
+                    this.adminID, 
+                    resultSet.getDate("birthDate")
+                );
+            } else {
+                JOptionPane.showMessageDialog(this, "Không tìm thấy admin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                return;
+            }
+        } catch (SQLException e) {
+            JOptionPane.showMessageDialog(this, "Lỗi khi lấy thông tin admin từ cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            e.printStackTrace();
+            return;
+        }
+        
+        // Create fields for user input
+        JTextField nameField = new JTextField(admin.getName());
+        JTextField emailField = new JTextField(admin.getEmail());
+        JTextField phoneField = new JTextField(admin.getPhone());
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        String formattedDate = dateFormat.format(admin.getBirthDate());
+        JTextField dobField = new JTextField(formattedDate);
+        
+        Object[] message = {
+            "Tên:", nameField,
+            "Email:", emailField,
+            "Số điện thoại:", phoneField,
+            "Ngày sinh (dd/MM/yyyy):", dobField,
+        };
+        
+        int option = JOptionPane.showConfirmDialog(
+            this,
+            message,
+            "Cập nhật thông tin cá nhân",
+            JOptionPane.OK_CANCEL_OPTION
+        );
+        
+        if (option == JOptionPane.OK_OPTION) {
+            String name = nameField.getText();
+            String email = emailField.getText();
+            String phone = phoneField.getText();
+            String dobText = dobField.getText();
+        
+            if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dobText.isEmpty()) {
+                JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            } else {
+                try {
+                    dateFormat.setLenient(false); // Ensure strict date parsing
+                    Date dob = dateFormat.parse(dobText);
+                    java.sql.Date sqlDob = new java.sql.Date(dob.getTime());
+        
+                    // Update the database
+                    String updateSql = "UPDATE admins SET name = ?, email = ?, phone = ?, birthDate = ? WHERE id = ?";
+                    try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(updateSql)) {
+                        preparedStatement.setString(1, name);
+                        preparedStatement.setString(2, email);
+                        preparedStatement.setString(3, phone);
+                        preparedStatement.setDate(4, sqlDob);
+                        preparedStatement.setString(5, this.adminID); // Ensure admin ID is included
+        
+                        int rowsAffected = preparedStatement.executeUpdate();
+                        if (rowsAffected > 0) {
+                            JOptionPane.showMessageDialog(this, "Thông tin cá nhân đã được cập nhật thành công!");
+                        } else {
+                            JOptionPane.showMessageDialog(this, "Không tìm thấy admin để cập nhật!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                        }
+                    }
+                } catch (ParseException e) {
+                    JOptionPane.showMessageDialog(
+                        this,
+                        "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy",
+                        "Lỗi",
+                        JOptionPane.ERROR_MESSAGE
+                    );
+                } catch (SQLException e) {
+                    JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật thông tin admin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    e.printStackTrace();
+                }
+            }
+        }
+        
     }
 }
