@@ -2,6 +2,17 @@ package Frames;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +25,19 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
+import Models.SchoolClass;
+import Models.Student;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -34,28 +58,63 @@ public class StudentMethod extends JPanel {
 
     public StudentMethod() {
         setLayout(new BorderLayout());
-        addStudentTable();
+        addStudentTable(); // Phương thức thêm bảng
 
+        // Tạo sorter cho bảng
+        final TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+        table.setRowSorter(sorter);
+
+        // Panel phía trên
         JPanel topPanel = new JPanel(new BorderLayout());
+
+        // Thanh tìm kiếm
         searchField = new JTextField();
         JButton searchButton = new JButton("Tìm kiếm");
 
-        JPanel buttonPanel = new JPanel();
         JPanel searchPanel = new JPanel(new BorderLayout());
         searchPanel.add(new JLabel("  ✎  "), BorderLayout.WEST);
         searchPanel.add(searchField, BorderLayout.CENTER);
         searchPanel.add(searchButton, BorderLayout.EAST);
 
+        // Panel chứa nút (thêm, sửa, xóa nếu có)
+        JPanel buttonPanel = new JPanel(); // Có thể thêm nút khác vào đây nếu cần
+
+        // Thêm các panel vào topPanel
         topPanel.add(searchPanel, BorderLayout.NORTH);
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
 
+        // Thêm topPanel vào phía trên của giao diện chính
         add(topPanel, BorderLayout.NORTH);
+
+        // Thêm chức năng tìm kiếm
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = searchField.getText().trim();
+                if (text.isEmpty()) {
+                    sorter.setRowFilter(null); // Hiển thị toàn bộ dữ liệu nếu chuỗi tìm kiếm rỗng
+                } else {
+                    try {
+                        sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text)); // Không phân biệt hoa thường
+                    } catch (PatternSyntaxException pse) {
+                        JOptionPane.showMessageDialog(StudentMethod.this, "Invalid search pattern!", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+        
+                // Cập nhật lại cột STT
+                for (int i = 0; i < table.getRowCount(); i++) {
+                    tableModel.setValueAt(i + 1, table.convertRowIndexToModel(i), 0); // Cập nhật giá trị STT
+                }
+            }
+        });
     }
+
 
     protected void addStudentTable() {
         // Khởi tạo tableModel nếu chưa có
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"No.", "Fullname", "Email", "Phone", "ID", "Date of birth", "Class", "Enrollment Date"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID", "Ngày sinh", "Lớp", "Ngày nhập học"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; // Chỉ cho phép chỉnh sửa cột "Giáo viên"
@@ -79,7 +138,6 @@ public class StudentMethod extends JPanel {
                 String email = resultSet.getString("email");
                 String phone = resultSet.getString("phone");
                 Date birthDate = resultSet.getDate("birthDate");
-
                 String formattedBirthDate = new SimpleDateFormat("dd/MM/yyyy").format(birthDate);
 
                 tableModel.addRow(new Object[]{
@@ -174,6 +232,29 @@ public class StudentMethod extends JPanel {
         JTextField classField = new JTextField();
         JTextField eobField = new JTextField();
         //tên, ngày sinh, giới tính, id, sđt, email, lớp, ngày nhập học
+
+        // Tạo các nút radio cho giới tính
+        JRadioButton maleButton = new JRadioButton("Nam");
+        JRadioButton femaleButton = new JRadioButton("Nữ");
+        ButtonGroup genderGroup = new ButtonGroup();
+        genderGroup.add(maleButton);
+        genderGroup.add(femaleButton);
+
+        // Tùy chỉnh kích thước cho các trường nhập liệu
+        Dimension inputSize = new Dimension(150, 25);
+        nameField.setPreferredSize(inputSize);
+        emailField.setPreferredSize(inputSize);
+        phoneField.setPreferredSize(inputSize);
+        idField.setPreferredSize(inputSize);
+        dobField.setPreferredSize(inputSize);
+        classField.setPreferredSize(inputSize);
+    
+        // Tùy chỉnh kích thước cho Panel chứa các nút radio
+        JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        genderPanel.add(maleButton);
+        genderPanel.add(femaleButton);
+        genderPanel.setPreferredSize(new Dimension(200, 30)); // Kích thước tùy chỉnh
+
         Object[] message = {
             "Tên sinh viên:", nameField,
             "Ngày sinh (dd/MM/yyyy):", dobField,
@@ -235,7 +316,7 @@ public class StudentMethod extends JPanel {
                 SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
                 dateFormat1.setLenient(false);
                 Date birthDate = dateFormat1.parse(dob);
-                
+          
                 Database dtb = new Database();
                 int newIdNumber = dtb.countStudents() + 1;
                 String newId = String.format("%d", newIdNumber);
@@ -243,12 +324,6 @@ public class StudentMethod extends JPanel {
                 dtb.insertStudent(name, phone, email, birthDate);
                 // Tạo đối tượng giáo viên mới
                 Student newStu = new Student(name, phone, email, newId, birthDate);
-
-
-                // Thêm học sinh vào danh sách
-                Main.adminList.get(0).getTeachers().get(0).getClazz().addStudent(newStu);
-                //Main.adminList.get(0).getTeachers().add(newTeacher);
-
 
                 // Định dạng ngày sinh trước khi thêm vào bảng
                 String formattedDob = dateFormat1.format(birthDate);

@@ -2,6 +2,18 @@ package Frames;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.regex.PatternSyntaxException;
+
+import javax.swing.BorderFactory;
+import javax.swing.ButtonGroup;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +26,20 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextField;
+import javax.swing.RowFilter;
+import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
+
+import Models.SchoolClass;
+import Models.Student;
+import Models.Teacher;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -36,27 +62,57 @@ public class TeacherMethod extends JPanel {
         setLayout(new BorderLayout());
         addTeacherTable();
 
+        final TableRowSorter<TableModel> sorter = new TableRowSorter<>(table.getModel());
+        table.setRowSorter(sorter);
+
+        // Panel phía trên
         JPanel topPanel = new JPanel(new BorderLayout());
+
+        // Thanh tìm kiếm
         searchField = new JTextField();
         JButton searchButton = new JButton("Tìm kiếm");
-
-        JPanel buttonPanel = new JPanel();
         JPanel searchPanel = new JPanel(new BorderLayout());
         searchPanel.add(new JLabel("  ✎  "), BorderLayout.WEST);
         searchPanel.add(searchField, BorderLayout.CENTER);
         searchPanel.add(searchButton, BorderLayout.EAST);
 
+        JPanel buttonPanel = new JPanel(); // Có thể thêm nút khác vào đây nếu cần
+
+        // Thêm các panel vào topPanel
         topPanel.add(searchPanel, BorderLayout.NORTH);
         topPanel.add(buttonPanel, BorderLayout.SOUTH);
 
+        // Thêm topPanel vào phía trên của giao diện chính
         add(topPanel, BorderLayout.NORTH);
-    }
 
+        // Thêm chức năng tìm kiếm
+        searchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String text = searchField.getText().trim();
+                if (text.isEmpty()) {
+                    sorter.setRowFilter(null); // Hiển thị toàn bộ dữ liệu nếu chuỗi tìm kiếm rỗng
+                } else {
+                    try {
+                        sorter.setRowFilter(RowFilter.regexFilter("(?i)" + text)); // Không phân biệt hoa thường
+                    } catch (PatternSyntaxException pse) {
+                        JOptionPane.showMessageDialog(TeacherMethod.this, "Invalid search pattern!", "Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+                }
+        
+                // Cập nhật lại cột STT
+                for (int i = 0; i < table.getRowCount(); i++) {
+                    tableModel.setValueAt(i + 1, table.convertRowIndexToModel(i), 0); // Cập nhật giá trị STT
+                }
+            }
+        });
+    }
 
     protected void addTeacherTable() {
         // Khởi tạo tableModel nếu chưa có
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"No.", "Fullname", "Email", "Phone", "ID", "Date of birth", "Class"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID", "Ngày sinh", "Lớp"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; 
@@ -100,16 +156,12 @@ public class TeacherMethod extends JPanel {
             e.printStackTrace();
         }
 
-
-   
-        // Tạo JTable
         if (table == null) {
             table = new JTable(tableModel);
         } else {
             table.setModel(tableModel);
         }
 
-        // Cài đặt căn lề cho các cột
         for (int i = 0; i < table.getColumnCount(); i++) {
             if (i == 0 || i == 3 || i == 4 || i == 5 || i == 6) { // Cột "STT", "SĐT", "ID", "Ngày sinh"
                 table.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
@@ -173,9 +225,33 @@ public class TeacherMethod extends JPanel {
         JTextField nameField = new JTextField();
         JTextField emailField = new JTextField();
         JTextField phoneField = new JTextField();
+
+        JTextField idField = new JTextField();
         JTextField dobField = new JTextField();
         JTextField classField = new JTextField();
-   
+    
+        // Tạo các nút radio cho giới tính
+        JRadioButton maleButton = new JRadioButton("Nam");
+        JRadioButton femaleButton = new JRadioButton("Nữ");
+        ButtonGroup genderGroup = new ButtonGroup();
+        genderGroup.add(maleButton);
+        genderGroup.add(femaleButton);
+    
+        // Tùy chỉnh kích thước cho các trường nhập liệu
+        Dimension inputSize = new Dimension(150, 25);
+        nameField.setPreferredSize(inputSize);
+        emailField.setPreferredSize(inputSize);
+        phoneField.setPreferredSize(inputSize);
+        idField.setPreferredSize(inputSize);
+        dobField.setPreferredSize(inputSize);
+        classField.setPreferredSize(inputSize);
+    
+        // Tùy chỉnh kích thước cho Panel chứa các nút radio
+        JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        genderPanel.add(maleButton);
+        genderPanel.add(femaleButton);
+        genderPanel.setPreferredSize(new Dimension(200, 30)); // Kích thước tùy chỉnh
+    
         Object[] message = {
             "Tên giáo viên:", nameField,
             "Email:", emailField,
@@ -192,11 +268,11 @@ public class TeacherMethod extends JPanel {
                 "Thêm giáo viên mới",
                 JOptionPane.OK_CANCEL_OPTION
             );
-   
+    
             if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
                 return; // Thoát nếu người dùng hủy bỏ
             }
-   
+
             try {
                 // Lấy dữ liệu từ các trường nhập
                 String name = nameField.getText().trim();
@@ -209,23 +285,19 @@ public class TeacherMethod extends JPanel {
                 if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dob.isEmpty() || clazz.isEmpty()) {
                     throw new IllegalArgumentException("Tất cả các trường đều phải được điền.");
                 }
-   
-                // Kiểm tra định dạng email
+ 
                 if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
                     throw new IllegalArgumentException("Email không hợp lệ.");
                 }
-   
                 // Kiểm tra định dạng số điện thoại
                 if (!phone.matches("^\\d{9,11}$")) {
                     throw new IllegalArgumentException("Số điện thoại không hợp lệ (9-11 chữ số).");
                 }
-   
                 // Kiểm tra định dạng ngày sinh
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 dateFormat.setLenient(false);
                 Date birthDate = dateFormat.parse(dob);
-   
-                // Tạo đối tượng giáo viên mới
+
                 SchoolClass newClazz = new SchoolClass(clazz);
                 Database dtb = new Database();
                 int newIdNumber = dtb.countAdmins() + 1;
@@ -249,7 +321,6 @@ public class TeacherMethod extends JPanel {
                     formattedDob,
                     newTeacher.getClazz().getClassName()
                 });
-   
                 // Hiển thị thông báo thành công
                 JOptionPane.showMessageDialog(this, "Thêm giáo viên thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
                 isValid = true; // Thoát vòng lặp nếu dữ liệu hợp lệ
@@ -266,7 +337,6 @@ public class TeacherMethod extends JPanel {
     protected void deleteTeacher() {
         // Lấy chỉ số hàng được chọn
         int selectedRow = table.getSelectedRow();
-
         if (selectedRow != -1) { // Kiểm tra nếu có hàng được chọn
             // Xác nhận từ người dùng trước khi xóa
             int confirm = JOptionPane.showConfirmDialog(
@@ -294,3 +364,4 @@ public class TeacherMethod extends JPanel {
         }
     }
 }
+
