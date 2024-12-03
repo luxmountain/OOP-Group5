@@ -55,7 +55,7 @@ public class StudentMethod extends JPanel {
     protected void addStudentTable() {
         // Khởi tạo tableModel nếu chưa có
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID", "Ngày sinh", "Lớp", "Ngày nhập học"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"No.", "Fullname", "Email", "Phone", "ID", "Date of birth", "Class", "Enrollment Date"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; // Chỉ cho phép chỉnh sửa cột "Giáo viên"

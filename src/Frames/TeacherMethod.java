@@ -56,7 +56,7 @@ public class TeacherMethod extends JPanel {
     protected void addTeacherTable() {
         // Khởi tạo tableModel nếu chưa có
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID", "Ngày sinh", "Lớp"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"No.", "Fullname", "Email", "Phone", "ID", "Date of birth", "Class"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; 
@@ -84,7 +84,6 @@ public class TeacherMethod extends JPanel {
 
                 // Format ngày tháng nếu cần
                 String formattedBirthDate = new SimpleDateFormat("dd/MM/yyyy").format(birthDate);
-
                 // Thêm vào tableModel
                 tableModel.addRow(new Object[]{
                     i,         // Số thứ tự
@@ -93,7 +92,6 @@ public class TeacherMethod extends JPanel {
                     phone,     // Số điện thoại
                     id,        // ID
                     formattedBirthDate // Ngày sinh
-                    // className  
                 });
 
                 i++; // Tăng số thứ tự

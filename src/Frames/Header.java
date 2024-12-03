@@ -33,27 +33,24 @@ import application.Database;
 
 public class Header extends MyPanel {
 
-    private Frame parentFrame; // Tham chiếu đến frame cha để xử lý đăng xuất
+    private Frame parentFrame; // Reference to the parent frame for handling logout
     private String adminID;
     private Database dtb;
+
     public Header(String title, Frame parentFrame, String adminID) {
         super(1080, 50, Color.WHITE);
         this.parentFrame = parentFrame;
         this.adminID = adminID;
-        this.setLayout(new BorderLayout()); // Sử dụng BorderLayout để chia header thành các vùng
+        this.setLayout(new BorderLayout()); // Use BorderLayout to divide the header into regions
         dtb = new Database();
         addLogo();
         addTitle(title);
         addUserMenu();
     }
 
-    // public Header(Frame parentFrame) {
-    //     this("Student Management System", parentFrame);
-    // }
-
     private void addLogo() {
         try {
-            // Tải logo từ URL và chỉnh kích thước
+            // Load logo from URL and adjust size
             URL logoUrl = new URL("https://dhs.ptit.edu.vn/web/image/385-67ae5bc7/Logo_PTIT_University.png");
             ImageIcon logoIcon = new ImageIcon(
                 new ImageIcon(logoUrl).getImage().getScaledInstance(40, 40, Image.SCALE_SMOOTH)
@@ -74,7 +71,7 @@ public class Header extends MyPanel {
 
             JPanel logoPanel = new JPanel(new BorderLayout());
             logoPanel.setBackground(Color.WHITE);
-            logoPanel.setBorder(new EmptyBorder(0, 20, 0, 0)); // Padding trái 20px
+            logoPanel.setBorder(new EmptyBorder(0, 20, 0, 0)); // Padding on the left of 20px
             logoPanel.add(errorLabel, BorderLayout.CENTER);
 
             this.add(logoPanel, BorderLayout.WEST);
@@ -88,18 +85,18 @@ public class Header extends MyPanel {
     }
 
     private void addUserMenu() {
-        // Tạo nút người dùng
+        // Create user button
         JButton userButton = new JButton("👨");
         userButton.setBackground(Color.WHITE);
-        userButton.setBorder(BorderFactory.createEmptyBorder()); // Loại bỏ viền nút
+        userButton.setBorder(BorderFactory.createEmptyBorder()); // Remove button border
         userButton.setFocusPainted(true);
     
-        // Tạo menu popup
+        // Create popup menu
         JPopupMenu userMenu = new JPopupMenu();
-        JMenuItem editInfo = new JMenuItem("Sửa thông tin");
-        JMenuItem logout = new JMenuItem("Đăng xuất");
+        JMenuItem editInfo = new JMenuItem("Edit Profile");
+        JMenuItem logout = new JMenuItem("Log out");
     
-        // Xử lý sự kiện cho các mục menu
+        // Handle events for menu items
         editInfo.addActionListener(e -> {
             try {
                 updatePersonalInfo();
@@ -107,28 +104,28 @@ public class Header extends MyPanel {
             }
         });
         logout.addActionListener(e -> {
-            JOptionPane.showMessageDialog(this, "Đăng xuất thành công!");
+            JOptionPane.showMessageDialog(this, "Log out successfully!");
             if (parentFrame != null) {
-                parentFrame.dispose(); // Đóng frame cha
-                // Khởi tạo form đăng nhập
+                parentFrame.dispose(); // Close parent frame
+                // Initialize login form
                 new LoginForm();
             }
         });
     
-        // Thêm các mục vào menu
+        // Add items to the menu
         userMenu.add(editInfo);
         userMenu.add(logout);
     
-        // Hiển thị menu khi bấm vào nút
+        // Show the menu when the button is clicked
         userButton.addActionListener(e -> {
             // Show the menu at the left of the button (x = button's x - menu's width, y = button's y + button's height)
             userMenu.show(userButton, -userMenu.getPreferredSize().width, userButton.getHeight());
         });
     
-        // Đặt nút vào góc phải
+        // Place button in the right corner
         JPanel userPanel = new JPanel(new BorderLayout());
         userPanel.setBackground(Color.WHITE);
-        userPanel.setBorder(new EmptyBorder(0, 0, 0, 20)); // Padding phải 20px
+        userPanel.setBorder(new EmptyBorder(0, 0, 0, 20)); // Padding on the right of 20px
         userPanel.add(userButton, BorderLayout.CENTER);
     
         this.add(userPanel, BorderLayout.EAST);
@@ -152,11 +149,11 @@ public class Header extends MyPanel {
                     resultSet.getDate("birthDate")
                 );
             } else {
-                JOptionPane.showMessageDialog(this, "Không tìm thấy admin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Admin not found!", "Error", JOptionPane.ERROR_MESSAGE);
                 return;
             }
         } catch (SQLException e) {
-            JOptionPane.showMessageDialog(this, "Lỗi khi lấy thông tin admin từ cơ sở dữ liệu!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+            JOptionPane.showMessageDialog(this, "Error fetching admin data from the database!", "Error", JOptionPane.ERROR_MESSAGE);
             e.printStackTrace();
             return;
         }
@@ -170,16 +167,16 @@ public class Header extends MyPanel {
         JTextField dobField = new JTextField(formattedDate);
         
         Object[] message = {
-            "Tên:", nameField,
+            "Name:", nameField,
             "Email:", emailField,
-            "Số điện thoại:", phoneField,
-            "Ngày sinh (dd/MM/yyyy):", dobField,
+            "Phone number:", phoneField,
+            "Date of birth (dd/MM/yyyy):", dobField,
         };
         
         int option = JOptionPane.showConfirmDialog(
             this,
             message,
-            "Cập nhật thông tin cá nhân",
+            "Update Personal Information",
             JOptionPane.OK_CANCEL_OPTION
         );
         
@@ -190,7 +187,7 @@ public class Header extends MyPanel {
             String dobText = dobField.getText();
         
             if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dobText.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Please fill in all the information!", "Error", JOptionPane.ERROR_MESSAGE);
             } else {
                 try {
                     dateFormat.setLenient(false); // Ensure strict date parsing
@@ -208,20 +205,20 @@ public class Header extends MyPanel {
         
                         int rowsAffected = preparedStatement.executeUpdate();
                         if (rowsAffected > 0) {
-                            JOptionPane.showMessageDialog(this, "Thông tin cá nhân đã được cập nhật thành công!");
+                            JOptionPane.showMessageDialog(this, "Personal information updated successfully!");
                         } else {
-                            JOptionPane.showMessageDialog(this, "Không tìm thấy admin để cập nhật!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                            JOptionPane.showMessageDialog(this, "Admin not found for update!", "Error", JOptionPane.ERROR_MESSAGE);
                         }
                     }
                 } catch (ParseException e) {
                     JOptionPane.showMessageDialog(
                         this,
-                        "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy",
-                        "Lỗi",
+                        "Invalid birthdate format. Please use the dd/MM/yyyy format.",
+                        "Error",
                         JOptionPane.ERROR_MESSAGE
                     );
                 } catch (SQLException e) {
-                    JOptionPane.showMessageDialog(this, "Lỗi khi cập nhật thông tin admin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                    JOptionPane.showMessageDialog(this, "Error updating admin information!", "Error", JOptionPane.ERROR_MESSAGE);
                     e.printStackTrace();
                 }
             }

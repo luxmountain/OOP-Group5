@@ -33,9 +33,9 @@ public class AdminDashboard extends MyPanel {
         toggleButton = createBtn("≡", 20);
 
         // Tạo các nút chính
-        buttonGiaoVien = createBtn("Giáo Viên", 60);
-        buttonHocSinh = createBtn("Học Sinh", 100);
-        buttonLopHoc = createBtn("Lớp Học", 140);
+        buttonGiaoVien = createBtn("Teacher", 60);
+        buttonHocSinh = createBtn("Student", 100);
+        buttonLopHoc = createBtn("Class", 140);
 
         // Ẩn các nút chính ban đầu
         buttonGiaoVien.setVisible(false);
@@ -43,15 +43,15 @@ public class AdminDashboard extends MyPanel {
         buttonLopHoc.setVisible(false);
 
         // Tạo các nút chức năng
-        addTeacherBtn = methodBtn("Thêm", 180);
-        deleteTeacherBtn = methodBtn("Xóa", 220);
-        updateTeacherBtn = methodBtn("Thông Tin", 260);
+        addTeacherBtn = methodBtn("Add", 180);
+        deleteTeacherBtn = methodBtn("Delete", 220);
+        updateTeacherBtn = methodBtn("Info", 260);
 
-        viewStudentBtn = methodBtn("Thông tin", 300);
-        deleteStudentBtn = methodBtn("Xóa", 340);
-        addStudentBtn = methodBtn("Thêm", 380);
+        viewStudentBtn = methodBtn("Info", 300);
+        deleteStudentBtn = methodBtn("Delete", 340);
+        addStudentBtn = methodBtn("Add", 380);
 
-        viewClassInfoBtn = methodBtn("Thông tin", 420);
+        viewClassInfoBtn = methodBtn("Info", 420);
 
         // Ẩn tất cả các nút chức năng ban đầu
         addTeacherBtn.setVisible(false);
