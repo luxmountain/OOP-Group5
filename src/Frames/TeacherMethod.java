@@ -2,10 +2,12 @@ package Frames;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -21,8 +23,8 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import Models.SchoolClass;
-import Models.Student;
 import Models.Teacher;
+import application.Database;
 import application.Main;
 
 public class TeacherMethod extends JPanel {
@@ -64,15 +66,43 @@ public class TeacherMethod extends JPanel {
    
         // Xóa dữ liệu cũ
         tableModel.setRowCount(0);
-   
-        // Thêm dữ liệu từ danh sách giáo viên
-        List<Teacher> teacherList = Main.adminList.get(0).getTeachers();
-        for (int i = 0; i < teacherList.size(); i++) {
-            Teacher teacher = teacherList.get(i);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
-            String formattedBirthDate = dateFormat.format(teacher.getBirthDate());
-            tableModel.addRow(new Object[]{i + 1, teacher.getName(), teacher.getEmail(), teacher.getPhone(), teacher.getId(), formattedBirthDate, teacher.getClazz().getClassName()});
+        Database dtb = new Database();
+        String sql = "SELECT id, name, email, phone, birthDate FROM teachers";
+
+        try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            int i = 1; // Số thứ tự bắt đầu từ 1
+            while (resultSet.next()) {
+                // Lấy dữ liệu từ ResultSet
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                String phone = resultSet.getString("phone");
+                Date birthDate = resultSet.getDate("birthDate");
+                // String className = resultSet.getString("className");
+
+                // Format ngày tháng nếu cần
+                String formattedBirthDate = new SimpleDateFormat("dd/MM/yyyy").format(birthDate);
+
+                // Thêm vào tableModel
+                tableModel.addRow(new Object[]{
+                    i,         // Số thứ tự
+                    name,      // Tên giáo viên
+                    email,     // Email
+                    phone,     // Số điện thoại
+                    id,        // ID
+                    formattedBirthDate // Ngày sinh
+                    // className  
+                });
+
+                i++; // Tăng số thứ tự
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
+
+
    
         // Tạo JTable
         if (table == null) {
@@ -145,7 +175,6 @@ public class TeacherMethod extends JPanel {
         JTextField nameField = new JTextField();
         JTextField emailField = new JTextField();
         JTextField phoneField = new JTextField();
-        JTextField idField = new JTextField();
         JTextField dobField = new JTextField();
         JTextField classField = new JTextField();
    
@@ -153,7 +182,6 @@ public class TeacherMethod extends JPanel {
             "Tên giáo viên:", nameField,
             "Email:", emailField,
             "Số điện thoại:", phoneField,
-            "ID:", idField,
             "Ngày sinh (dd/MM/yyyy):", dobField,
             "Lớp:", classField,
         };
@@ -176,12 +204,11 @@ public class TeacherMethod extends JPanel {
                 String name = nameField.getText().trim();
                 String email = emailField.getText().trim();
                 String phone = phoneField.getText().trim();
-                String id = idField.getText().trim();
                 String dob = dobField.getText().trim();
                 String clazz = classField.getText().trim();
    
                 // Kiểm tra dữ liệu rỗng
-                if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dob.isEmpty() || clazz.isEmpty() || id.isEmpty()) {
+                if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dob.isEmpty() || clazz.isEmpty()) {
                     throw new IllegalArgumentException("Tất cả các trường đều phải được điền.");
                 }
    
@@ -202,7 +229,11 @@ public class TeacherMethod extends JPanel {
    
                 // Tạo đối tượng giáo viên mới
                 SchoolClass newClazz = new SchoolClass(clazz);
-                Teacher newTeacher = new Teacher(name, phone, email, id, birthDate, newClazz);
+                Database dtb = new Database();
+                int newIdNumber = dtb.countAdmins() + 1;
+                String newId = String.format("%d", newIdNumber);
+                Teacher newTeacher = new Teacher(name, phone, email, newId, birthDate);
+                dtb.insertTeacher(name, phone, email, birthDate);
    
                 // Thêm giáo viên vào danh sách
                 Main.adminList.get(0).getTeachers().add(newTeacher);
@@ -237,7 +268,7 @@ public class TeacherMethod extends JPanel {
     protected void deleteTeacher() {
         // Lấy chỉ số hàng được chọn
         int selectedRow = table.getSelectedRow();
-   
+
         if (selectedRow != -1) { // Kiểm tra nếu có hàng được chọn
             // Xác nhận từ người dùng trước khi xóa
             int confirm = JOptionPane.showConfirmDialog(
@@ -256,7 +287,8 @@ public class TeacherMethod extends JPanel {
                 for (int i = 0; i < tableModel.getRowCount(); i++) {
                     tableModel.setValueAt(i + 1, i, 0); // Cột STT là cột 0
                 }
-   
+                Database dtb = new Database();
+                dtb.deleteTeacher(selectedRow);
                 JOptionPane.showMessageDialog(this, "Xóa hàng thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {

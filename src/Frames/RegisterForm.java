@@ -193,15 +193,16 @@ public class RegisterForm {
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                     sdf.setLenient(false);
                     Date birthDate = sdf.parse(birthDateStr);
-                    String currentId = String.format("%d", ++Main.IDX);
 
-                    Admin newAdmin = new Admin(name, phone, email, currentId, birthDate);
+                    Database dtb = new Database();
+                    int newIdNumber = dtb.countAdmins() + 1;
+                    String newId = String.format("%d", newIdNumber);
+                    Admin newAdmin = new Admin(name, phone, email, newId, birthDate);
                     newAdmin.getAccount().setPassword(password);
                     Main.adminList.add(newAdmin);
                     
-                    Database dtb = new Database();
-                    dtb.insertAdmin(currentId, name, phone, email, birthDate, password);
-                    JOptionPane.showMessageDialog(frame, "Đăng ký thành công!\nChào " + name, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+                    dtb.insertAdmin(name, phone, email, birthDate, password);
+                    JOptionPane.showMessageDialog(frame, "Đăng ký thành công!\nTài khoản của bạn là: " + newAdmin.getAccount().getUserID(), "Thông báo", JOptionPane.INFORMATION_MESSAGE);
                     frame.dispose();
                     new LoginForm();
                 } catch (ParseException ex) {

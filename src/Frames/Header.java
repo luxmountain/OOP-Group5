@@ -6,8 +6,6 @@ import java.awt.Font;
 import java.awt.Frame;
 import java.awt.Image;
 import java.net.URL;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -17,23 +15,21 @@ import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import Frames.my.MyFont;
 import Frames.my.MyLabel;
 import Frames.my.MyPanel;
-import Models.Admin;
 
 public class Header extends MyPanel {
 
     private Frame parentFrame; // Tham chiếu đến frame cha để xử lý đăng xuất
-    private Admin admin;
-    public Header(String title, Frame parentFrame, Admin admin) {
+    private String adminID;
+    public Header(String title, Frame parentFrame, String adminID) {
         super(1080, 50, Color.WHITE);
         this.parentFrame = parentFrame;
-        this.admin = admin;
+        this.adminID = adminID;
         this.setLayout(new BorderLayout()); // Sử dụng BorderLayout để chia header thành các vùng
 
         addLogo();
@@ -125,57 +121,57 @@ public class Header extends MyPanel {
     
 
     private void updatePersonalInfo() {
-        // Tạo các trường nhập thông tin
-        JTextField nameField = new JTextField(admin.getName());
-        JTextField emailField = new JTextField(admin.getEmail());
-        JTextField phoneField = new JTextField(admin.getPhone());
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        String formattedDate = dateFormat.format(admin.getBirthDate());
+        // // Tạo các trường nhập thông tin
+        // JTextField nameField = new JTextField(admin.getName());
+        // JTextField emailField = new JTextField(admin.getEmail());
+        // JTextField phoneField = new JTextField(admin.getPhone());
+        // SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        // String formattedDate = dateFormat.format(admin.getBirthDate());
 
-        JTextField dobField = new JTextField(formattedDate);
+        // JTextField dobField = new JTextField(formattedDate);
 
-        Object[] message = {
-            "Tên:", nameField,
-            "Email:", emailField,
-            "Số điện thoại:", phoneField,
-            "Ngày sinh (dd/MM/yyyy):", dobField,
-        };
+        // Object[] message = {
+        //     "Tên:", nameField,
+        //     "Email:", emailField,
+        //     "Số điện thoại:", phoneField,
+        //     "Ngày sinh (dd/MM/yyyy):", dobField,
+        // };
 
-        int option = JOptionPane.showConfirmDialog(
-            this,
-            message,
-            "Cập nhật thông tin cá nhân",
-            JOptionPane.OK_CANCEL_OPTION
-        );
+        // int option = JOptionPane.showConfirmDialog(
+        //     this,
+        //     message,
+        //     "Cập nhật thông tin cá nhân",
+        //     JOptionPane.OK_CANCEL_OPTION
+        // );
 
-        if (option == JOptionPane.OK_OPTION) {
-            String name = nameField.getText();
-            String email = emailField.getText();
-            String phone = phoneField.getText();
-            String dobText = dobField.getText();
+        // if (option == JOptionPane.OK_OPTION) {
+        //     String name = nameField.getText();
+        //     String email = emailField.getText();
+        //     String phone = phoneField.getText();
+        //     String dobText = dobField.getText();
 
-            if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dobText.isEmpty()) {
-                JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            } else {
-                try {
-                    dateFormat.setLenient(false); // Đảm bảo kiểm tra chặt chẽ định dạng
-                    Date dob = dateFormat.parse(dobText);
+        //     if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dobText.isEmpty()) {
+        //         JOptionPane.showMessageDialog(this, "Vui lòng điền đầy đủ thông tin!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+        //     } else {
+        //         try {
+        //             dateFormat.setLenient(false); // Đảm bảo kiểm tra chặt chẽ định dạng
+        //             Date dob = dateFormat.parse(dobText);
 
-                    JOptionPane.showMessageDialog(this, "Thông tin cá nhân đã được cập nhật thành công!");
-                    admin.setName(name);
-                    admin.setEmail(email);
-                    admin.setPhone(phone);
-                    admin.setBirthDate(dob);
-                    System.out.println(admin.getName());
-                } catch (Exception e) {
-                    JOptionPane.showMessageDialog(
-                        this,
-                        "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy",
-                        "Lỗi",
-                        JOptionPane.ERROR_MESSAGE
-                    );
-                }
-            }
-        }
+        //             JOptionPane.showMessageDialog(this, "Thông tin cá nhân đã được cập nhật thành công!");
+        //             admin.setName(name);
+        //             admin.setEmail(email);
+        //             admin.setPhone(phone);
+        //             admin.setBirthDate(dob);
+        //             System.out.println(admin.getName());
+        //         } catch (Exception e) {
+        //             JOptionPane.showMessageDialog(
+        //                 this,
+        //                 "Định dạng ngày sinh không hợp lệ. Vui lòng sử dụng định dạng dd/MM/yyyy",
+        //                 "Lỗi",
+        //                 JOptionPane.ERROR_MESSAGE
+        //             );
+        //         }
+        //     }
+        // }
     }
 }

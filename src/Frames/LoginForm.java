@@ -15,8 +15,7 @@ import Frames.my.MyFont;
 import Frames.my.MyFrame;
 import Frames.my.MyLabel;
 import Frames.my.MyPanel;
-import Models.Admin;
-import application.Main;
+import application.Database;
 
 public class LoginForm {
     public LoginForm() {
@@ -70,22 +69,22 @@ public class LoginForm {
         loginButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                String username = usernameField.getText();
+                String username = usernameField.getText().substring(5); // Lấy substring từ ký tự thứ 5
                 String password = new String(passwordField.getPassword());
-
-                boolean fail = true;
-                for(Admin ad: Main.adminList){
-                    if (username.equals(ad.getAccount().getUserID()) && password.equals(ad.getAccount().getPassword())) {
-                        JOptionPane.showMessageDialog(frame, "Đăng nhập thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
-    
-                        frame.dispose();
-                        new AdminForm(ad);
-                        fail = false;
-                    }
+                Database dtb = new Database();
+                
+                String adminId = dtb.checkLogin(username, password); // Lấy id của admin
+                
+                if (adminId != null) {
+                    JOptionPane.showMessageDialog(frame, "Đăng nhập thành công!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                    frame.dispose();
+                    new AdminForm(adminId); // Truyền id vào AdminForm
+                } else {
+                    JOptionPane.showMessageDialog(frame, "Tên tài khoản hoặc mật khẩu sai!", "Error", JOptionPane.ERROR_MESSAGE);
                 }
-                if(fail) JOptionPane.showMessageDialog(frame, "Tên tài khoản hoặc mật khẩu sai!", "Error", JOptionPane.ERROR_MESSAGE);
             }
         });
+        
 
         MyButton registerButton = new MyButton("Đăng ký", new MyFont(Font.BOLD, 20), Color.WHITE, Color.BLUE);
         registerButton.setBounds(490, 440, 180, 50);  // Increased button size

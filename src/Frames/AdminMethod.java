@@ -24,6 +24,7 @@ import javax.swing.table.TableRowSorter;
 import Models.SchoolClass;
 import Models.Student;
 import Models.Teacher;
+import application.Database;
 import application.Main;
 
 
@@ -259,8 +260,12 @@ public class AdminMethod extends JPanel {
    
                 // Tạo đối tượng giáo viên mới
                 SchoolClass newClazz = new SchoolClass(clazz);
-                Teacher newTeacher = new Teacher(name, phone, email, id, birthDate, newClazz);
-   
+                Database dtb = new Database();
+                int newIdNumber = dtb.countTeachers() + 1;
+                String newId = String.format("%d", newIdNumber);
+                Teacher newTeacher = new Teacher(name, phone, email, newId, birthDate);
+                    
+                dtb.insertTeacher(name, phone, email, birthDate);
                 // Thêm giáo viên vào danh sách
                 Main.adminList.get(0).getTeachers().add(newTeacher);
    

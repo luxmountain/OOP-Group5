@@ -9,10 +9,10 @@ import Models.Admin;
 public class AdminForm {
     public MyPanel mainPanel = new MyPanel();
     public AdminDashboard teacherDB = new AdminDashboard(this);
-    public AdminForm(Admin ad) {
+    public AdminForm(String adminID) {
         MyFrame frame = new MyFrame("Admin Form");
 
-        Header teacherHD = new Header("Admin", frame, ad);
+        Header teacherHD = new Header("Admin", frame, adminID);
 
         frame.add(teacherDB, BorderLayout.WEST);
         frame.add(teacherHD, BorderLayout.NORTH);

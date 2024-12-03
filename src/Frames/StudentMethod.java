@@ -2,10 +2,12 @@ package Frames;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -20,8 +22,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-import Models.SchoolClass;
 import Models.Student;
+import application.Database;
 import application.Main;
 
 
@@ -64,16 +66,40 @@ public class StudentMethod extends JPanel {
         // Xóa dữ liệu cũ
         tableModel.setRowCount(0);
    
-        // Thêm dữ liệu từ danh sách giáo viên
-        SchoolClass tenLop = Main.adminList.get(0).getTeachers().get(0).getClazz();
-        List<Student> studentsList = Main.adminList.get(0).getTeachers().get(0).getClazz().getStudentList();
-        for (int i = 0; i < studentsList.size(); i++) {
-            Student stu = studentsList.get(i);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
-            String formattedBirthDate1 = dateFormat.format(stu.getBirthDate());
-            // SimpleDateFormat enDateFormat = new SimpleDateFormat("dd/MM/yy");
-            // String formattedBirthDate2 = enDateFormat.format(stu.getEnrollmentDate());
-            tableModel.addRow(new Object[]{i + 1, stu.getName(), formattedBirthDate1, stu.getId(), stu.getPhone(), stu.getEmail(), tenLop.getClassName()});
+Database dtb = new Database();
+        String sql = "SELECT id, name, email, phone, birthDate FROM teachers";
+
+        try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            int i = 1; // Số thứ tự bắt đầu từ 1
+            while (resultSet.next()) {
+                // Lấy dữ liệu từ ResultSet
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
+                String email = resultSet.getString("email");
+                String phone = resultSet.getString("phone");
+                Date birthDate = resultSet.getDate("birthDate");
+                // String className = resultSet.getString("className");
+
+                // Format ngày tháng nếu cần
+                String formattedBirthDate = new SimpleDateFormat("dd/MM/yyyy").format(birthDate);
+
+                // Thêm vào tableModel
+                tableModel.addRow(new Object[]{
+                    i,         // Số thứ tự
+                    name,      // Tên giáo viên
+                    email,     // Email
+                    phone,     // Số điện thoại
+                    id,        // ID
+                    formattedBirthDate // Ngày sinh
+                    // className  
+                });
+
+                i++; // Tăng số thứ tự
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
    
         // Tạo JTable
@@ -213,13 +239,14 @@ public class StudentMethod extends JPanel {
                 SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
                 dateFormat1.setLenient(false);
                 Date birthDate = dateFormat1.parse(dob);
-                SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
-                dateFormat2.setLenient(false);
-                Date enrollDate = dateFormat2.parse(eob);
-
-
+                
+                Database dtb = new Database();
+                int newIdNumber = dtb.countStudents() + 1;
+                String newId = String.format("%d", newIdNumber);
+                    
+                dtb.insertStudent(name, phone, email, birthDate);
                 // Tạo đối tượng giáo viên mới
-                Student newStu = new Student(name, phone, email, id, birthDate, enrollDate);
+                Student newStu = new Student(name, phone, email, newId, birthDate);
 
 
                 // Thêm học sinh vào danh sách
