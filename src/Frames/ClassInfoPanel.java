@@ -19,13 +19,13 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
 import application.Database;
-
 public class ClassInfoPanel extends JPanel {
     private JTable classTable;
     private DefaultTableModel tableModel;
     private JTextArea classDetailsArea;
     private Database dtb;
-        
+    private int selected = -1; // Biến lưu dòng được chọn, mặc định là -1 (không chọn)
+
     public ClassInfoPanel() {
         setLayout(new BorderLayout());
         setBackground(Color.LIGHT_GRAY);
@@ -76,8 +76,9 @@ public class ClassInfoPanel extends JPanel {
         JScrollPane tableScrollPane = new JScrollPane(classTable);
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
+        classDetailsArea = new JTextArea();
         JScrollPane detailsScrollPane = new JScrollPane(classDetailsArea);
-        detailsScrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
+        detailsScrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
         // Thêm các thành phần vào giao diện
         add(tableScrollPane, BorderLayout.NORTH);
@@ -89,9 +90,9 @@ public class ClassInfoPanel extends JPanel {
         // Sự kiện khi chọn lớp
         classTable.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                int selectedRow = classTable.getSelectedRow();
-                if (selectedRow != -1) {
-                    showClassDetails(selectedRow);
+                selected = classTable.getSelectedRow(); // Cập nhật dòng được chọn
+                if (selected != -1) {
+                    selected = classTable.convertRowIndexToModel(selected); // Chuyển về chỉ số model
                 }
             }
         });
@@ -99,23 +100,22 @@ public class ClassInfoPanel extends JPanel {
 
     protected void populateClassTable() {
         String sql = "SELECT id, class_name FROM classes";
-    
+
         try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
-    
+
             int i = 1; // Số thứ tự bắt đầu từ 1
             while (resultSet.next()) {
-                // Lấy dữ liệu từ ResultSet
                 String id = resultSet.getString("id");
                 String className = resultSet.getString("class_name");
-    
+
                 // Thêm dữ liệu vào tableModel
                 tableModel.addRow(new Object[]{
-                    i,         // Số thứ tự
-                    id,        // ID của lớp
-                    className  // Tên lớp
+                        i,         // Số thứ tự
+                        id,        // ID của lớp
+                        className  // Tên lớp
                 });
-    
+
                 i++; // Tăng số thứ tự
             }
         } catch (SQLException e) {
@@ -123,57 +123,8 @@ public class ClassInfoPanel extends JPanel {
             System.out.println("Error: Unable to populate class table.");
         }
     }
-    
-    protected void viewClassInfo() {
-        DefaultTableModel tableClassModel = new DefaultTableModel(new String[]{"STT", "Tên lớp", "Giáo viên", "Sĩ số", "Thời gian bắt đầu", "Thời gian kết thúc"}, 0);
 
-        Database dtb = new Database();
-        String sql = "SELECT id, class_name, teacher_id FROM classes";
-
-        try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(sql)) {
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            int i = 1; // Số thứ tự bắt đầu từ 1
-            while (resultSet.next()) {
-                String id = resultSet.getString("id");
-                String name = resultSet.getString("name");
-
-
-                tableClassModel.addRow(new Object[]{
-                    i, 
-                    id,        // Số thứ tự
-                    name
-                });
-
-                i++; // Tăng số thứ tự
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void showClassDetails(int rowIndex) {
-        // SchoolClass selectedClass = Main.adminList.get(0).getTeachers().get(rowIndex).getClazz();
-
-        // SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-
-        // StringBuilder details = new StringBuilder();
-        // details.append("Tên Lớp: ").append(selectedClass.getClassName()).append("\n");
-        // details.append("Sĩ Số: ").append(selectedClass.getStudentList().size()).append("\n");
-        // details.append("Thời Gian Bắt Đầu: ").append(dateFormat.format(selectedClass.getBeginTime())).append("\n");
-        // details.append("Thời Gian Kết Thúc: ").append(dateFormat.format(selectedClass.getEndTime())).append("\n");
-
-        // details.append("Danh Sách Học Sinh:\n");
-        // for (Student student : selectedClass.getStudentList()) {
-        //     details.append("- ").append(student.getName()).append("\n");
-        // }
-
-        // classDetailsArea.setText(details.toString());
-    }
-
-    public void viewClassInfo(int classIndex) {
-        // if (classIndex >= 0 && classIndex < Main.adminList.get(0).getTeachers().size()) {
-        //     showClassDetails(classIndex);
-        // }
+    public int getSelectedRow() {
+        return selected; // Trả về dòng được chọn
     }
 }

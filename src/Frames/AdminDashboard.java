@@ -24,6 +24,7 @@ public class AdminDashboard extends MyPanel {
     private TeacherMethod tpanel;
     private StudentMethod spanel;
     private ClassInfoPanel cpanel;
+    private StudentListFrame studentListFrame;
 
     public AdminDashboard(AdminForm mainPanel) {
         super(150, 720, Color.GRAY);
@@ -125,7 +126,7 @@ public class AdminDashboard extends MyPanel {
             mainForm.mainPanel.add(cpanel);
             mainForm.mainPanel.revalidate();
             mainForm.mainPanel.repaint();
-                    toggleClassButtonsVisibility();
+            toggleClassButtonsVisibility();
             }
         });
 
@@ -146,7 +147,7 @@ public class AdminDashboard extends MyPanel {
         updateTeacherBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e2) {
-                //tpanel.editTeacher();
+                // tpanel.editTeacher();
             }
         });
 
@@ -173,7 +174,7 @@ public class AdminDashboard extends MyPanel {
         viewClassInfoBtn.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                
+                studentListFrame = new StudentListFrame(cpanel.getSelectedRow());
                 toggleClassButtonsVisibility();
             }
         });
