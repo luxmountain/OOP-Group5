@@ -81,7 +81,7 @@ public class StudentListFrame extends JFrame {
         int index = 1; // Số thứ tự
         SimpleDateFormat yearFormat = new SimpleDateFormat("yyyy");
 
-        String sql = "SELECT s.id, s.name, s.birth_date, s.email, s.phone " +
+        String sql = "SELECT s.id, s.name, s.birthDate, s.email, s.phone " +
                     "FROM students s " +
                     "WHERE s.class_id = ?";
 
@@ -92,8 +92,8 @@ public class StudentListFrame extends JFrame {
             while (resultSet.next()) {
                 String studentId = resultSet.getString("id");
                 String studentName = resultSet.getString("name");
-                String birthDate = resultSet.getDate("birth_date") != null
-                        ? yearFormat.format(resultSet.getDate("birth_date"))
+                String birthDate = resultSet.getDate("birthDate") != null
+                        ? yearFormat.format(resultSet.getDate("birthDate"))
                         : "Chưa xác định";
                 String email = resultSet.getString("email");
                 String phone = resultSet.getString("phone");

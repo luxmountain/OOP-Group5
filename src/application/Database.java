@@ -51,30 +51,92 @@ public class Database {
         }
     }
     
+    public void deleteStudent(int studentId) {
+        try {
+            // Begin transaction
+            connection.setAutoCommit(true);
+    
+            // Delete student from the students table
+            String deleteStudentSql = "DELETE FROM students WHERE id = ?";
+            try (PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentSql)) {
+                preparedStatement.setInt(1, studentId);
+                preparedStatement.executeUpdate();
+            }
+    
+            // Commit the transaction
+            connection.commit();
+            System.out.println("Student and related records deleted successfully.");
+        } catch (SQLException e) {
+            // Rollback transaction in case of an error
+            try {
+                connection.rollback();
+                System.out.println("Transaction rolled back due to an error.");
+            } catch (SQLException ex) {
+                System.out.println("Error during rollback.");
+                ex.printStackTrace();
+            }
+            System.out.println("ERROR deleting student.");
+            e.printStackTrace();
+        } finally {
+            // Reset auto-commit mode to default
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Error resetting auto-commit.");
+                e.printStackTrace();
+            }
+        }
+    }
+    
+
     public void deleteTeacher(int teacherId) {
         try {
+            // Bắt đầu giao dịch (transaction)
+            connection.setAutoCommit(true);
+
+            // Xóa học sinh trong các lớp mà giáo viên này dạy
             String deleteStudentsSql = "DELETE FROM students WHERE id IN (SELECT id FROM classes WHERE teacher_id = ?)";
             try (PreparedStatement preparedStatement = connection.prepareStatement(deleteStudentsSql)) {
                 preparedStatement.setInt(1, teacherId);
                 preparedStatement.executeUpdate();
             }
-    
+
+            // Xóa các lớp học mà giáo viên này dạy
             String deleteClassesSql = "DELETE FROM classes WHERE teacher_id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(deleteClassesSql)) {
                 preparedStatement.setInt(1, teacherId);
                 preparedStatement.executeUpdate();
             }
-    
+
+            // Xóa giáo viên khỏi bảng teachers
             String deleteTeacherSql = "DELETE FROM teachers WHERE id = ?";
             try (PreparedStatement preparedStatement = connection.prepareStatement(deleteTeacherSql)) {
                 preparedStatement.setInt(1, teacherId);
                 preparedStatement.executeUpdate();
             }
-        
+
+            // Cam kết giao dịch
+            connection.commit();
             System.out.println("Teacher and all related records deleted successfully.");
         } catch (SQLException e) {
+            // Nếu có lỗi, rollback giao dịch để đảm bảo tính toàn vẹn
+            try {
+                connection.rollback();
+                System.out.println("Transaction rolled back due to an error.");
+            } catch (SQLException ex) {
+                System.out.println("Error during rollback.");
+                ex.printStackTrace();
+            }
             System.out.println("ERROR deleting teacher.");
             e.printStackTrace();
+        } finally {
+            // Đặt lại chế độ auto commit
+            try {
+                connection.setAutoCommit(true);
+            } catch (SQLException e) {
+                System.out.println("Error resetting auto commit.");
+                e.printStackTrace();
+            }
         }
     }
     

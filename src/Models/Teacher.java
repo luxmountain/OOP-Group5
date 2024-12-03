@@ -31,8 +31,6 @@ public class Teacher extends Person {
     public void setClazz(SchoolClass clazz) {
         this.clazz = clazz;
     }
-   
-   
 
     @Override
     public String toString() {

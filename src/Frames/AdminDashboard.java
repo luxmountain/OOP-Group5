@@ -246,7 +246,7 @@ public class AdminDashboard extends MyPanel {
             toggleButton.setEnabled(false);
             add(addTeacherBtn);
             add(deleteTeacherBtn);
-            add(updateTeacherBtn);
+            // add(updateTeacherBtn);
             // Remove "Lớp" and "Học sinh" buttons
             buttonGiaoVien.setVisible(true);
 
@@ -303,7 +303,7 @@ public class AdminDashboard extends MyPanel {
         if (!areStudentButtonsVisible) {
             add(addStudentBtn);
             add(deleteStudentBtn);
-            add(viewStudentBtn);
+            // add(viewStudentBtn);
             toggleButton.setEnabled(false);
             buttonHocSinh.setVisible(true);
 
@@ -343,7 +343,7 @@ public class AdminDashboard extends MyPanel {
         viewClassInfoBtn.setVisible(!isClassInfoVisible);
 
         if (!isClassInfoVisible) {
-            add(viewClassInfoBtn);
+            // add(viewClassInfoBtn);
             buttonLopHoc.setVisible(true);
             toggleButton.setEnabled(false);
             buttonGiaoVien.setVisible(true);

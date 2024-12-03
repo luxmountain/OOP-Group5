@@ -265,7 +265,7 @@ public class TeacherMethod extends JPanel {
             int option = JOptionPane.showConfirmDialog(
                 this,
                 message,
-                "Thêm giáo viên mới",
+                "Add new teacher",
                 JOptionPane.OK_CANCEL_OPTION
             );
     
@@ -322,7 +322,7 @@ public class TeacherMethod extends JPanel {
                     newTeacher.getClazz().getClassName()
                 });
                 // Hiển thị thông báo thành công
-                JOptionPane.showMessageDialog(this, "Thêm giáo viên thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Add teacher sucessfully!", "Sucess", JOptionPane.INFORMATION_MESSAGE);
                 isValid = true; // Thoát vòng lặp nếu dữ liệu hợp lệ
             } catch (IllegalArgumentException e) {
                 JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
@@ -341,8 +341,8 @@ public class TeacherMethod extends JPanel {
             // Xác nhận từ người dùng trước khi xóa
             int confirm = JOptionPane.showConfirmDialog(
                 this,
-                "Bạn có chắc chắn muốn xóa hàng này?",
-                "Xác nhận xóa",
+                "Are you sure to delete this row?",
+                "Confirm to delete",
                 JOptionPane.YES_NO_OPTION
             );
    
@@ -357,7 +357,7 @@ public class TeacherMethod extends JPanel {
                 }
                 Database dtb = new Database();
                 dtb.deleteTeacher(selectedRow);
-                JOptionPane.showMessageDialog(this, "Xóa hàng thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Delete teacher sucessfully", "Sucess", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một hàng để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);

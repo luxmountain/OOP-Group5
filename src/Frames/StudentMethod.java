@@ -114,7 +114,7 @@ public class StudentMethod extends JPanel {
     protected void addStudentTable() {
         // Khởi tạo tableModel nếu chưa có
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID", "Ngày sinh", "Lớp", "Ngày nhập học"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"No.", "Fullname", "Email", "Phone", "ID", "Date of birth", "Class"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; // Chỉ cho phép chỉnh sửa cột "Giáo viên"
@@ -225,12 +225,9 @@ public class StudentMethod extends JPanel {
     protected void addStudent() {
         JTextField nameField = new JTextField();
         JTextField dobField = new JTextField();
-        JTextField genderField = new JTextField();
-        JTextField idField = new JTextField();
         JTextField phoneField = new JTextField();
         JTextField emailField = new JTextField();
         JTextField classField = new JTextField();
-        JTextField eobField = new JTextField();
         //tên, ngày sinh, giới tính, id, sđt, email, lớp, ngày nhập học
 
         // Tạo các nút radio cho giới tính
@@ -245,7 +242,6 @@ public class StudentMethod extends JPanel {
         nameField.setPreferredSize(inputSize);
         emailField.setPreferredSize(inputSize);
         phoneField.setPreferredSize(inputSize);
-        idField.setPreferredSize(inputSize);
         dobField.setPreferredSize(inputSize);
         classField.setPreferredSize(inputSize);
     
@@ -258,12 +254,9 @@ public class StudentMethod extends JPanel {
         Object[] message = {
             "Tên sinh viên:", nameField,
             "Ngày sinh (dd/MM/yyyy):", dobField,
-            "Giới tính:", genderField,
-            "ID:", idField,
             "Số điện thoại:", phoneField,
             "Email:", emailField,
-            "Lớp:", classField,
-            "Ngày nhập học:", eobField,
+            "Lớp:", classField
         };
 
 
@@ -272,7 +265,7 @@ public class StudentMethod extends JPanel {
             int option = JOptionPane.showConfirmDialog(
             this,
             message,
-                "Thêm giáo viên mới",
+                "Add new person",
             JOptionPane.OK_CANCEL_OPTION
         );
 
@@ -286,16 +279,12 @@ public class StudentMethod extends JPanel {
             // Lấy dữ liệu từ các trường nhập
             String name = nameField.getText().trim();
             String dob = dobField.getText().trim();
-            String gender = genderField.getText().trim();
-            String id = idField.getText().trim();
             String phone = phoneField.getText().trim();
             String email = emailField.getText().trim();
             String clazz = classField.getText().trim();
-            String eob = eobField.getText().trim();
-
 
             // Kiểm tra dữ liệu rỗng
-            if (name.isEmpty() || dob.isEmpty() || gender.isEmpty() || id.isEmpty() || phone.isEmpty() || email.isEmpty() || clazz.isEmpty() || eob.isEmpty()) {
+            if (name.isEmpty() || dob.isEmpty() || phone.isEmpty() || email.isEmpty() || clazz.isEmpty()) {
                 throw new IllegalArgumentException("Tất cả các trường đều phải được điền.");
             }
 
@@ -357,7 +346,6 @@ public class StudentMethod extends JPanel {
     protected void deleteStudent() {
         // Lấy chỉ số hàng được chọn
         int selectedRow = table.getSelectedRow();
-   
         if (selectedRow != -1) { // Kiểm tra nếu có hàng được chọn
             // Xác nhận từ người dùng trước khi xóa
             int confirm = JOptionPane.showConfirmDialog(
@@ -376,8 +364,9 @@ public class StudentMethod extends JPanel {
                 for (int i = 0; i < tableModel.getRowCount(); i++) {
                     tableModel.setValueAt(i + 1, i, 0); // Cột STT là cột 0
                 }
-   
-                JOptionPane.showMessageDialog(this, "Xóa hàng thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                Database dtb = new Database();
+                dtb.deleteStudent(selectedRow);
+                JOptionPane.showMessageDialog(this, "Xóa học sinh thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
             }
         } else {
             JOptionPane.showMessageDialog(this, "Vui lòng chọn một hàng để xóa.", "Lỗi", JOptionPane.WARNING_MESSAGE);
