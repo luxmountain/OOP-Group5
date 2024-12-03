@@ -112,7 +112,7 @@ public class TeacherMethod extends JPanel {
     protected void addTeacherTable() {
         // Khởi tạo tableModel nếu chưa có
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID", "Ngày sinh", "Lớp"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"No,", "Name", "ID", "Class"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; 
@@ -123,7 +123,10 @@ public class TeacherMethod extends JPanel {
         // Xóa dữ liệu cũ
         tableModel.setRowCount(0);
         Database dtb = new Database();
-        String sql = "SELECT id, name, email, phone, birthDate FROM teachers";
+        String sql = "SELECT t.id AS teacher_id, t.name AS teacher_name, c.class_name " +
+                 "FROM teachers t " +
+                 "LEFT JOIN classes c ON t.id = c.teacher_id";
+        
 
         try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(sql)) {
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -131,24 +134,18 @@ public class TeacherMethod extends JPanel {
             int i = 1; // Số thứ tự bắt đầu từ 1
             while (resultSet.next()) {
                 // Lấy dữ liệu từ ResultSet
-                String id = resultSet.getString("id");
-                String name = resultSet.getString("name");
-                String email = resultSet.getString("email");
-                String phone = resultSet.getString("phone");
-                Date birthDate = resultSet.getDate("birthDate");
+                String id = resultSet.getString("teacher_id");
+                String name = resultSet.getString("teacher_name");
+                String className = resultSet.getString("class_name");
+                // String email = resultSet.getString("email");
+                // String phone = resultSet.getString("phone");
+                // Date birthDate = resultSet.getDate("birthDate");
                 // String className = resultSet.getString("className");
 
                 // Format ngày tháng nếu cần
-                String formattedBirthDate = new SimpleDateFormat("dd/MM/yyyy").format(birthDate);
+                //String formattedBirthDate = new SimpleDateFormat("dd/MM/yyyy").format(birthDate);
                 // Thêm vào tableModel
-                tableModel.addRow(new Object[]{
-                    i,         // Số thứ tự
-                    name,      // Tên giáo viên
-                    email,     // Email
-                    phone,     // Số điện thoại
-                    id,        // ID
-                    formattedBirthDate // Ngày sinh
-                });
+                tableModel.addRow(new Object[]{i, name, id, className});
 
                 i++; // Tăng số thứ tự
             }
@@ -163,7 +160,7 @@ public class TeacherMethod extends JPanel {
         }
 
         for (int i = 0; i < table.getColumnCount(); i++) {
-            if (i == 0 || i == 3 || i == 4 || i == 5 || i == 6) { // Cột "STT", "SĐT", "ID", "Ngày sinh"
+            if (i == 0 || i == 2) { // Cột "STT", "SĐT", "ID", "Ngày sinh"
                 table.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
                     @Override
                     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -223,41 +220,26 @@ public class TeacherMethod extends JPanel {
 
     protected void addTeacher() {
         JTextField nameField = new JTextField();
+        JTextField dobField = new JTextField();
         JTextField emailField = new JTextField();
         JTextField phoneField = new JTextField();
-
-        JTextField idField = new JTextField();
-        JTextField dobField = new JTextField();
-        JTextField classField = new JTextField();
-    
-        // Tạo các nút radio cho giới tính
-        JRadioButton maleButton = new JRadioButton("Nam");
-        JRadioButton femaleButton = new JRadioButton("Nữ");
-        ButtonGroup genderGroup = new ButtonGroup();
-        genderGroup.add(maleButton);
-        genderGroup.add(femaleButton);
+        //JTextField classField = new JTextField();
     
         // Tùy chỉnh kích thước cho các trường nhập liệu
         Dimension inputSize = new Dimension(150, 25);
         nameField.setPreferredSize(inputSize);
+        dobField.setPreferredSize(inputSize);
         emailField.setPreferredSize(inputSize);
         phoneField.setPreferredSize(inputSize);
-        idField.setPreferredSize(inputSize);
-        dobField.setPreferredSize(inputSize);
-        classField.setPreferredSize(inputSize);
+        //classField.setPreferredSize(inputSize);
     
-        // Tùy chỉnh kích thước cho Panel chứa các nút radio
-        JPanel genderPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        genderPanel.add(maleButton);
-        genderPanel.add(femaleButton);
-        genderPanel.setPreferredSize(new Dimension(200, 30)); // Kích thước tùy chỉnh
     
         Object[] message = {
-            "Tên giáo viên:", nameField,
+            "Name:", nameField,
+            "Birth Date (dd/MM/yyyy):", dobField,
             "Email:", emailField,
-            "Số điện thoại:", phoneField,
-            "Ngày sinh (dd/MM/yyyy):", dobField,
-            "Lớp:", classField,
+            "Phone:", phoneField,
+            //"Lớp:", classField,
         };
    
         boolean isValid = false; // Biến kiểm tra tính hợp lệ
@@ -265,7 +247,7 @@ public class TeacherMethod extends JPanel {
             int option = JOptionPane.showConfirmDialog(
                 this,
                 message,
-                "Thêm giáo viên mới",
+                "Add new teacher",
                 JOptionPane.OK_CANCEL_OPTION
             );
     
@@ -274,62 +256,57 @@ public class TeacherMethod extends JPanel {
             }
 
             try {
+
+                System.out.println("aaaaa");
                 // Lấy dữ liệu từ các trường nhập
                 String name = nameField.getText().trim();
+                String dob = dobField.getText().trim();
                 String email = emailField.getText().trim();
                 String phone = phoneField.getText().trim();
-                String dob = dobField.getText().trim();
-                String clazz = classField.getText().trim();
+                //String clazz = classField.getText().trim();
    
                 // Kiểm tra dữ liệu rỗng
-                if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dob.isEmpty() || clazz.isEmpty()) {
-                    throw new IllegalArgumentException("Tất cả các trường đều phải được điền.");
+                if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dob.isEmpty()) {
+                    throw new IllegalArgumentException("All fields must be filled.");
                 }
  
                 if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-                    throw new IllegalArgumentException("Email không hợp lệ.");
+                    throw new IllegalArgumentException("Invalid email format.");
                 }
                 // Kiểm tra định dạng số điện thoại
                 if (!phone.matches("^\\d{9,11}$")) {
-                    throw new IllegalArgumentException("Số điện thoại không hợp lệ (9-11 chữ số).");
+                    throw new IllegalArgumentException("Invalid phone number (9-11 digits).");
                 }
                 // Kiểm tra định dạng ngày sinh
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 dateFormat.setLenient(false);
                 Date birthDate = dateFormat.parse(dob);
 
-                SchoolClass newClazz = new SchoolClass(clazz);
+                //SchoolClass newClazz = new SchoolClass(clazz);
                 Database dtb = new Database();
                 int newIdNumber = dtb.countAdmins() + 1;
                 String newId = String.format("%d", newIdNumber);
                 Teacher newTeacher = new Teacher(name, phone, email, newId, birthDate);
                 dtb.insertTeacher(name, phone, email, birthDate);
-   
-                // Thêm giáo viên vào danh sách
-                Main.adminList.get(0).getTeachers().add(newTeacher);
-   
-                // Định dạng ngày sinh trước khi thêm vào bảng
-                String formattedDob = dateFormat.format(birthDate);
-   
+
                 // Thêm giáo viên vào bảng
                 tableModel.addRow(new Object[]{
                     tableModel.getRowCount() + 1,
                     newTeacher.getName(),
-                    newTeacher.getEmail(),
                     newTeacher.getPhone(),
-                    newTeacher.getId(),
-                    formattedDob,
-                    newTeacher.getClazz().getClassName()
+                    newTeacher.getEmail(),
+                    newTeacher.getBirthDate(),
                 });
+
                 // Hiển thị thông báo thành công
-                JOptionPane.showMessageDialog(this, "Thêm giáo viên thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Teacher added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
                 isValid = true; // Thoát vòng lặp nếu dữ liệu hợp lệ
             } catch (IllegalArgumentException e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
             } catch (ParseException e) {
-                JOptionPane.showMessageDialog(this, "Ngày sinh không đúng định dạng (dd/MM/yyyy).", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Invalid birth date format (dd/MM/yyyy).", "Input Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi thêm giáo viên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "An error occurred while adding the teacher.", "Input Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
