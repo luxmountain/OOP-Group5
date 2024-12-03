@@ -23,12 +23,13 @@ import javax.swing.JTextField;
 import Frames.my.MyFrame;
 import Frames.my.MyPanel;
 import Models.Admin;
+import application.Database;
 import application.Main;
 
 public class RegisterForm {
     public RegisterForm() {
         // Sử dụng MyFrame cho frame chính
-        MyFrame frame = new MyFrame("Form Đăng Ký");
+        MyFrame frame = new MyFrame("Register Form");
 
         // Main panel for the form
         MyPanel registerPanel = new MyPanel();
@@ -39,37 +40,36 @@ public class RegisterForm {
         gbc.anchor = GridBagConstraints.WEST; // Canh trái
 
         // Phông chữ và kích thước
-        Font labelFontBold = new Font("Arial", Font.BOLD, 24);
-        Font labelFontRegular = new Font("Arial", Font.PLAIN, 24);  // Regular font for non-bold labels
+        Font labelFontRegular = new Font("Arial", Font.PLAIN, 24); // Regular font
         Font fieldFont = new Font("Arial", Font.PLAIN, 20);
 
         // Kích thước các trường
         Dimension fieldDimension = new Dimension(300, 40);
 
         // Các trường thông tin
-        JLabel nameLabel = new JLabel("Họ và tên:");
-        nameLabel.setFont(labelFontRegular); // Set non-bold for nameLabel
+        JLabel nameLabel = new JLabel("Fullname:");
+        nameLabel.setFont(labelFontRegular);
 
         JTextField nameField = new JTextField();
         nameField.setFont(fieldFont);
         nameField.setPreferredSize(fieldDimension);
 
         JLabel emailLabel = new JLabel("Email:");
-        emailLabel.setFont(labelFontRegular);  // Set bold font for emailLabel
+        emailLabel.setFont(labelFontRegular);
 
         JTextField emailField = new JTextField();
         emailField.setFont(fieldFont);
         emailField.setPreferredSize(fieldDimension);
 
-        JLabel phoneLabel = new JLabel("Số điện thoại:");
-        phoneLabel.setFont(labelFontRegular);  // Set non-bold for phoneLabel
+        JLabel phoneLabel = new JLabel("Phone Number:");
+        phoneLabel.setFont(labelFontRegular);
 
         JTextField phoneField = new JTextField();
         phoneField.setFont(fieldFont);
         phoneField.setPreferredSize(fieldDimension);
 
-        JLabel birthDateLabel = new JLabel("Ngày sinh (dd/MM/yyyy):");
-        birthDateLabel.setFont(labelFontRegular);  // Set non-bold for birthDateLabel
+        JLabel birthDateLabel = new JLabel("Date of birth (dd/MM/yyyy)");
+        birthDateLabel.setFont(labelFontRegular);
 
         JTextField dayField = new JTextField();
         JTextField monthField = new JTextField();
@@ -91,21 +91,21 @@ public class RegisterForm {
         birthDatePanel.add(new JLabel("/"));
         birthDatePanel.add(yearField);
 
-        JLabel passwordLabel = new JLabel("Mật khẩu:");
-        passwordLabel.setFont(labelFontRegular);  // Set non-bold for passwordLabel
+        JLabel passwordLabel = new JLabel("Password:");
+        passwordLabel.setFont(labelFontRegular);
 
         JPasswordField passwordField = new JPasswordField();
         passwordField.setFont(fieldFont);
         passwordField.setPreferredSize(fieldDimension);
 
-        JLabel confirmPasswordLabel = new JLabel("Xác nhận mật khẩu:");
-        confirmPasswordLabel.setFont(labelFontRegular);  // Set non-bold for confirmPasswordLabel
+        JLabel confirmPasswordLabel = new JLabel("Confirm Password:");
+        confirmPasswordLabel.setFont(labelFontRegular);
 
         JPasswordField confirmPasswordField = new JPasswordField();
         confirmPasswordField.setFont(fieldFont);
         confirmPasswordField.setPreferredSize(fieldDimension);
 
-        JButton registerButton = new JButton("Đăng Ký");
+        JButton registerButton = new JButton("Sign Up");
         registerButton.setFont(new Font("Arial", Font.BOLD, 20));
         registerButton.setBackground(Color.BLUE);
         registerButton.setForeground(Color.WHITE);
@@ -115,8 +115,8 @@ public class RegisterForm {
         messageLabel.setFont(labelFontRegular);
         messageLabel.setForeground(Color.RED);
 
-        // Add Back button to the top-left corner
-        JButton backButton = new JButton("Quay lại");
+        // Add Back button
+        JButton backButton = new JButton("Back");
         backButton.setFont(new Font("Arial", Font.PLAIN, 16));
         backButton.setBackground(Color.GRAY);
         backButton.setForeground(Color.WHITE);
@@ -125,18 +125,15 @@ public class RegisterForm {
         backButton.setFocusPainted(false);
         backButton.addActionListener(e -> {
             frame.dispose();
-            new LoginForm();  // Navigate to LoginForm
+            new LoginForm();
         });
 
-        // Create a top panel for Back button
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT)); // Align left
-        topPanel.setBackground(Color.PINK);  // Set background color
-        topPanel.add(backButton);  // Add back button to this panel
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        topPanel.setBackground(Color.PINK);
+        topPanel.add(backButton);
 
-        // Add the top panel to the frame
         frame.add(topPanel, BorderLayout.NORTH);
 
-        // Add the rest of the form components
         gbc.gridx = 0; gbc.gridy = 0;
         registerPanel.add(nameLabel, gbc);
         gbc.gridx = 1; gbc.gridy = 0;
@@ -168,11 +165,13 @@ public class RegisterForm {
         registerPanel.add(confirmPasswordField, gbc);
 
         gbc.gridx = 0; gbc.gridy = 6; gbc.gridwidth = 2;
-        gbc.anchor = GridBagConstraints.CENTER; // Canh giữa nút
+        gbc.anchor = GridBagConstraints.CENTER;
         registerPanel.add(registerButton, gbc);
 
         gbc.gridx = 0; gbc.gridy = 7; gbc.gridwidth = 2;
         registerPanel.add(messageLabel, gbc);
+
+        frame.add(registerPanel, BorderLayout.CENTER);
 
         registerButton.addActionListener(e -> {
             String name = nameField.getText().trim();
@@ -183,31 +182,38 @@ public class RegisterForm {
             String year = yearField.getText().trim();
             String password = new String(passwordField.getPassword()).trim();
             String confirmPassword = new String(confirmPasswordField.getPassword()).trim();
-        
-            // Validation code here...
-        
+
             if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || day.isEmpty() || month.isEmpty() || year.isEmpty() || password.isEmpty() || confirmPassword.isEmpty()) {
-                messageLabel.setText("Vui lòng điền đầy đủ thông tin!");
+                messageLabel.setText("Please fill in all the information!");
             } else {
                 try {
                     String birthDateStr = day + "/" + month + "/" + year;
                     SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-                    sdf.setLenient(false); // Strict validation
+                    sdf.setLenient(false);
                     Date birthDate = sdf.parse(birthDateStr);
-        
-                    Admin newAdmin = new Admin(name, phone, email, String.format("%d", ++Main.IDX), birthDate);
+
+                    if (!password.equals(confirmPassword)) {
+                        messageLabel.setText("Passwords do not match!");
+                        return;
+                    }
+
+                    Database dtb = new Database();
+                    int newIdNumber = dtb.countAdmins() + 1;
+                    String newId = String.format("%d", newIdNumber);
+                    Admin newAdmin = new Admin(name, phone, email, newId, birthDate);
                     newAdmin.getAccount().setPassword(password);
                     Main.adminList.add(newAdmin);
-                    JOptionPane.showMessageDialog(frame, "Đăng ký thành công!\nChào " + name, "Thông báo", JOptionPane.INFORMATION_MESSAGE);
+
+                    dtb.insertAdmin(name, phone, email, birthDate, password);
+                    JOptionPane.showMessageDialog(frame, "Registration successful!\nYour account ID is: " + newAdmin.getAccount().getUserID(), "Notification", JOptionPane.INFORMATION_MESSAGE);
                     frame.dispose();
                     new LoginForm();
                 } catch (ParseException ex) {
-                    messageLabel.setText("Ngày sinh không hợp lệ!");
+                    messageLabel.setText("Invalid date of birth!");
                 }
             }
         });
 
-        frame.add(registerPanel, BorderLayout.CENTER);
         frame.setLocationRelativeTo(null);
         frame.setVisible(true);
     }

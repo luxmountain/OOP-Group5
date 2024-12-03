@@ -24,6 +24,7 @@ import javax.swing.table.TableRowSorter;
 import Models.SchoolClass;
 import Models.Student;
 import Models.Teacher;
+import application.Database;
 import application.Main;
 
 
@@ -32,25 +33,17 @@ public class AdminMethod extends JPanel {
     protected DefaultTableModel tableModel;
     protected JTextField searchField;
 
-
-
-
     public AdminMethod() {
         setLayout(new BorderLayout());
         addTeacherTable();
-        addStudentTable();
-
 
         JPanel topPanel = new JPanel(new BorderLayout());
         searchField = new JTextField();
-        JButton searchButton = new JButton("Tìm kiếm");
-
-
-
+        JButton searchButton = new JButton("Search");
 
         JPanel buttonPanel = new JPanel();
         JPanel searchPanel = new JPanel(new BorderLayout());
-        searchPanel.add(new JLabel("Tìm kiếm: "), BorderLayout.WEST);
+        searchPanel.add(new JLabel("Search: "), BorderLayout.WEST);
         searchPanel.add(searchField, BorderLayout.CENTER);
         searchPanel.add(searchButton, BorderLayout.EAST);
 
@@ -70,7 +63,7 @@ public class AdminMethod extends JPanel {
     protected void addTeacherTable() {
         // Khởi tạo tableModel nếu chưa có
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID", "Ngày sinh", "Lớp"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"No.", "Fullname", "Email", "Phone", "ID", "Date of birth", "Class"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; // Chỉ cho phép chỉnh sửa cột "Giáo viên"
@@ -213,69 +206,73 @@ public class AdminMethod extends JPanel {
         JTextField idField = new JTextField();
         JTextField dobField = new JTextField();
         JTextField classField = new JTextField();
-   
+     
         Object[] message = {
-            "Tên giáo viên:", nameField,
+            "Teacher's name:", nameField,
             "Email:", emailField,
-            "Số điện thoại:", phoneField,
+            "Phone number:", phoneField,
             "ID:", idField,
-            "Ngày sinh (dd/MM/yyyy):", dobField,
-            "Lớp:", classField,
+            "Date of birth (dd/MM/yyyy):", dobField,
+            "Class:", classField,
         };
-   
-        boolean isValid = false; // Biến kiểm tra tính hợp lệ
+    
+        boolean isValid = false; // Validity check variable
         while (!isValid) {
             int option = JOptionPane.showConfirmDialog(
                 this,
                 message,
-                "Thêm giáo viên mới",
+                "Add New Teacher",
                 JOptionPane.OK_CANCEL_OPTION
             );
-   
+    
             if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
-                return; // Thoát nếu người dùng hủy bỏ
+                return; // Exit if the user cancels
             }
-   
+    
             try {
-                // Lấy dữ liệu từ các trường nhập
+                // Get data from input fields
                 String name = nameField.getText().trim();
                 String email = emailField.getText().trim();
                 String phone = phoneField.getText().trim();
                 String id = idField.getText().trim();
                 String dob = dobField.getText().trim();
                 String clazz = classField.getText().trim();
-   
-                // Kiểm tra dữ liệu rỗng
+    
+                // Check for empty fields
                 if (name.isEmpty() || email.isEmpty() || phone.isEmpty() || dob.isEmpty() || clazz.isEmpty() || id.isEmpty()) {
-                    throw new IllegalArgumentException("Tất cả các trường đều phải được điền.");
+                    throw new IllegalArgumentException("All fields must be filled.");
                 }
-   
-                // Kiểm tra định dạng email
+    
+                // Check email format
                 if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-                    throw new IllegalArgumentException("Email không hợp lệ.");
+                    throw new IllegalArgumentException("Invalid email format.");
                 }
-   
-                // Kiểm tra định dạng số điện thoại
+    
+                // Check phone number format
                 if (!phone.matches("^\\d{9,11}$")) {
-                    throw new IllegalArgumentException("Số điện thoại không hợp lệ (9-11 chữ số).");
+                    throw new IllegalArgumentException("Invalid phone number format (9-11 digits).");
                 }
-   
-                // Kiểm tra định dạng ngày sinh
+    
+                // Check date of birth format
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
                 dateFormat.setLenient(false);
                 Date birthDate = dateFormat.parse(dob);
-   
-                // Tạo đối tượng giáo viên mới
+    
+                // Create new teacher object
                 SchoolClass newClazz = new SchoolClass(clazz);
-                Teacher newTeacher = new Teacher(name, phone, email, id, birthDate, newClazz);
-   
-                // Thêm giáo viên vào danh sách
+                Database dtb = new Database();
+                int newIdNumber = dtb.countTeachers() + 1;
+                String newId = String.format("%d", newIdNumber);
+                Teacher newTeacher = new Teacher(name, phone, email, newId, birthDate);
+                
+                dtb.insertTeacher(name, phone, email, birthDate);
+                // Add teacher to list
                 Main.adminList.get(0).getTeachers().add(newTeacher);
-   
-                // Định dạng ngày sinh trước khi thêm vào bảng
+    
+                // Format birth date before adding to table
                 String formattedDob = dateFormat.format(birthDate);
-   
-                // Thêm giáo viên vào bảng
+    
+                // Add teacher to table
                 tableModel.addRow(new Object[]{
                     tableModel.getRowCount() + 1,
                     newTeacher.getName(),
@@ -285,219 +282,92 @@ public class AdminMethod extends JPanel {
                     formattedDob,
                     newTeacher.getClazz().getClassName()
                 });
-   
-                // Hiển thị thông báo thành công
-                JOptionPane.showMessageDialog(this, "Thêm giáo viên thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                isValid = true; // Thoát vòng lặp nếu dữ liệu hợp lệ
+    
+                // Show success message
+                JOptionPane.showMessageDialog(this, "Teacher added successfully!", "Success", JOptionPane.INFORMATION_MESSAGE);
+                isValid = true; // Exit loop if data is valid
             } catch (IllegalArgumentException e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, e.getMessage(), "Input Error", JOptionPane.ERROR_MESSAGE);
             } catch (ParseException e) {
-                JOptionPane.showMessageDialog(this, "Ngày sinh không đúng định dạng (dd/MM/yyyy).", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "Date of birth is not in the correct format (dd/MM/yyyy).", "Input Error", JOptionPane.ERROR_MESSAGE);
             } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi thêm giáo viên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(this, "An error occurred while adding the teacher.", "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
     }
-
-
-    //tên, ngày sinh, giới tính, id, sđt, email, lớp, ngày nhập học
+    
+    // Name, date of birth, gender, id, phone, email, class, enrollment date
     protected void addStudentTable() {
-        // Khởi tạo tableModel nếu chưa có
+        // Initialize tableModel if not already done
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"STT", "Họ và tên", "Email", "SĐT", "ID", "Ngày sinh", "Lớp", "Ngày nhập học"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"No.", "Full Name", "Email", "Phone", "ID", "Date of Birth", "Class", "Enrollment Date"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
-                    return false; // Chỉ cho phép chỉnh sửa cột "Giáo viên"
+                    return false; // Only allow editing of "Teacher" column
                 }
             };
         }
-   
-        // Xóa dữ liệu cũ
+    
+        // Clear old data
         tableModel.setRowCount(0);
-   
-        // Thêm dữ liệu từ danh sách giáo viên
-        SchoolClass tenLop = Main.adminList.get(0).getTeachers().get(0).getClazz();
-        List<Student> studentsList = Main.adminList.get(0).getTeachers().get(0).getClazz().getStudentList();
+    
+        // Add data from teacher's class
+        SchoolClass className = Main.adminList.get(0).getTeachers().get(0).getClazz();
+        List<Student> studentsList = className.getStudentList();
         for (int i = 0; i < studentsList.size(); i++) {
             Student stu = studentsList.get(i);
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yy");
-            String formattedBirthDate1 = dateFormat.format(stu.getBirthDate());
-            // SimpleDateFormat enDateFormat = new SimpleDateFormat("dd/MM/yy");
-            // String formattedBirthDate2 = enDateFormat.format(stu.getEnrollmentDate());
-            tableModel.addRow(new Object[]{i + 1, stu.getName(), formattedBirthDate1, stu.getId(), stu.getPhone(), stu.getEmail(), tenLop.getClassName()});
+            String formattedBirthDate = dateFormat.format(stu.getBirthDate());
+            tableModel.addRow(new Object[]{i + 1, stu.getName(), formattedBirthDate, stu.getId(), stu.getPhone(), stu.getEmail(), className.getClassName()});
         }
-   
-        // Tạo JTable
+    
+        // Create JTable
         if (table == null) {
             table = new JTable(tableModel);
         } else {
             table.setModel(tableModel);
         }
-
-
-
-
-        // Cài đặt căn lề cho các cột
+    
+        // Set column alignment
         for (int i = 0; i < table.getColumnCount(); i++) {
-            if (i == 0 || i == 3 || i == 4 || i == 5 || i == 6) { // Cột "STT", "SĐT", "ID", "Ngày sinh"
+            if (i == 0 || i == 3 || i == 4 || i == 5 || i == 6) { // "No.", "Phone", "ID", "Date of Birth"
                 table.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
                     @Override
                     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
                         Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-                        setHorizontalAlignment(SwingConstants.CENTER); // Căn lề giữa
+                        setHorizontalAlignment(SwingConstants.CENTER); // Center alignment
                         return c;
                     }
                 });
-            } else { // Các cột còn lại sẽ căn lề trái
+            } else { // Other columns are left-aligned
                 table.getColumnModel().getColumn(i).setCellRenderer(new TableCellRendererWithIndent(10));
             }
         }
-
-
-
-
-         // Thiết lập độ rộng các cột
-        table.getColumnModel().getColumn(0).setPreferredWidth(30);  // Thu nhỏ cột "STT" đi 20
+    
+        // Set column widths
+        table.getColumnModel().getColumn(0).setPreferredWidth(30);  // Shrink "No." column
         table.getColumnModel().getColumn(1).setPreferredWidth(130);
         table.getColumnModel().getColumn(2).setPreferredWidth(120);
-   
-        // Thêm khả năng sắp xếp
+    
+        // Enable sorting
         TableRowSorter<DefaultTableModel> sorter = new TableRowSorter<>(tableModel);
         table.setRowSorter(sorter);
-   
-        // Vô hiệu hóa sắp xếp cho cột "STT" (cột 0)
+    
+        // Disable sorting for "No." column (column 0)
         sorter.setSortable(0, false);
-   
-        // Cập nhật lại cột STT khi thay đổi thứ tự
+    
+        // Update "No." column when row order changes
         sorter.addRowSorterListener(e -> {
             for (int i = 0; i < tableModel.getRowCount(); i++) {
-                tableModel.setValueAt(i + 1, table.convertRowIndexToView(i), 0); // Cập nhật giá trị STT
+                tableModel.setValueAt(i + 1, table.convertRowIndexToView(i), 0); // Update "No." value
             }
         });
-   
-        // Bọc JTable trong JScrollPane và thêm vào giao diện
+    
+        // Wrap JTable in JScrollPane and add to interface
         JScrollPane scrollPane = new JScrollPane(table);
         add(scrollPane, BorderLayout.CENTER);
-
-
-
-
-        // Lùi table vào mỗi bên 10
-        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));  // Lùi vào 10px ở mỗi bên
-    }
-
-
-    protected void addStudent() {
-        JTextField nameField = new JTextField();
-        JTextField dobField = new JTextField();
-        JTextField genderField = new JTextField();
-        JTextField idField = new JTextField();
-        JTextField phoneField = new JTextField();
-        JTextField emailField = new JTextField();
-        JTextField classField = new JTextField();
-        JTextField eobField = new JTextField();
-        //tên, ngày sinh, giới tính, id, sđt, email, lớp, ngày nhập học
-        Object[] message = {
-            "Tên sinh viên:", nameField,
-            "Ngày sinh (dd/MM/yyyy):", dobField,
-            "Giới tính:", genderField,
-            "ID:", idField,
-            "Số điện thoại:", phoneField,
-            "Email:", emailField,
-            "Lớp:", classField,
-            "Ngày nhập học:", eobField,
-        };
-
-
-        boolean isValid = false; // Biến kiểm tra tính hợp lệ
-        while (!isValid) {
-            int option = JOptionPane.showConfirmDialog(
-            this,
-            message,
-                "Thêm giáo viên mới",
-            JOptionPane.OK_CANCEL_OPTION
-        );
-
-
-        if (option == JOptionPane.CANCEL_OPTION || option == JOptionPane.CLOSED_OPTION) {
-            return; // Thoát nếu người dùng hủy bỏ
-        }
-
-
-        try {
-            // Lấy dữ liệu từ các trường nhập
-            String name = nameField.getText().trim();
-            String dob = dobField.getText().trim();
-            String gender = genderField.getText().trim();
-            String id = idField.getText().trim();
-            String phone = phoneField.getText().trim();
-            String email = emailField.getText().trim();
-            String clazz = classField.getText().trim();
-            String eob = eobField.getText().trim();
-
-
-            // Kiểm tra dữ liệu rỗng
-            if (name.isEmpty() || dob.isEmpty() || gender.isEmpty() || id.isEmpty() || phone.isEmpty() || email.isEmpty() || clazz.isEmpty() || eob.isEmpty()) {
-                throw new IllegalArgumentException("Tất cả các trường đều phải được điền.");
-            }
-
-
-            // Kiểm tra định dạng email
-            if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-                throw new IllegalArgumentException("Email không hợp lệ.");
-            }
-
-
-            // Kiểm tra định dạng số điện thoại
-            if (!phone.matches("^\\d{9,11}$")) {
-                    throw new IllegalArgumentException("Số điện thoại không hợp lệ (9-11 chữ số).");
-            }
-
-
-                // Kiểm tra định dạng ngày sinh
-                SimpleDateFormat dateFormat1 = new SimpleDateFormat("dd/MM/yyyy");
-                dateFormat1.setLenient(false);
-                Date birthDate = dateFormat1.parse(dob);
-                SimpleDateFormat dateFormat2 = new SimpleDateFormat("dd/MM/yyyy");
-                dateFormat2.setLenient(false);
-                Date enrollDate = dateFormat2.parse(eob);
-
-
-                // Tạo đối tượng giáo viên mới
-                Student newStu = new Student(name, phone, email, id, birthDate, enrollDate);
-
-
-                // Thêm học sinh vào danh sách
-                Main.adminList.get(0).getTeachers().get(0).getClazz().addStudent(newStu);
-                //Main.adminList.get(0).getTeachers().add(newTeacher);
-
-
-                // Định dạng ngày sinh trước khi thêm vào bảng
-                String formattedDob = dateFormat1.format(birthDate);
-
-
-                // Thêm giáo viên vào bảng
-                tableModel.addRow(new Object[]{
-                    tableModel.getRowCount() + 1,
-                    newStu.getName(),
-                    newStu.getEmail(),
-                    newStu.getPhone(),
-                    newStu.getId(),
-                    formattedDob,
-                    clazz
-                });
-
-
-                // Hiển thị thông báo thành công
-                JOptionPane.showMessageDialog(this, "Thêm học sinh thành công!", "Thành công", JOptionPane.INFORMATION_MESSAGE);
-                isValid = true; // Thoát vòng lặp nếu dữ liệu hợp lệ
-            } catch (IllegalArgumentException e) {
-                JOptionPane.showMessageDialog(this, e.getMessage(), "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
-            } catch (ParseException e) {
-                JOptionPane.showMessageDialog(this, "Ngày sinh không đúng định dạng (dd/MM/yyyy).", "Lỗi nhập liệu", JOptionPane.ERROR_MESSAGE);
-            } catch (Exception e) {
-                JOptionPane.showMessageDialog(this, "Đã xảy ra lỗi khi thêm giáo viên.", "Lỗi", JOptionPane.ERROR_MESSAGE);
-            }
-        }
+    
+        // Indent table by 10px on each side
+        scrollPane.setBorder(BorderFactory.createEmptyBorder(0, 10, 0, 10));  // 10px padding
     }
 }

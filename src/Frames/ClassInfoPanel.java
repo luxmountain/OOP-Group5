@@ -3,8 +3,9 @@ package Frames;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
-import java.text.SimpleDateFormat;
-import java.util.List;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;
@@ -17,20 +18,18 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
 
-import Models.SchoolClass;
-import Models.Student;
-import Models.Teacher;
-import application.Main;
+import application.Database;
 
 public class ClassInfoPanel extends JPanel {
     private JTable classTable;
     private DefaultTableModel tableModel;
     private JTextArea classDetailsArea;
-
+    private Database dtb;
+        
     public ClassInfoPanel() {
         setLayout(new BorderLayout());
         setBackground(Color.LIGHT_GRAY);
-
+        dtb = new Database();
         // Bảng hiển thị danh sách lớp
         String[] columnNames = {"STT", "Tên Lớp", "Sĩ Số", "Giáo Viên"};
         tableModel = new DefaultTableModel(columnNames, 0) {
@@ -77,10 +76,6 @@ public class ClassInfoPanel extends JPanel {
         JScrollPane tableScrollPane = new JScrollPane(classTable);
         tableScrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 
-        // Khu vực hiển thị chi tiết lớp
-        // classDetailsArea = new JTextArea();
-        // classDetailsArea.setEditable(false);
-        // classDetailsArea.setFont(new Font("Arial", Font.PLAIN, 14));
         JScrollPane detailsScrollPane = new JScrollPane(classDetailsArea);
         detailsScrollPane.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10)); 
 
@@ -102,62 +97,83 @@ public class ClassInfoPanel extends JPanel {
         });
     }
 
-    private void populateClassTable() {
-        int index = 1;
-        for (Teacher teacher : Main.adminList.get(0).getTeachers()) {
-            tableModel.addRow(new Object[]{
-                index++, // STT
-                teacher.getClazz().getClassName(),
-                teacher.getClazz().getClassSize(),
-                "Chưa xác định" // Nếu có thêm thông tin giáo viên, bạn có thể thay thế
-            });
+    protected void populateClassTable() {
+        String sql = "SELECT id, class_name FROM classes";
+    
+        try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+    
+            int i = 1; // Số thứ tự bắt đầu từ 1
+            while (resultSet.next()) {
+                // Lấy dữ liệu từ ResultSet
+                String id = resultSet.getString("id");
+                String className = resultSet.getString("class_name");
+    
+                // Thêm dữ liệu vào tableModel
+                tableModel.addRow(new Object[]{
+                    i,         // Số thứ tự
+                    id,        // ID của lớp
+                    className  // Tên lớp
+                });
+    
+                i++; // Tăng số thứ tự
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            System.out.println("Error: Unable to populate class table.");
         }
-    } 
+    }
+    
     protected void viewClassInfo() {
-        List<Teacher> teacherList = Main.adminList.get(0).getTeachers();
+        DefaultTableModel tableClassModel = new DefaultTableModel(new String[]{"STT", "Tên lớp", "Giáo viên", "Sĩ số", "Thời gian bắt đầu", "Thời gian kết thúc"}, 0);
+
+        Database dtb = new Database();
+        String sql = "SELECT id, class_name, teacher_id FROM classes";
+
+        try (PreparedStatement preparedStatement = dtb.getConnection().prepareStatement(sql)) {
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            int i = 1; // Số thứ tự bắt đầu từ 1
+            while (resultSet.next()) {
+                String id = resultSet.getString("id");
+                String name = resultSet.getString("name");
 
 
-        // Tạo bảng để hiển thị thông tin lớp học
-        DefaultTableModel classTableModel = new DefaultTableModel(new String[]{"STT", "Tên lớp", "Giáo viên", "Sĩ số", "Thời gian bắt đầu", "Thời gian kết thúc"}, 0);
+                tableClassModel.addRow(new Object[]{
+                    i, 
+                    id,        // Số thứ tự
+                    name
+                });
 
-        // Duyệt qua danh sách lớp học và thêm vào bảng
-        for (int i = 0; i < teacherList.size(); i++) {
-            SchoolClass schoolClass = teacherList.get(i).getClazz();
-            Teacher classTeacher = teacherList.get(i);
-            String teacherName = (classTeacher != null) ? classTeacher.getName() : "Chưa có giáo viên";
-            String totalStudents = String.valueOf(schoolClass.getStudentList().size()); // Số học sinh trong lớp
-            String beginTime = schoolClass.getBeginTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getBeginTime()) : "Chưa có";
-            String endTime = schoolClass.getEndTime() != null ? new SimpleDateFormat("dd/MM/yyyy HH:mm").format(schoolClass.getEndTime()) : "Chưa có";
-
-            // Thêm một dòng vào bảng với thông tin lớp học
-            classTableModel.addRow(new Object[]{
-                    i + 1, schoolClass.getClassName(), teacherName, totalStudents, beginTime, endTime
-            });
+                i++; // Tăng số thứ tự
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     private void showClassDetails(int rowIndex) {
-        SchoolClass selectedClass = Main.adminList.get(0).getTeachers().get(rowIndex).getClazz();
+        // SchoolClass selectedClass = Main.adminList.get(0).getTeachers().get(rowIndex).getClazz();
 
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        // SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 
-        StringBuilder details = new StringBuilder();
-        details.append("Tên Lớp: ").append(selectedClass.getClassName()).append("\n");
-        details.append("Sĩ Số: ").append(selectedClass.getStudentList().size()).append("\n");
-        details.append("Thời Gian Bắt Đầu: ").append(dateFormat.format(selectedClass.getBeginTime())).append("\n");
-        details.append("Thời Gian Kết Thúc: ").append(dateFormat.format(selectedClass.getEndTime())).append("\n");
+        // StringBuilder details = new StringBuilder();
+        // details.append("Tên Lớp: ").append(selectedClass.getClassName()).append("\n");
+        // details.append("Sĩ Số: ").append(selectedClass.getStudentList().size()).append("\n");
+        // details.append("Thời Gian Bắt Đầu: ").append(dateFormat.format(selectedClass.getBeginTime())).append("\n");
+        // details.append("Thời Gian Kết Thúc: ").append(dateFormat.format(selectedClass.getEndTime())).append("\n");
 
-        details.append("Danh Sách Học Sinh:\n");
-        for (Student student : selectedClass.getStudentList()) {
-            details.append("- ").append(student.getName()).append("\n");
-        }
+        // details.append("Danh Sách Học Sinh:\n");
+        // for (Student student : selectedClass.getStudentList()) {
+        //     details.append("- ").append(student.getName()).append("\n");
+        // }
 
-        classDetailsArea.setText(details.toString());
+        // classDetailsArea.setText(details.toString());
     }
 
     public void viewClassInfo(int classIndex) {
-        if (classIndex >= 0 && classIndex < Main.adminList.get(0).getTeachers().size()) {
-            showClassDetails(classIndex);
-        }
+        // if (classIndex >= 0 && classIndex < Main.adminList.get(0).getTeachers().size()) {
+        //     showClassDetails(classIndex);
+        // }
     }
 }
