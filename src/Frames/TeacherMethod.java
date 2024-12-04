@@ -112,7 +112,7 @@ public class TeacherMethod extends JPanel {
     protected void addTeacherTable() {
         // Khởi tạo tableModel nếu chưa có
         if (tableModel == null) {
-            tableModel = new DefaultTableModel(new String[]{"No,", "Name", "ID", "Class"}, 0) {
+            tableModel = new DefaultTableModel(new String[]{"No.", "Fullname", "Email", "Phone", "ID", "Date of birth", "Class"}, 0) {
                 @Override
                 public boolean isCellEditable(int row, int column) {
                     return false; 
@@ -123,7 +123,7 @@ public class TeacherMethod extends JPanel {
         // Xóa dữ liệu cũ
         tableModel.setRowCount(0);
         Database dtb = new Database();
-        String sql = "SELECT t.id AS teacher_id, t.name AS teacher_name, c.class_name " +
+        String sql = "SELECT t.id AS teacher_id, t.name AS teacher_name, t.phone AS teacher_phone, t.email AS teacher_email, t.birthDate AS teacher_dob, c.class_name " +
                  "FROM teachers t " +
                  "LEFT JOIN classes c ON t.id = c.teacher_id";
         
@@ -136,16 +136,18 @@ public class TeacherMethod extends JPanel {
                 // Lấy dữ liệu từ ResultSet
                 String id = resultSet.getString("teacher_id");
                 String name = resultSet.getString("teacher_name");
+                String phone = resultSet.getString("teacher_phone");
+                String email = resultSet.getString("teacher_email");
+                Date birthDate = resultSet.getDate("teacher_dob");
                 String className = resultSet.getString("class_name");
-                // String email = resultSet.getString("email");
-                // String phone = resultSet.getString("phone");
+                
                 // Date birthDate = resultSet.getDate("birthDate");
                 // String className = resultSet.getString("className");
 
                 // Format ngày tháng nếu cần
                 //String formattedBirthDate = new SimpleDateFormat("dd/MM/yyyy").format(birthDate);
                 // Thêm vào tableModel
-                tableModel.addRow(new Object[]{i, name, id, className});
+                tableModel.addRow(new Object[]{i, name, email, phone, id, birthDate, className});
 
                 i++; // Tăng số thứ tự
             }
@@ -160,7 +162,7 @@ public class TeacherMethod extends JPanel {
         }
 
         for (int i = 0; i < table.getColumnCount(); i++) {
-            if (i == 0 || i == 2) { // Cột "STT", "SĐT", "ID", "Ngày sinh"
+            if (i == 0 || i == 2 || i == 3 || i == 4 || i == 5) { // Cột "STT", "SĐT", "ID", "Ngày sinh"
                 table.getColumnModel().getColumn(i).setCellRenderer(new DefaultTableCellRenderer() {
                     @Override
                     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
@@ -235,7 +237,7 @@ public class TeacherMethod extends JPanel {
     
     
         Object[] message = {
-            "Name:", nameField,
+            "Full name:", nameField,
             "Birth Date (dd/MM/yyyy):", dobField,
             "Email:", emailField,
             "Phone:", phoneField,

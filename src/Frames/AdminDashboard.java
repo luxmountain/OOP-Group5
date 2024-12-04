@@ -251,7 +251,7 @@ public class AdminDashboard extends MyPanel {
             buttonGiaoVien.setVisible(true);
 
             buttonHocSinh.setVisible(true);
-            buttonHocSinh.setBounds(10, 260, 120, 30);
+            buttonHocSinh.setBounds(10, 180, 120, 30);
             buttonHocSinh.setEnabled(false);
 
             buttonLopHoc.setVisible(true);
@@ -311,7 +311,7 @@ public class AdminDashboard extends MyPanel {
             buttonGiaoVien.setEnabled(false);
 
             buttonLopHoc.setVisible(true);
-            buttonLopHoc.setBounds(10, 260, 120, 30);
+            buttonLopHoc.setBounds(10, 220, 120, 30);
             buttonLopHoc.setEnabled(false);
 
         } else {
